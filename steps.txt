@@ -1,0 +1,15 @@
+git config --global user.name "Maksim Kavalenka"
+git config --global user.email maksim.kavalenka@gmail.com
+git init
+git add README
+git commit -m "Master commit 1"
+git branch slave
+git checkout slave
+git commit -a -m "Slave commit 1"
+git checkout master
+git commit -a -m "Master commit 2"
+git merge slave
+git commit -a -m "Done"
+git remote add origin https://MaksimKavalenka@bitbucket.org/MaksimKavalenka/gittask.git
+git push origin master
+git push origin slave
