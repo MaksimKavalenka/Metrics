@@ -12,7 +12,7 @@ public class MetricElementTest {
         WidgetElement easymock = createNiceMock(WidgetElement.class);
 
         expect(easymock.getActive()).andReturn(8).times(2);
-        expect(easymock.getIconMetrics()).andReturn(null);
+        expect(easymock.getIconOptions()).andReturn(null);
         expect(easymock.getActive()).andReturn(1);
         replay(easymock);
 
@@ -21,7 +21,7 @@ public class MetricElementTest {
 
         easymock.setActive(8);
         assertEquals(8, config.getWidget().getActive());
-        assertNull("testRefreshInterval has failed", config.getWidget().getIconMetrics());
+        assertNull("testRefreshInterval has failed", config.getWidget().getIconOptions());
         assertEquals(8, config.getWidget().getActive());
 
         easymock.setActive(1);

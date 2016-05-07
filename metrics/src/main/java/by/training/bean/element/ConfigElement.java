@@ -9,10 +9,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConfigElement {
 
-    @XmlElement(name = "widget", required = true)
+    @XmlElement(required = true)
     private WidgetElement widget;
 
-    @XmlElement(name = "icon", required = true)
+    @XmlElement(required = true)
     private IconElement   icon;
 
     public ConfigElement() {

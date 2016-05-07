@@ -10,28 +10,28 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class IconElement {
 
-    @XmlElement(name = "metric", required = true)
-    private List<MetricElement> metrics;
+    @XmlElement(required = true)
+    private List<OptionsElement> options;
 
     public IconElement() {
         super();
     }
 
-    public IconElement(final List<MetricElement> metrics) {
+    public IconElement(final List<OptionsElement> options) {
         super();
-        this.metrics = metrics;
+        this.options = options;
     }
 
-    public IconElement(final MetricElement... metrics) {
-        this.metrics = Arrays.asList(metrics);
+    public IconElement(final OptionsElement... options) {
+        this.options = Arrays.asList(options);
     }
 
-    public List<MetricElement> getMetrics() {
-        return metrics;
+    public List<OptionsElement> getOptions() {
+        return options;
     }
 
-    public void setMetrics(final List<MetricElement> metrics) {
-        this.metrics = metrics;
+    public void setOptions(final List<OptionsElement> options) {
+        this.options = options;
     }
 
 }

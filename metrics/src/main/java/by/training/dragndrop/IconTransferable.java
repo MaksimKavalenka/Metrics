@@ -7,7 +7,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-import by.training.bean.ui.JIconPanel;
+import by.training.ui.JIconPanel;
 
 public class IconTransferable implements Transferable {
 

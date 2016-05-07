@@ -6,7 +6,7 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 
-import by.training.bean.ui.JIconPanel;
+import by.training.ui.JIconPanel;
 
 public class IconDragGestureListener implements DragGestureListener {
 

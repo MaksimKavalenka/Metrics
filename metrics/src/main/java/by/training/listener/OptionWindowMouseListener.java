@@ -5,8 +5,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.SwingUtilities;
 
-import by.training.bean.ui.JIconPanel;
-import by.training.bean.ui.JMousePopupMenu;
+import by.training.ui.JIconPanel;
+import by.training.ui.JMousePopupMenu;
 import by.training.window.OptionWindow;
 
 public class OptionWindowMouseListener implements MouseListener {

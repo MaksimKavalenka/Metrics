@@ -3,7 +3,7 @@ package by.training.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import by.training.bean.ui.JIconPanel;
+import by.training.ui.JIconPanel;
 import by.training.window.OptionWindow;
 
 public class OptionWindowButtonListener implements ActionListener {

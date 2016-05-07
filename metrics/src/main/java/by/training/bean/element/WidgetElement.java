@@ -5,29 +5,31 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WidgetElement {
 
+    @XmlAttribute(required = true)
     private int           active;
 
-    @XmlElement(name = "iconMetric", required = true)
-    private List<Integer> iconMetrics;
+    @XmlElement(required = true)
+    private List<Integer> iconOptions;
 
     public WidgetElement() {
         super();
     }
 
-    public WidgetElement(final int active, final List<Integer> iconMetrics) {
+    public WidgetElement(final int active, final List<Integer> iconOptions) {
         super();
         this.active = active;
-        this.iconMetrics = iconMetrics;
+        this.iconOptions = iconOptions;
     }
 
-    public WidgetElement(final int active, final Integer... iconMetrics) {
+    public WidgetElement(final int active, final Integer... iconOptions) {
         this.active = active;
-        this.iconMetrics = Arrays.asList(iconMetrics);
+        this.iconOptions = Arrays.asList(iconOptions);
     }
 
     public int getActive() {
@@ -38,12 +40,12 @@ public class WidgetElement {
         this.active = active;
     }
 
-    public List<Integer> getIconMetrics() {
-        return iconMetrics;
+    public List<Integer> getIconOptions() {
+        return iconOptions;
     }
 
-    public void setIconMetric(final List<Integer> iconMetrics) {
-        this.iconMetrics = iconMetrics;
+    public void setIconOptions(final List<Integer> iconOptions) {
+        this.iconOptions = iconOptions;
     }
 
 }

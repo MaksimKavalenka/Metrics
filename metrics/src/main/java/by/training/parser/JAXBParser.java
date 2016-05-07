@@ -16,7 +16,7 @@ import by.training.bean.element.ConfigElement;
 public class JAXBParser {
 
     private static final String XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-    private static final String XMD_SCHEMA = "src/main/resources/config.xsd";
+    private static final String XMD_SCHEMA = "src/main/resources/validate/config.xsd";
 
     public static void createConfig(final ConfigElement config, final File file)
             throws JAXBException {

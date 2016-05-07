@@ -10,17 +10,20 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import by.training.bean.element.MetricElement;
-import by.training.bean.metric.Period;
-import by.training.bean.metric.RefreshInterval;
-import by.training.bean.metric.Transport;
-import by.training.bean.metric.TypeMetric;
-import by.training.bean.ui.JIconPanel;
+import by.training.bean.element.OptionsElement;
+import by.training.bean.options.MetricType;
+import by.training.bean.options.Period;
+import by.training.bean.options.RefreshInterval;
+import by.training.bean.options.Transport;
 import by.training.constants.AppDefaultConstants;
 import by.training.editor.ConfigEditor;
 import by.training.exception.ConfigEditorException;
+import by.training.exception.JIconPanelException;
+import by.training.other.Moonwalker;
+import by.training.ui.JIconPanel;
 
 import java.awt.GridBagLayout;
+
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
@@ -28,15 +31,26 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JComboBox;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 public class OptionWindow extends JDialog {
 
     private static final long serialVersionUID = -29982346605979633L;
 
-    private MetricElement     metric;
+    private static boolean    save;
+
+    private OptionsElement    options;
+    private JButton           buttonCalendar;
+
     private JTextField        textFieldTitle;
+    private JTextField        textFieldAddress;
+    private JCheckBox         checkBoxSetTitle;
     private JComboBox<Object> comboBoxTypeMetric;
     private JComboBox<Object> comboBoxTransport;
     private JComboBox<Object> comboBoxPeriod;
@@ -58,7 +72,11 @@ public class OptionWindow extends JDialog {
     }
 
     private OptionWindow(final JIconPanel iconPanel) {
-        metric = iconPanel.getMetric();
+        save = false;
+
+        options = iconPanel.getOptions();
+        DatesWindow.setFrom(options.getPeriodElement().getFrom());
+        DatesWindow.setTo(options.getPeriodElement().getTo());
 
         JPanel contentPanel = new JPanel();
         setBounds(100, 100, 450, 300);
@@ -66,14 +84,16 @@ public class OptionWindow extends JDialog {
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.NORTH);
         GridBagLayout gbl_contentPanel = new GridBagLayout();
-        gbl_contentPanel.columnWidths = new int[] {0, 0, 0};
-        gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0};
-        gbl_contentPanel.columnWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
-        gbl_contentPanel.rowWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_contentPanel.columnWidths = new int[] {0, 0, 0, 0};
+        gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_contentPanel.columnWeights = new double[] {0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_contentPanel.rowWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                Double.MIN_VALUE};
         contentPanel.setLayout(gbl_contentPanel);
         {
             JLabel labelTitle = new JLabel("Title");
             GridBagConstraints gbc_labelTitle = new GridBagConstraints();
+            gbc_labelTitle.anchor = GridBagConstraints.EAST;
             gbc_labelTitle.insets = new Insets(0, 0, 5, 5);
             gbc_labelTitle.gridx = 0;
             gbc_labelTitle.gridy = 0;
@@ -82,7 +102,7 @@ public class OptionWindow extends JDialog {
         {
             textFieldTitle = new JTextField();
             GridBagConstraints gbc_textFieldTitle = new GridBagConstraints();
-            gbc_textFieldTitle.insets = new Insets(0, 0, 5, 0);
+            gbc_textFieldTitle.insets = new Insets(0, 0, 5, 5);
             gbc_textFieldTitle.fill = GridBagConstraints.HORIZONTAL;
             gbc_textFieldTitle.gridx = 1;
             gbc_textFieldTitle.gridy = 0;
@@ -92,6 +112,7 @@ public class OptionWindow extends JDialog {
         {
             JLabel labelMetricType = new JLabel("Metric type");
             GridBagConstraints gbc_labelMetricType = new GridBagConstraints();
+            gbc_labelMetricType.anchor = GridBagConstraints.EAST;
             gbc_labelMetricType.insets = new Insets(0, 0, 5, 5);
             gbc_labelMetricType.gridx = 0;
             gbc_labelMetricType.gridy = 1;
@@ -100,45 +121,103 @@ public class OptionWindow extends JDialog {
         {
             comboBoxTypeMetric = new JComboBox<>(AppDefaultConstants.TYPE_METRIC_LIST.toArray());
             GridBagConstraints gbc_comboBoxTypeMetric = new GridBagConstraints();
-            gbc_comboBoxTypeMetric.insets = new Insets(0, 0, 5, 0);
+            gbc_comboBoxTypeMetric.insets = new Insets(0, 0, 5, 5);
             gbc_comboBoxTypeMetric.fill = GridBagConstraints.HORIZONTAL;
             gbc_comboBoxTypeMetric.gridx = 1;
             gbc_comboBoxTypeMetric.gridy = 1;
             contentPanel.add(comboBoxTypeMetric, gbc_comboBoxTypeMetric);
         }
         {
+            checkBoxSetTitle = new JCheckBox("Set the name of metric type to the title");
+            checkBoxSetTitle.setHorizontalAlignment(SwingConstants.LEFT);
+            GridBagConstraints gbc_checkBoxSetTitle = new GridBagConstraints();
+            gbc_checkBoxSetTitle.anchor = GridBagConstraints.WEST;
+            gbc_checkBoxSetTitle.insets = new Insets(0, 0, 5, 5);
+            gbc_checkBoxSetTitle.gridx = 1;
+            gbc_checkBoxSetTitle.gridy = 2;
+            contentPanel.add(checkBoxSetTitle, gbc_checkBoxSetTitle);
+        }
+        {
             JLabel labelTransport = new JLabel("Transport");
             GridBagConstraints gbc_labelTransport = new GridBagConstraints();
+            gbc_labelTransport.anchor = GridBagConstraints.EAST;
             gbc_labelTransport.insets = new Insets(0, 0, 5, 5);
             gbc_labelTransport.gridx = 0;
-            gbc_labelTransport.gridy = 2;
+            gbc_labelTransport.gridy = 3;
             contentPanel.add(labelTransport, gbc_labelTransport);
         }
         {
             comboBoxTransport = new JComboBox<>(AppDefaultConstants.TRANSPORT_LIST.toArray());
             GridBagConstraints gbc_comboBoxTransport = new GridBagConstraints();
-            gbc_comboBoxTransport.insets = new Insets(0, 0, 5, 0);
+            gbc_comboBoxTransport.insets = new Insets(0, 0, 5, 5);
             gbc_comboBoxTransport.fill = GridBagConstraints.HORIZONTAL;
             gbc_comboBoxTransport.gridx = 1;
-            gbc_comboBoxTransport.gridy = 2;
+            gbc_comboBoxTransport.gridy = 3;
             contentPanel.add(comboBoxTransport, gbc_comboBoxTransport);
+        }
+        {
+            JLabel labelAddress = new JLabel("Address");
+            GridBagConstraints gbc_labelAddress = new GridBagConstraints();
+            gbc_labelAddress.insets = new Insets(0, 0, 5, 5);
+            gbc_labelAddress.anchor = GridBagConstraints.EAST;
+            gbc_labelAddress.gridx = 0;
+            gbc_labelAddress.gridy = 4;
+            contentPanel.add(labelAddress, gbc_labelAddress);
+        }
+        {
+            textFieldAddress = new JTextField();
+            GridBagConstraints gbc_textFieldAddress = new GridBagConstraints();
+            gbc_textFieldAddress.insets = new Insets(0, 0, 5, 5);
+            gbc_textFieldAddress.fill = GridBagConstraints.HORIZONTAL;
+            gbc_textFieldAddress.gridx = 1;
+            gbc_textFieldAddress.gridy = 4;
+            contentPanel.add(textFieldAddress, gbc_textFieldAddress);
+            textFieldAddress.setColumns(10);
         }
         {
             JLabel labelPeriod = new JLabel("Period");
             GridBagConstraints gbc_labelPeriod = new GridBagConstraints();
+            gbc_labelPeriod.anchor = GridBagConstraints.EAST;
             gbc_labelPeriod.insets = new Insets(0, 0, 5, 5);
             gbc_labelPeriod.gridx = 0;
-            gbc_labelPeriod.gridy = 3;
+            gbc_labelPeriod.gridy = 5;
             contentPanel.add(labelPeriod, gbc_labelPeriod);
         }
         {
             comboBoxPeriod = new JComboBox<>(AppDefaultConstants.PERIOD_LIST.toArray());
             GridBagConstraints gbc_comboBoxPeriod = new GridBagConstraints();
-            gbc_comboBoxPeriod.insets = new Insets(0, 0, 5, 0);
+            gbc_comboBoxPeriod.insets = new Insets(0, 0, 5, 5);
             gbc_comboBoxPeriod.fill = GridBagConstraints.HORIZONTAL;
             gbc_comboBoxPeriod.gridx = 1;
-            gbc_comboBoxPeriod.gridy = 3;
+            gbc_comboBoxPeriod.gridy = 5;
             contentPanel.add(comboBoxPeriod, gbc_comboBoxPeriod);
+            comboBoxPeriod.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(final ItemEvent event) {
+                    if (event.getStateChange() == ItemEvent.SELECTED) {
+                        buttonCalendar.setEnabled(true);
+                        checkPeriod();
+                    }
+                }
+            });
+        }
+        {
+            buttonCalendar = new JButton(
+                    new ImageIcon(((new ImageIcon("src/main/resources/icon/date.png").getImage()
+                            .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH)))));
+            GridBagConstraints gbc_buttonCalendar = new GridBagConstraints();
+            gbc_buttonCalendar.fill = GridBagConstraints.BOTH;
+            gbc_buttonCalendar.insets = new Insets(0, 0, 5, 0);
+            gbc_buttonCalendar.gridx = 2;
+            gbc_buttonCalendar.gridy = 5;
+            contentPanel.add(buttonCalendar, gbc_buttonCalendar);
+            buttonCalendar.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent event) {
+                    DatesWindow.createDialog();
+                }
+            });
         }
         {
             JLabel labelRefreshInterval = new JLabel("Refresh Interval");
@@ -146,16 +225,17 @@ public class OptionWindow extends JDialog {
             gbc_labelRefreshInterval.anchor = GridBagConstraints.EAST;
             gbc_labelRefreshInterval.insets = new Insets(0, 0, 0, 5);
             gbc_labelRefreshInterval.gridx = 0;
-            gbc_labelRefreshInterval.gridy = 4;
+            gbc_labelRefreshInterval.gridy = 6;
             contentPanel.add(labelRefreshInterval, gbc_labelRefreshInterval);
         }
         {
             comboBoxRefreshInterval = new JComboBox<>(
                     AppDefaultConstants.REFRESH_INTERVAL_LIST.toArray());
             GridBagConstraints gbc_comboBoxRefreshInterval = new GridBagConstraints();
+            gbc_comboBoxRefreshInterval.insets = new Insets(0, 0, 0, 5);
             gbc_comboBoxRefreshInterval.fill = GridBagConstraints.HORIZONTAL;
             gbc_comboBoxRefreshInterval.gridx = 1;
-            gbc_comboBoxRefreshInterval.gridy = 4;
+            gbc_comboBoxRefreshInterval.gridy = 6;
             contentPanel.add(comboBoxRefreshInterval, gbc_comboBoxRefreshInterval);
         }
         {
@@ -171,23 +251,45 @@ public class OptionWindow extends JDialog {
 
                     @Override
                     public void actionPerformed(final ActionEvent event) {
-                        metric.setTitle(textFieldTitle.getText());
-                        metric.setMetricType(
-                                TypeMetric.values()[comboBoxTypeMetric.getSelectedIndex()]);
-                        metric.setTransport(
-                                Transport.values()[comboBoxTransport.getSelectedIndex()]);
-                        metric.setPeriod(Period.values()[comboBoxPeriod.getSelectedIndex()]);
-                        metric.setRefreshInterval(RefreshInterval.values()[comboBoxRefreshInterval
-                                .getSelectedIndex()]);
+                        if (checkPeriod()) {
+                            MetricType metricType = MetricType.values()[comboBoxTypeMetric
+                                    .getSelectedIndex()];
+                            Transport transport = Transport.values()[comboBoxTransport
+                                    .getSelectedIndex()];
+                            Period period = Period.values()[comboBoxPeriod.getSelectedIndex()];
+                            RefreshInterval refreshInterval = RefreshInterval
+                                    .values()[comboBoxRefreshInterval.getSelectedIndex()];
 
-                        try {
-                            ConfigEditor.updateConfig();
-                        } catch (ConfigEditorException e) {
-                            e.printStackTrace();
+                            if (!checkBoxSetTitle.isSelected()) {
+                                options.setTitle(textFieldTitle.getText());
+                            } else {
+                                options.setTitle(metricType.getTitle());
+                            }
+
+                            options.getMetricTypeElement().setMetricType(metricType);
+                            options.getMetricTypeElement()
+                                    .setSetTitle(checkBoxSetTitle.isSelected());
+
+                            options.getTransportElement().setTransport(transport);
+                            options.getTransportElement().setAddress(textFieldAddress.getText());
+
+                            options.getPeriodElement().setPeriod(period);
+                            options.getPeriodElement().setFrom(DatesWindow.getFrom());
+                            options.getPeriodElement().setTo(DatesWindow.getTo());
+
+                            options.setRefreshInterval(refreshInterval);
+
+                            try {
+                                ConfigEditor.updateConfig();
+                                iconPanel.setOptions();
+                            } catch (ConfigEditorException | JIconPanelException e) {
+                                e.printStackTrace();
+                            }
+
+                            save = true;
+                            dispose();
+                            Moonwalker.orNot(options.getTitle());
                         }
-
-                        iconPanel.setOptions();
-                        dispose();
                     }
                 });
             }
@@ -199,18 +301,54 @@ public class OptionWindow extends JDialog {
 
                     @Override
                     public void actionPerformed(final ActionEvent event) {
+                        save = false;
                         dispose();
                     }
                 });
             }
         }
         {
-            textFieldTitle.setText(metric.getTitle());
-            comboBoxTypeMetric.setSelectedIndex(metric.getMetricType().ordinal());
-            comboBoxTransport.setSelectedIndex(metric.getTransport().ordinal());
-            comboBoxPeriod.setSelectedIndex(metric.getPeriod().ordinal());
-            comboBoxRefreshInterval.setSelectedIndex(metric.getRefreshInterval().ordinal());
+            textFieldAddress.setEditable(false);// EDIT
+
+            setEnabledButton(Period.values()[comboBoxPeriod.getSelectedIndex()]);
+            checkBoxSetTitle.setSelected(options.getMetricTypeElement().isSetTitle());
+
+            textFieldTitle.setText(options.getTitle());
+            textFieldAddress.setText(options.getTransportElement().getAddress());
+
+            comboBoxTypeMetric
+                    .setSelectedIndex(options.getMetricTypeElement().getMetricType().ordinal());
+            comboBoxTransport
+                    .setSelectedIndex(options.getTransportElement().getTransport().ordinal());
+            comboBoxPeriod.setSelectedIndex(options.getPeriodElement().getPeriod().ordinal());
+            comboBoxRefreshInterval.setSelectedIndex(options.getRefreshInterval().ordinal());
         }
+    }
+
+    private boolean checkPeriod() {
+        setEnabledButton(Period.values()[comboBoxPeriod.getSelectedIndex()]);
+
+        if (Period.values()[comboBoxPeriod.getSelectedIndex()] == Period.CUSTOM) {
+
+            if (DatesWindow.getFrom() == null || DatesWindow.getTo() == null) {
+                DatesWindow.createDialog();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void setEnabledButton(final Period period) {
+        if (Period.values()[comboBoxPeriod.getSelectedIndex()] == Period.CUSTOM) {
+            buttonCalendar.setEnabled(true);
+        } else {
+            buttonCalendar.setEnabled(false);
+        }
+    }
+
+    public static boolean isSave() {
+        return save;
     }
 
 }

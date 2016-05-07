@@ -9,8 +9,8 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetListener;
 
-import by.training.bean.ui.JIconPanel;
-import by.training.bean.ui.JWidgetPanel;
+import by.training.ui.JIconPanel;
+import by.training.ui.JWidgetPanel;
 
 public class WidgetDropTargetAdapter extends DropTargetAdapter implements DropTargetListener {
 
@@ -29,7 +29,7 @@ public class WidgetDropTargetAdapter extends DropTargetAdapter implements DropTa
             if (event.isDataFlavorSupported(DATA_FLAVOR)) {
                 JIconPanel iconPanel = (JIconPanel) transferable.getTransferData(DATA_FLAVOR);
                 event.acceptDrop(DnDConstants.ACTION_COPY);
-                widgetPanel.setIconPanel(iconPanel);
+                widgetPanel.getDependency().setIconPanel(iconPanel);
                 event.dropComplete(true);
                 return;
             }

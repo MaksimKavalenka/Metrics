@@ -19,8 +19,6 @@ public class ReminderWindow extends JDialog {
     public static final String DISPLAY          = "It's already displayed";
     public static final String DELETE           = "You can't delete this icon";
 
-    private final JPanel       contentPanel     = new JPanel();
-
     public static void createDialog(final String message) {
         try {
             ReminderWindow dialog = new ReminderWindow(message);
@@ -36,6 +34,7 @@ public class ReminderWindow extends JDialog {
     }
 
     public ReminderWindow(final String message) {
+        JPanel contentPanel = new JPanel();
         setBounds(100, 100, 300, 100);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setLayout(new FlowLayout());

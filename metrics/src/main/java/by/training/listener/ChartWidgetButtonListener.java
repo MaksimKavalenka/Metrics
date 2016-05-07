@@ -4,13 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import by.training.bean.ui.JWidgetPanel;
 import by.training.editor.ConfigEditor;
 import by.training.exception.ConfigEditorException;
+import by.training.ui.JWidgetPanel;
 
 public class ChartWidgetButtonListener implements ActionListener {
 
-    private static List<JWidgetPanel> panels;
+    private static List<JWidgetPanel> widgetPanels;
 
     private int                       active;
 
@@ -18,16 +18,16 @@ public class ChartWidgetButtonListener implements ActionListener {
         this.active = active;
     }
 
-    public static void setPanels(final List<JWidgetPanel> panels) {
-        ChartWidgetButtonListener.panels = panels;
+    public static void setPanels(final List<JWidgetPanel> widgetPanels) {
+        ChartWidgetButtonListener.widgetPanels = widgetPanels;
     }
 
     public void setVisibleWindows() {
-        for (int i = 1; i < panels.size(); i++) {
-            panels.get(i).setVisible(false);
+        for (int i = 1; i < widgetPanels.size(); i++) {
+            widgetPanels.get(i).setVisible(false);
         }
         for (int i = 1; i < active; i++) {
-            panels.get(i).setVisible(true);
+            widgetPanels.get(i).setVisible(true);
         }
     }
 
