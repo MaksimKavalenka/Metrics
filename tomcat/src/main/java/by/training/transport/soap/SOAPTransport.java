@@ -1,6 +1,7 @@
 package by.training.transport.soap;
 
-import java.util.LinkedList;
+import java.util.Date;
+import java.util.List;
 
 import javax.jws.WebService;
 
@@ -11,14 +12,14 @@ import by.training.bean.options.MetricType;
 public class SOAPTransport implements WebServiceInterface {
 
     @Override
-    public Metric getLast(final MetricType metricType) {
-        return metricType.getStorageEditor().getLast();
+    public Metric getLast(final String metricType) {
+        return MetricType.valueOf(metricType).getStorageEditor().getLast();
     }
 
     @Override
-    public LinkedList<Metric> getList(final MetricType metricType, final String from,
-            final String to) {
-        return (LinkedList<Metric>) metricType.getStorageEditor().getList(from, to);
+    public Metric[] getList(final String metricType, final Date from, final Date to) {
+        List<Metric> list = MetricType.valueOf(metricType).getStorageEditor().getList(from, to);
+        return list.toArray(new Metric[list.size()]);
     }
 
 }

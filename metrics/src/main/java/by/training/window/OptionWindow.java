@@ -56,6 +56,10 @@ public class OptionWindow extends JDialog {
     private JComboBox<Object> comboBoxPeriod;
     private JComboBox<Object> comboBoxRefreshInterval;
 
+    {
+        save = false;
+    }
+
     public static void createDialog(final JIconPanel iconPanel) {
         try {
             OptionWindow dialog = new OptionWindow(iconPanel);
@@ -72,8 +76,6 @@ public class OptionWindow extends JDialog {
     }
 
     private OptionWindow(final JIconPanel iconPanel) {
-        save = false;
-
         options = iconPanel.getOptions();
         DatesWindow.setFrom(options.getPeriodElement().getFrom());
         DatesWindow.setTo(options.getPeriodElement().getTo());
@@ -260,10 +262,10 @@ public class OptionWindow extends JDialog {
                             RefreshInterval refreshInterval = RefreshInterval
                                     .values()[comboBoxRefreshInterval.getSelectedIndex()];
 
-                            if (!checkBoxSetTitle.isSelected()) {
-                                options.setTitle(textFieldTitle.getText());
-                            } else {
+                            if (checkBoxSetTitle.isSelected()) {
                                 options.setTitle(metricType.getTitle());
+                            } else {
+                                options.setTitle(textFieldTitle.getText());
                             }
 
                             options.getMetricTypeElement().setMetricType(metricType);
@@ -279,6 +281,8 @@ public class OptionWindow extends JDialog {
 
                             options.setRefreshInterval(refreshInterval);
 
+                            dispose();
+
                             try {
                                 ConfigEditor.updateConfig();
                                 iconPanel.setOptions();
@@ -287,7 +291,6 @@ public class OptionWindow extends JDialog {
                             }
 
                             save = true;
-                            dispose();
                             Moonwalker.orNot(options.getTitle());
                         }
                     }
@@ -308,8 +311,6 @@ public class OptionWindow extends JDialog {
             }
         }
         {
-            textFieldAddress.setEditable(false);// EDIT
-
             setEnabledButton(Period.values()[comboBoxPeriod.getSelectedIndex()]);
             checkBoxSetTitle.setSelected(options.getMetricTypeElement().isSetTitle());
 
@@ -329,13 +330,11 @@ public class OptionWindow extends JDialog {
         setEnabledButton(Period.values()[comboBoxPeriod.getSelectedIndex()]);
 
         if (Period.values()[comboBoxPeriod.getSelectedIndex()] == Period.CUSTOM) {
-
             if (DatesWindow.getFrom() == null || DatesWindow.getTo() == null) {
                 DatesWindow.createDialog();
                 return false;
             }
         }
-
         return true;
     }
 

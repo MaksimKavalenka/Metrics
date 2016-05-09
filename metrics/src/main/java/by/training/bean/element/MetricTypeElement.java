@@ -16,11 +16,9 @@ public class MetricTypeElement {
     private boolean setTitle;
 
     public MetricTypeElement() {
-        super();
     }
 
     public MetricTypeElement(final MetricType metricType, final boolean setTitle) {
-        super();
         this.metricType = metricType.ordinal();
         this.setTitle = setTitle;
     }

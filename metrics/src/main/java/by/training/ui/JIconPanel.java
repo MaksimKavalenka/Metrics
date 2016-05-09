@@ -43,13 +43,14 @@ public class JIconPanel extends JPanel implements Runnable {
     private boolean             active;
     private boolean             setCustom;
 
-    public JIconPanel(final OptionsElement options) {
-        super();
+    public JIconPanel(final OptionsElement options) throws JIconPanelException {
         this.options = options;
-
         init();
-
-        storage = new Storage(options);
+        try {
+            storage = new Storage(options);
+        } catch (StorageException e) {
+            throw new JIconPanelException(STORAGE_INIT_ERROR);
+        }
     }
 
     public int getIndex() {
@@ -107,8 +108,7 @@ public class JIconPanel extends JPanel implements Runnable {
                     case LAST_MINUTES_15:
                     case LAST_MINUTES_30:
                     case LAST_HOUR:
-                        Metric metric;
-                        metric = storage.getLast();
+                        Metric metric = storage.getLast();
                         labelIconCurrentValue.setText(String.valueOf(metric.getValue()));
 
                         if (chart != null) {

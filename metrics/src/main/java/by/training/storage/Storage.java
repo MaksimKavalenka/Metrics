@@ -10,11 +10,15 @@ import org.codehaus.jettison.json.JSONException;
 
 import by.training.bean.element.OptionsElement;
 import by.training.bean.element.PeriodElement;
+import by.training.bean.element.TransportElement;
 import by.training.bean.metric.Metric;
 import by.training.bean.options.MetricType;
 import by.training.bean.set.BoundedTreeSet;
 import by.training.dao.TransportDAO;
+import by.training.editor.ConfigEditor;
+import by.training.exception.ConfigEditorException;
 import by.training.exception.StorageException;
+import by.training.window.ResourceIsNotAvailableWindow;
 
 public class Storage implements Runnable {
 
@@ -23,23 +27,23 @@ public class Storage implements Runnable {
     private boolean              active;
 
     private OptionsElement       options;
+    private TransportElement     transportElement;
     private MetricType           metricType;
     private TransportDAO         dao;
 
     private NavigableSet<Metric> storage;
 
-    public Storage(final OptionsElement options) {
-        super();
+    public Storage(final OptionsElement options) throws StorageException {
         this.options = options;
+        transportElement = new TransportElement(options.getTransportElement().getTransport(),
+                options.getTransportElement().getAddress());
         metricType = options.getMetricTypeElement().getMetricType();
         dao = options.getTransportElement().createDAO();
         storage = new BoundedTreeSet<>(MAX_COUNT);
+        getList();
     }
 
     public Metric getLast() throws StorageException {
-        if (storage.isEmpty()) {
-            getList();
-        }
         return storage.last();
     }
 
@@ -52,13 +56,17 @@ public class Storage implements Runnable {
             case LAST_MINUTES_30:
             case LAST_HOUR:
                 checkAndLoad(periodElement.getPeriod().getDate());
-                set.addAll(
-                        storage.tailSet(new Metric(periodElement.getPeriod().getDate(), 0), true));
+                synchronized (storage) {
+                    set.addAll(storage.tailSet(new Metric(periodElement.getPeriod().getDate(), 0),
+                            true));
+                }
                 break;
             case CUSTOM:
                 checkAndLoad(periodElement.getFrom());
-                set.addAll(storage.subSet(new Metric(periodElement.getFrom(), 0), true,
-                        new Metric(periodElement.getTo(), 0), true));
+                synchronized (storage) {
+                    set.addAll(storage.subSet(new Metric(periodElement.getFrom(), 0), true,
+                            new Metric(periodElement.getTo(), 0), true));
+                }
                 break;
         }
 
@@ -66,21 +74,62 @@ public class Storage implements Runnable {
     }
 
     public void refresh() throws StorageException {
-        if (metricType != options.getMetricTypeElement().getMetricType()) {
+        boolean change = false;
+        MetricType metricType = options.getMetricTypeElement().getMetricType();
+        TransportElement transportElement = options.getTransportElement();
+
+        if (this.transportElement.getTransport() != transportElement.getTransport()) {
+            synchronized (dao) {
+                dao.close();
+                dao = transportElement.createDAO();
+            }
+            this.transportElement.setTransport(transportElement.getTransport());
+            change = true;
+
+            synchronized (this) {
+                notify();
+            }
+        }
+
+        if (!change && !this.transportElement.getAddress().equals(transportElement.getAddress())) {
+            synchronized (dao) {
+                while (!dao.setAddress(transportElement.getAddress())) {
+                    ResourceIsNotAvailableWindow.createDialog(transportElement.getAddress(),
+                            this.transportElement.getAddress());
+                    transportElement.setAddress(ResourceIsNotAvailableWindow.getAddress());
+                }
+            }
+            this.transportElement.setAddress(transportElement.getAddress());
+
+            try {
+                ConfigEditor.updateConfig();
+            } catch (ConfigEditorException e) {
+                throw new StorageException(e.getMessage());
+            }
+
+            synchronized (this) {
+                notify();
+            }
+        }
+
+        if (this.metricType != metricType) {
             synchronized (storage) {
                 storage.clear();
-                metricType = options.getMetricTypeElement().getMetricType();
-                loadAfter(getLast().getDate());
+            }
+            this.metricType = metricType;
+            loadAfter(getLast().getDate());
+
+            synchronized (this) {
+                notify();
             }
         }
     }
 
     private void checkAndLoad(final Date from) throws StorageException {
-        if (!storage.isEmpty()) {
-            Metric check = new Metric(from, 0);
-            if (storage.first().compareTo(check) > 0) {
-                loadBefore(from);
-            }
+        if (storage.isEmpty()) {
+            loadAfter(from);
+        } else if (storage.first().getDate().compareTo(from) > 0) {
+            loadBefore(from);
         } else {
             loadAfter(from);
         }
@@ -89,7 +138,9 @@ public class Storage implements Runnable {
     private void loadBefore(final Date from) throws StorageException {
         List<Metric> list;
         try {
-            list = dao.getList(metricType, from, storage.first().getDate());
+            synchronized (dao) {
+                list = dao.getList(metricType, from, storage.first().getDate());
+            }
         } catch (JSONException e) {
             throw new StorageException(LOAD_BEFORE_ERROR);
         }
@@ -102,7 +153,9 @@ public class Storage implements Runnable {
     private void loadAfter(final Date from) throws StorageException {
         List<Metric> list;
         try {
-            list = dao.getList(metricType, from, new Date(0));
+            synchronized (dao) {
+                list = dao.getList(metricType, from, new Date(0));
+            }
         } catch (JSONException e) {
             throw new StorageException(LOAD_AFTER_ERROR);
         }
@@ -123,7 +176,7 @@ public class Storage implements Runnable {
 
         while (active) {
             try {
-                loadAfter(getLast().getDate());
+                checkAndLoad(getLast().getDate());
             } catch (StorageException e) {
                 e.printStackTrace();
             }

@@ -12,11 +12,9 @@ public class BoundedTreeSet<E> extends TreeSet<E> {
     private int               maxSize          = Integer.MAX_VALUE;
 
     public BoundedTreeSet() {
-        super();
     }
 
     public BoundedTreeSet(final int maxSize) {
-        super();
         this.setMaxSize(maxSize);
     }
 

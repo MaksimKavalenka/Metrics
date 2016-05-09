@@ -7,8 +7,6 @@ import java.lang.management.ThreadMXBean;
 import java.util.Date;
 import java.util.Random;
 
-import javax.ws.rs.Path;
-
 import com.sun.management.GarbageCollectorMXBean;
 import com.sun.management.OperatingSystemMXBean;
 
@@ -129,7 +127,6 @@ public enum MetricType implements Runnable {
         active = true;
     }
 
-    @Path("/storage")
     public Storage getStorageEditor() {
         return storage;
     }

@@ -25,13 +25,11 @@ public class OptionsElement {
     private int               refreshInterval;
 
     public OptionsElement() {
-        super();
     }
 
     public OptionsElement(final String title, final MetricTypeElement metricTypeElement,
             final TransportElement transportElement, final PeriodElement periodElement,
             final RefreshInterval refreshInterval) {
-        super();
         this.title = title;
         this.metricTypeElement = metricTypeElement;
         this.transportElement = transportElement;

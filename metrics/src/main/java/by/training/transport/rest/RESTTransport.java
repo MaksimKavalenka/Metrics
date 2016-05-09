@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.NotAllowedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -24,8 +26,7 @@ public class RESTTransport implements TransportDAO {
     private WebTarget service;
 
     public RESTTransport(final String address) {
-        ClientConfig clientConfig = new ClientConfig();
-        client = ClientBuilder.newClient(clientConfig);
+        client = ClientBuilder.newClient(new ClientConfig());
         service = client.target(getBaseURI(address));
     }
 
@@ -35,21 +36,42 @@ public class RESTTransport implements TransportDAO {
 
     @Override
     public Metric getLast(final MetricType typeMetric) throws JSONException {
-        String str = service.path("rest/metric/" + typeMetric.name() + "/storage/last").request()
-                .accept(MediaType.APPLICATION_JSON).get(String.class);
+        String str;
+        synchronized (service) {
+            str = service.path(typeMetric.name()).request().accept(MediaType.APPLICATION_JSON)
+                    .get(String.class);
+        }
         return JSONParser.parseLineJSON(str);
-        /// add javax.ws.rs.NotFoundException
     }
 
     @Override
-    public synchronized List<Metric> getList(final MetricType typeMetric, final Date from,
-            final Date to) throws JSONException {
-        String str = service
-                .path("rest/metric/" + typeMetric.name() + "/storage/" + from.getTime() + "_"
-                        + to.getTime())
-                .request().accept(MediaType.APPLICATION_JSON).get(String.class);
+    public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to)
+            throws JSONException {
+        String str = "";
+        synchronized (service) {
+            str = service.path(typeMetric.name() + "/" + from.getTime() + "_" + to.getTime())
+                    .request().accept(MediaType.APPLICATION_JSON).get(String.class);
+        }
         return JSONParser.parseArrayJSON(str);
-        /// add javax.ws.rs.NotFoundException
+    }
+
+    @Override
+    public boolean setAddress(final String address) {
+        boolean connect = false;
+
+        synchronized (service) {
+            service = client.target(getBaseURI(address));
+            try {
+                service.path("").request().get(Object.class);
+            } catch (NotAllowedException e) {
+                connect = true;
+            } catch (NotFoundException e) {
+                connect = false;
+            } /// add java.net.ConnectException
+              /// javax.ws.rs.ServiceUnavailableException
+        }
+
+        return connect;
     }
 
     @Override

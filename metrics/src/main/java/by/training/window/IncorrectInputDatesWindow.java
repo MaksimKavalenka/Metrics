@@ -19,6 +19,10 @@ public class IncorrectInputDatesWindow extends JDialog {
 
     private static boolean    swap;
 
+    {
+        swap = false;
+    }
+
     public static void createDialog() {
         try {
             IncorrectInputDatesWindow dialog = new IncorrectInputDatesWindow();
@@ -35,8 +39,6 @@ public class IncorrectInputDatesWindow extends JDialog {
     }
 
     private IncorrectInputDatesWindow() {
-        swap = false;
-
         JPanel contentPanel = new JPanel();
         setBounds(100, 100, 450, 100);
         getContentPane().setLayout(new BorderLayout());

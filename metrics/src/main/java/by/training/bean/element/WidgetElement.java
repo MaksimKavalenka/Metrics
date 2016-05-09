@@ -18,11 +18,9 @@ public class WidgetElement {
     private List<Integer> iconOptions;
 
     public WidgetElement() {
-        super();
     }
 
     public WidgetElement(final int active, final List<Integer> iconOptions) {
-        super();
         this.active = active;
         this.iconOptions = iconOptions;
     }

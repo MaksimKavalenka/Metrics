@@ -21,11 +21,9 @@ public class PeriodElement {
     private Date to;
 
     public PeriodElement() {
-        super();
     }
 
     public PeriodElement(final Period period, final Date from, final Date to) {
-        super();
         this.period = period.ordinal();
         this.from = from;
         this.to = to;

@@ -14,11 +14,9 @@ public class IconElement {
     private List<OptionsElement> options;
 
     public IconElement() {
-        super();
     }
 
     public IconElement(final List<OptionsElement> options) {
-        super();
         this.options = options;
     }
 

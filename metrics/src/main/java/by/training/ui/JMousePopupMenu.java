@@ -17,8 +17,6 @@ public class JMousePopupMenu extends JPopupMenu {
     private JMenuItem         itemDelete;
 
     public JMousePopupMenu(final JIconPanel iconPanel) {
-        super();
-
         itemDelete = new JMenuItem("Detele the icon");
         add(itemDelete);
         itemDelete.addActionListener(new ActionListener() {

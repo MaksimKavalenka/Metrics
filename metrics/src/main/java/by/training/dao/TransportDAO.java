@@ -14,6 +14,8 @@ public interface TransportDAO {
 
     List<Metric> getList(MetricType typeMetric, Date from, Date to) throws JSONException;
 
+    boolean setAddress(String address);
+
     void close();
 
 }

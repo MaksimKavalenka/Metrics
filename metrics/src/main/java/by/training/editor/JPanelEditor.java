@@ -3,6 +3,8 @@ package by.training.editor;
 import static by.training.constants.AppDefaultConstants.DIMENSION;
 import static by.training.constants.ConfigDefaultConstants.MAX_ACTIVE;
 
+import static by.training.exception.JPanelEditorException.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
@@ -16,6 +18,8 @@ import by.training.constants.ConfigDefaultConstants;
 import by.training.dragndrop.WidgetDropTargetAdapter;
 import by.training.exception.ConfigEditorException;
 import by.training.exception.JIconPanelException;
+import by.training.exception.JPanelEditorException;
+import by.training.exception.JWidgetPanelException;
 import by.training.listener.ChartWidgetButtonListener;
 import by.training.ui.JIconPanel;
 import by.training.ui.JWidgetPanel;
@@ -24,15 +28,19 @@ import by.training.window.OptionWindow;
 public class JPanelEditor {
 
     public static void generatePanels(final JPanel panelIcons, final JPanel parent)
-            throws ConfigEditorException, JIconPanelException {
+            throws JPanelEditorException {
         JIconPanelEditor.generatePanels(panelIcons, parent);
         JWidgetPanelEditor.generatePanels();
         runChart();
     }
 
-    private static void runChart() throws JIconPanelException {
+    private static void runChart() throws JPanelEditorException {
         for (JIconPanel iconPanel : JIconPanelEditor.listIconPanels) {
-            iconPanel.runChart();
+            try {
+                iconPanel.runChart();
+            } catch (JIconPanelException e) {
+                throw new JPanelEditorException(RUN_PANEL_ERROR);
+            }
         }
     }
 
@@ -43,11 +51,18 @@ public class JPanelEditor {
         private static JPanel               panelIcons;
         private static List<JIconPanel>     listIconPanels = new LinkedList<>();
 
-        public static JIconPanel addPanel(final OptionsElement metric) {
-            JIconPanel iconPanel = new JIconPanel(metric);
+        public static JIconPanel addPanel(final OptionsElement metric)
+                throws JPanelEditorException {
+            JIconPanel iconPanel = null;
 
-            listIconPanels.add(iconPanel);
-            panelIcons.add(iconPanel);
+            try {
+                iconPanel = new JIconPanel(metric);
+
+                listIconPanels.add(iconPanel);
+                panelIcons.add(iconPanel);
+            } catch (JIconPanelException e) {
+                throw new JPanelEditorException(CREATE_PANEL_ERROR);
+            }
 
             return iconPanel;
         }
@@ -71,7 +86,8 @@ public class JPanelEditor {
             ConfigEditor.updateConfig();
         }
 
-        private static void generatePanels(final JPanel panelIcons, final JPanel parent) {
+        private static void generatePanels(final JPanel panelIcons, final JPanel parent)
+                throws JPanelEditorException {
             JPanelEditor.JIconPanelEditor.panelIcons = panelIcons;
 
             for (OptionsElement option : options) {
@@ -87,20 +103,20 @@ public class JPanelEditor {
                 public void actionPerformed(final ActionEvent event) {
                     OptionsElement metric = ConfigDefaultConstants.createDefaultMetricElement();
                     options.add(metric);
-                    JIconPanel iconPanel = addPanel(metric);
-                    try {
-                        iconPanel.runChart();
-                    } catch (JIconPanelException e) {
-                        e.printStackTrace();
-                    }
 
-                    OptionWindow.createDialog(iconPanel);
-                    if (!OptionWindow.isSave()) {
-                        try {
-                            removePanel(iconPanel);
-                        } catch (ConfigEditorException e) {
-                            e.printStackTrace();
+                    try {
+                        JIconPanel iconPanel = addPanel(metric);
+                        iconPanel.runChart();
+                        OptionWindow.createDialog(iconPanel);
+                        if (!OptionWindow.isSave()) {
+                            try {
+                                removePanel(iconPanel);
+                            } catch (ConfigEditorException e) {
+                                e.printStackTrace();
+                            }
                         }
+                    } catch (JIconPanelException | JPanelEditorException e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -116,15 +132,19 @@ public class JPanelEditor {
             listWidgetPanels.add(widgetPanel);
         }
 
-        private static void generatePanels() throws ConfigEditorException, JIconPanelException {
+        private static void generatePanels() throws JPanelEditorException {
             ChartWidgetButtonListener.setPanels(listWidgetPanels);
 
             for (int i = 0; i < MAX_ACTIVE; i++) {
                 int number = ConfigEditor.config.getWidget().getIconOptions().get(i);
                 JIconPanel iconPanel = JIconPanelEditor.listIconPanels.get(number);
                 JWidgetPanel widgetPanel = listWidgetPanels.get(i);
-                widgetPanel.getDependency().setIconPanel(iconPanel);
                 new WidgetDropTargetAdapter(widgetPanel);
+                try {
+                    widgetPanel.getDependency().setIconPanel(iconPanel);
+                } catch (JWidgetPanelException e) {
+                    throw new JPanelEditorException(SET_PANEL_ERROR);
+                }
             }
         }
 

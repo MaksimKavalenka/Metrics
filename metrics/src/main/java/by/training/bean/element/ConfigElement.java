@@ -16,11 +16,9 @@ public class ConfigElement {
     private IconElement   icon;
 
     public ConfigElement() {
-        super();
     }
 
     public ConfigElement(final WidgetElement widget, final IconElement icon) {
-        super();
         this.widget = widget;
         this.icon = icon;
     }

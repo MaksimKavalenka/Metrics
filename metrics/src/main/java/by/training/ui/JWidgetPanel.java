@@ -29,6 +29,7 @@ import by.training.bean.metric.Metric;
 import by.training.editor.ConfigEditor;
 import by.training.exception.ConfigEditorException;
 import by.training.exception.JIconPanelException;
+import by.training.exception.JWidgetPanelException;
 import by.training.listener.OptionWindowButtonListener;
 
 public class JWidgetPanel extends JPanel {
@@ -49,9 +50,7 @@ public class JWidgetPanel extends JPanel {
     private JPanel            panelChart;
 
     public JWidgetPanel() {
-        super();
         init();
-
         chart = new Chart();
         dependency = new IconDependency();
     }
@@ -198,20 +197,28 @@ public class JWidgetPanel extends JPanel {
             return iconPanel;
         }
 
-        public void setIconPanel(final JIconPanel iconPanel)
-                throws ConfigEditorException, JIconPanelException {
+        public void setIconPanel(final JIconPanel iconPanel) throws JWidgetPanelException {
             if (iconPanel.setChart(chart)) {
                 if (this.iconPanel != null) {
                     this.iconPanel.removeDependency();
                 }
+
                 this.iconPanel = iconPanel;
-                this.iconPanel.setOptions();
+                try {
+                    this.iconPanel.setOptions();
+                } catch (JIconPanelException e) {
+                    throw new JWidgetPanelException(e.getMessage());
+                }
 
                 ((OptionWindowButtonListener) buttonOptions.getActionListeners()[0])
                         .setIconPanel(iconPanel);
-
                 setIndex();
-                ConfigEditor.updateConfig();
+
+                try {
+                    ConfigEditor.updateConfig();
+                } catch (ConfigEditorException e) {
+                    throw new JWidgetPanelException(e.getMessage());
+                }
             }
         }
 

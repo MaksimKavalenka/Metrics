@@ -17,11 +17,9 @@ public class TransportElement {
     private String address;
 
     public TransportElement() {
-        super();
     }
 
     public TransportElement(final Transport transport, final String address) {
-        super();
         this.transport = transport.ordinal();
         this.address = address;
     }

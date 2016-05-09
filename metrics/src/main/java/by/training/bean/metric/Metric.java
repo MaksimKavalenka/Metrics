@@ -8,11 +8,9 @@ public class Metric implements Comparable<Metric> {
     private double value;
 
     public Metric() {
-        super();
     }
 
     public Metric(final Date date, final double value) {
-        super();
         this.date = date;
         this.value = value;
     }
