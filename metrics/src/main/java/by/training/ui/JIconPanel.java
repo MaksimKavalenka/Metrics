@@ -1,8 +1,8 @@
 package by.training.ui;
 
 import static by.training.constants.AppDefaultConstants.DIMENSION;
-
 import static by.training.exception.JIconPanelException.*;
+import static by.training.exception.HTTPException.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import by.training.bean.element.OptionsElement;
-import by.training.bean.metric.Metric;
 import by.training.dragndrop.IconDragGestureListener;
 import by.training.exception.JIconPanelException;
 import by.training.exception.StorageException;
@@ -103,34 +102,25 @@ public class JIconPanel extends JPanel implements Runnable {
         active = true;
 
         while (active) {
-            try {
-                switch (options.getPeriodElement().getPeriod()) {
-                    case LAST_MINUTES_15:
-                    case LAST_MINUTES_30:
-                    case LAST_HOUR:
-                        Metric metric = storage.getLast();
-                        labelIconCurrentValue.setText(String.valueOf(metric.getValue()));
+            switch (storage.getStatus()) {
+                case HTTP_200:
+                    try {
+                        callStorage(String.valueOf(storage.getLast().getValue()));
+                    } catch (StorageException e) {
+                        e.printStackTrace();
+                    }
+                    break;
 
-                        if (chart != null) {
-                            chart.setText(String.valueOf(metric.getValue()));
-                            chart.refresh(storage.getList());
-                        }
-                        break;
+                case HTTP_503:
+                    callStorage(HTTP_503.getMessage());
+                    break;
 
-                    case CUSTOM:
-                        if (!setCustom) {
-                            setCustom = true;
-                            labelIconCurrentValue.setText(NO_VALUE);
-
-                            if (chart != null) {
-                                chart.setText(NO_VALUE);
-                                chart.refresh(storage.getList());
-                            }
-                        }
-                        break;
-                }
-            } catch (StorageException e) {
-                e.printStackTrace();
+                case HTTP_404:
+                    labelIconCurrentValue.setText(HTTP_404.getMessage());
+                    if (chart != null) {
+                        chart.setText(HTTP_404.getMessage());
+                    }
+                    break;
             }
 
             synchronized (this) {
@@ -140,6 +130,37 @@ public class JIconPanel extends JPanel implements Runnable {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void callStorage(final String message) {
+        try {
+            switch (options.getPeriodElement().getPeriod()) {
+                case LAST_MINUTES_15:
+                case LAST_MINUTES_30:
+                case LAST_HOUR:
+                    labelIconCurrentValue.setText(message);
+
+                    if (chart != null) {
+                        chart.setText(message);
+                        chart.refresh(storage.getList());
+                    }
+                    break;
+
+                case CUSTOM:
+                    if (!setCustom) {
+                        setCustom = true;
+                        labelIconCurrentValue.setText(NO_VALUE);
+
+                        if (chart != null) {
+                            chart.setText(NO_VALUE);
+                            chart.refresh(storage.getList());
+                        }
+                    }
+                    break;
+            }
+        } catch (StorageException e) {
+            e.printStackTrace();
         }
     }
 

@@ -110,6 +110,18 @@ public class ResourceIsNotAvailableWindow extends JDialog {
                 });
             }
             {
+                JButton buttonTryLater = new JButton("Try later");
+                buttonPane.add(buttonTryLater);
+                buttonTryLater.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(final ActionEvent event) {
+                        resourceAddress = "";
+                        dispose();
+                    }
+                });
+            }
+            {
                 JButton buttonLastSuccessful = new JButton("Set the last successful");
                 buttonLastSuccessful.setActionCommand("Set the last successful");
                 buttonPane.add(buttonLastSuccessful);
@@ -121,6 +133,10 @@ public class ResourceIsNotAvailableWindow extends JDialog {
                         dispose();
                     }
                 });
+
+                if ("".equals(successfulAddress)) {
+                    buttonLastSuccessful.setEnabled(false);
+                }
             }
         }
     }

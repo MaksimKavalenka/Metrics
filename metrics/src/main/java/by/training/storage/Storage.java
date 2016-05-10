@@ -1,6 +1,7 @@
 package by.training.storage;
 
 import static by.training.exception.StorageException.*;
+import static by.training.exception.HTTPException.*;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import by.training.bean.set.BoundedTreeSet;
 import by.training.dao.TransportDAO;
 import by.training.editor.ConfigEditor;
 import by.training.exception.ConfigEditorException;
+import by.training.exception.HTTPException;
 import by.training.exception.StorageException;
 import by.training.window.ResourceIsNotAvailableWindow;
 
@@ -35,11 +37,13 @@ public class Storage implements Runnable {
 
     public Storage(final OptionsElement options) throws StorageException {
         this.options = options;
-        transportElement = new TransportElement(options.getTransportElement().getTransport(),
-                options.getTransportElement().getAddress());
-        metricType = options.getMetricTypeElement().getMetricType();
-        dao = options.getTransportElement().createDAO();
         storage = new BoundedTreeSet<>(MAX_COUNT);
+
+        transportElement = new TransportElement(options.getTransportElement().getTransport(), "");
+        metricType = options.getMetricTypeElement().getMetricType();
+
+        dao = options.getTransportElement().createDAO();
+        checkExist();
         getList();
     }
 
@@ -75,63 +79,72 @@ public class Storage implements Runnable {
 
     public void refresh() throws StorageException {
         boolean change = false;
-        MetricType metricType = options.getMetricTypeElement().getMetricType();
-        TransportElement transportElement = options.getTransportElement();
 
-        if (this.transportElement.getTransport() != transportElement.getTransport()) {
+        if (transportElement.getTransport() != options.getTransportElement().getTransport()) {
             synchronized (dao) {
                 dao.close();
-                dao = transportElement.createDAO();
+                dao = options.getTransportElement().createDAO();
+                checkExist();
             }
-            this.transportElement.setTransport(transportElement.getTransport());
+            transportElement.setTransport(options.getTransportElement().getTransport());
             change = true;
-
-            synchronized (this) {
-                notify();
-            }
         }
 
-        if (!change && !this.transportElement.getAddress().equals(transportElement.getAddress())) {
+        if (!change && !transportElement.getAddress()
+                .equals(options.getTransportElement().getAddress())) {
             synchronized (dao) {
-                while (!dao.setAddress(transportElement.getAddress())) {
-                    ResourceIsNotAvailableWindow.createDialog(transportElement.getAddress(),
-                            this.transportElement.getAddress());
-                    transportElement.setAddress(ResourceIsNotAvailableWindow.getAddress());
-                }
-            }
-            this.transportElement.setAddress(transportElement.getAddress());
-
-            try {
-                ConfigEditor.updateConfig();
-            } catch (ConfigEditorException e) {
-                throw new StorageException(e.getMessage());
-            }
-
-            synchronized (this) {
-                notify();
+                dao.setAddress(options.getTransportElement().getAddress());
+                checkExist();
             }
         }
 
-        if (this.metricType != metricType) {
+        if (metricType != options.getMetricTypeElement().getMetricType()) {
             synchronized (storage) {
                 storage.clear();
+                metricType = options.getMetricTypeElement().getMetricType();
             }
-            this.metricType = metricType;
-            loadAfter(getLast().getDate());
+            getList();
+        }
 
-            synchronized (this) {
-                notify();
+        synchronized (this) {
+            notify();
+        }
+    }
+
+    private void checkExist() throws StorageException {
+        boolean later = false;
+
+        while ((dao.getStatus() == HTTP_404) && !later) {
+            ResourceIsNotAvailableWindow.createDialog(options.getTransportElement().getAddress(),
+                    transportElement.getAddress());
+            if ("".equals(ResourceIsNotAvailableWindow.getAddress())) {
+                later = true;
+            } else {
+                options.getTransportElement().setAddress(ResourceIsNotAvailableWindow.getAddress());
+                dao.setAddress(options.getTransportElement().getAddress());
             }
+        }
+
+        if (dao.getStatus() != HTTP_404) {
+            transportElement.setAddress(options.getTransportElement().getAddress());
+        }
+
+        try {
+            ConfigEditor.updateConfig();
+        } catch (ConfigEditorException e) {
+            throw new StorageException(e.getMessage());
         }
     }
 
     private void checkAndLoad(final Date from) throws StorageException {
-        if (storage.isEmpty()) {
-            loadAfter(from);
-        } else if (storage.first().getDate().compareTo(from) > 0) {
-            loadBefore(from);
-        } else {
-            loadAfter(from);
+        if (dao.getStatus() != HTTP_404) {
+            if (storage.isEmpty()) {
+                loadAfter(from);
+            } else if (storage.first().getDate().compareTo(from) > 0) {
+                loadBefore(from);
+            } else {
+                loadAfter(from);
+            }
         }
     }
 
@@ -163,6 +176,10 @@ public class Storage implements Runnable {
         synchronized (storage) {
             storage.addAll(list);
         }
+    }
+
+    public HTTPException getStatus() {
+        return dao.getStatus();
     }
 
     public void deactivate() {

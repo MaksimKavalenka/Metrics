@@ -7,6 +7,7 @@ import org.codehaus.jettison.json.JSONException;
 
 import by.training.bean.metric.Metric;
 import by.training.bean.options.MetricType;
+import by.training.exception.HTTPException;
 
 public interface TransportDAO {
 
@@ -14,7 +15,9 @@ public interface TransportDAO {
 
     List<Metric> getList(MetricType typeMetric, Date from, Date to) throws JSONException;
 
-    boolean setAddress(String address);
+    void setAddress(String address);
+
+    HTTPException getStatus();
 
     void close();
 
