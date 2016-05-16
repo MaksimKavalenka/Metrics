@@ -13,7 +13,7 @@ import by.training.options.Period;
 import by.training.options.RefreshInterval;
 import by.training.options.Transport;
 
-public class ConfigDefaultConstants {
+public abstract class ConfigDefaultConstants {
 
     public static final int             MIN_ACTIVE       = 1;
     public static final int             AVG_ACTIVE       = 2;

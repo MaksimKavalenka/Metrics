@@ -1,8 +1,8 @@
 package by.training.transport.soap;
 
+import static by.training.constants.StubConstants.*;
 import static by.training.exception.HTTPException.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,25 +20,28 @@ import by.training.transport.soap.wsdl.SOAPWebServiceInterface;
 
 public class SOAPTransport implements TransportDAO {
 
-    private static final List<Metric> DEFAULT = new ArrayList<>(0);
-    private static final String       WSDL    = "?wsdl";
+    private static final String     WSDL   = "?wsdl";
 
-    private Object                    block;
-    private HTTPException             status;
-    private SOAPTransportService      transportService;
-    private SOAPWebServiceInterface   serviceInterface;
+    private HTTPException           status = HTTP_404;
+
+    private SOAPTransportService    transportService;
+    private SOAPWebServiceInterface serviceInterface;
 
     public SOAPTransport(final ParametersElement parameters) {
-        block = new Object();
         setParameters(parameters);
     }
 
     @Override
     public Metric getLast(final MetricType typeMetric) {
-        Metric metric;
+        Metric metric = DEFAULT_VALUE;
 
-        synchronized (block) {
-            metric = serviceInterface.getLast(typeMetric.name());
+        try {
+            synchronized (this) {
+                metric = serviceInterface.getLast(typeMetric.name());
+            }
+            status = HTTP_200;
+        } catch (WebServiceException e) {
+            status = HTTP_503;
         }
 
         return metric;
@@ -46,14 +49,15 @@ public class SOAPTransport implements TransportDAO {
 
     @Override
     public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to) {
-        List<Metric> list;
+        List<Metric> list = DEFAULT_LIST;
 
-        synchronized (block) {
-            try {
+        try {
+            synchronized (this) {
                 list = Arrays.asList(serviceInterface.getList(typeMetric.name(), from, to));
-            } catch (WebServiceException e) {
-                list = DEFAULT;
             }
+            status = HTTP_200;
+        } catch (WebServiceException e) {
+            status = HTTP_503;
         }
 
         return list;
@@ -64,7 +68,7 @@ public class SOAPTransport implements TransportDAO {
         try {
             transportService = new SOAPTransportService(
                     TransportEditor.getURL(parameters.getAddress() + WSDL));
-            synchronized (block) {
+            synchronized (this) {
                 serviceInterface = transportService.getSOAPTransportPort();
             }
             status = HTTP_200;

@@ -1,5 +1,6 @@
 package by.training.transport.rmi;
 
+import static by.training.constants.StubConstants.*;
 import static by.training.exception.HTTPException.*;
 
 import java.rmi.NotBoundException;
@@ -9,8 +10,6 @@ import java.rmi.registry.Registry;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
 import by.training.dao.TransportDAO;
@@ -19,6 +18,8 @@ import by.training.options.MetricType;
 
 public class RMITransport implements TransportDAO {
 
+    private HTTPException          status = HTTP_404;
+
     private RMIWebServiceInterface service;
 
     public RMITransport(final ParametersElement parameters) {
@@ -26,26 +27,40 @@ public class RMITransport implements TransportDAO {
     }
 
     @Override
-    public Metric getLast(final MetricType metricType) throws JSONException {
-        Metric metric = null;
+    public Metric getLast(final MetricType metricType) {
+        Metric metric = DEFAULT_VALUE;
+
         try {
-            metric = service.getLast(metricType.name());
+            synchronized (this) {
+                try {
+                    metric = service.getLast(metricType.name());
+                } catch (NullPointerException e) {
+                    status = HTTP_404;
+                }
+            }
+            status = HTTP_200;
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            status = HTTP_503;
         }
+
         return metric;
     }
 
     @Override
-    public List<Metric> getList(final MetricType metricType, final Date from, final Date to)
-            throws JSONException {
-        List<Metric> list = null;
+    public List<Metric> getList(final MetricType metricType, final Date from, final Date to) {
+        List<Metric> list = DEFAULT_LIST;
+
         try {
-            list = service.getList(metricType.name(), from, to);
+            synchronized (this) {
+                try {
+                    list = service.getList(metricType.name(), from, to);
+                } catch (NullPointerException e) {
+                    status = HTTP_404;
+                }
+            }
+            status = HTTP_200;
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            status = HTTP_503;
         }
 
         return list;
@@ -56,21 +71,22 @@ public class RMITransport implements TransportDAO {
         try {
             Registry registry = LocateRegistry.getRegistry(parameters.getHost(),
                     Integer.parseInt(parameters.getPort()));
-            service = (RMIWebServiceInterface) registry.lookup(parameters.getName());
-        } catch (RemoteException | NotBoundException e) {
-            e.printStackTrace();
+            synchronized (this) {
+                service = (RMIWebServiceInterface) registry.lookup(parameters.getName());
+            }
+            status = HTTP_200;
+        } catch (RemoteException | NotBoundException | IllegalArgumentException e) {
+            status = HTTP_404;
         }
     }
 
     @Override
     public HTTPException getStatus() {
-        return HTTP_200;
+        return status;
     }
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-
     }
 
 }

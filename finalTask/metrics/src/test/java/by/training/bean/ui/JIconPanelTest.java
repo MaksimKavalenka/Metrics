@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
-import by.training.exception.JIconPanelException;
 import by.training.ui.JIconPanel;
 
 public class JIconPanelTest {
@@ -18,7 +17,7 @@ public class JIconPanelTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSetOptions() throws JIconPanelException {
+    public void testSetOptions() {
         JIconPanel mockPanel = mock(JIconPanel.class);
         doThrow(NullPointerException.class).when(mockPanel).titleChanged();
 

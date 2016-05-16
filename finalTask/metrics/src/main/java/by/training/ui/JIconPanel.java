@@ -17,8 +17,6 @@ import by.training.bean.element.OptionsElement;
 import by.training.bean.element.PeriodElement;
 import by.training.bean.element.TransportElement;
 import by.training.dragndrop.IconDragGestureListener;
-import by.training.exception.JIconPanelException;
-import by.training.exception.StorageException;
 import by.training.listener.OptionListener;
 import by.training.listener.OptionWindowMouseListener;
 import by.training.options.MetricType;
@@ -45,7 +43,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
     private boolean             active;
     private boolean             setCustom;
 
-    public JIconPanel(final OptionsElement options) throws JIconPanelException {
+    public JIconPanel(final OptionsElement options) {
         create();
         this.options = options;
         storage = new Storage(options.getMetricTypeElement().getMetricType());
@@ -98,11 +96,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
         while (active) {
             switch (storage.getStatus()) {
                 case HTTP_200:
-                    try {
-                        callStorage(String.valueOf(storage.getLast().getValue()));
-                    } catch (StorageException e) {
-                        e.printStackTrace();
-                    }
+                    callStorage(String.valueOf(storage.getLast().getValue()));
                     break;
 
                 case HTTP_503:
@@ -128,36 +122,32 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
     }
 
     private void callStorage(final String message) {
-        try {
-            PeriodElement periodElement = options.getPeriodElement();
+        PeriodElement periodElement = options.getPeriodElement();
 
-            switch (periodElement.getPeriod()) {
-                case LAST_MINUTES_15:
-                case LAST_MINUTES_30:
-                case LAST_HOUR:
-                    labelIconCurrentValue.setText(message);
+        switch (periodElement.getPeriod()) {
+            case LAST_MINUTES_15:
+            case LAST_MINUTES_30:
+            case LAST_HOUR:
+                labelIconCurrentValue.setText(message);
+
+                if (chart != null) {
+                    chart.setText(message);
+                    chart.refresh(storage.getList(periodElement.getPeriod().getDate()));
+                }
+                break;
+
+            case CUSTOM:
+                if (!setCustom) {
+                    setCustom = true;
+                    labelIconCurrentValue.setText(NO_VALUE);
 
                     if (chart != null) {
-                        chart.setText(message);
-                        chart.refresh(storage.getList(periodElement.getPeriod().getDate()));
+                        chart.setText(NO_VALUE);
+                        chart.refresh(
+                                storage.getList(periodElement.getFrom(), periodElement.getTo()));
                     }
-                    break;
-
-                case CUSTOM:
-                    if (!setCustom) {
-                        setCustom = true;
-                        labelIconCurrentValue.setText(NO_VALUE);
-
-                        if (chart != null) {
-                            chart.setText(NO_VALUE);
-                            chart.refresh(storage.getList(periodElement.getFrom(),
-                                    periodElement.getTo()));
-                        }
-                    }
-                    break;
-            }
-        } catch (StorageException e) {
-            e.printStackTrace();
+                }
+                break;
         }
     }
 

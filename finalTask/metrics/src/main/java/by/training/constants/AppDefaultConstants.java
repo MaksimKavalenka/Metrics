@@ -11,7 +11,7 @@ import by.training.options.Period;
 import by.training.options.RefreshInterval;
 import by.training.options.Transport;
 
-public class AppDefaultConstants {
+public abstract class AppDefaultConstants {
 
     public static final Dimension    DIMENSION             = new Dimension(100, 53);
 

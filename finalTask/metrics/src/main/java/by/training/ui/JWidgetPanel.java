@@ -28,7 +28,6 @@ import org.jfree.data.xy.XYDataset;
 import by.training.bean.metric.Metric;
 import by.training.editor.ConfigEditor;
 import by.training.exception.ConfigEditorException;
-import by.training.exception.JWidgetPanelException;
 import by.training.listener.OptionWindowButtonListener;
 
 public class JWidgetPanel extends JPanel {
@@ -199,7 +198,7 @@ public class JWidgetPanel extends JPanel {
             return iconPanel;
         }
 
-        public void setIconPanel(final JIconPanel iconPanel) throws JWidgetPanelException {
+        public void setIconPanel(final JIconPanel iconPanel) throws ConfigEditorException {
             if (iconPanel.setChart(chart)) {
                 if (this.iconPanel != null) {
                     this.iconPanel.removeDependency();
@@ -212,12 +211,7 @@ public class JWidgetPanel extends JPanel {
                 ((OptionWindowButtonListener) buttonOptions.getActionListeners()[0])
                         .setIconPanel(iconPanel);
                 setIndex();
-
-                try {
-                    ConfigEditor.updateConfig();
-                } catch (ConfigEditorException e) {
-                    throw new JWidgetPanelException(e.getMessage());
-                }
+                ConfigEditor.updateConfig();
             }
         }
 

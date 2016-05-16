@@ -1,8 +1,8 @@
 package by.training.transport.rest;
 
+import static by.training.constants.StubConstants.*;
 import static by.training.exception.HTTPException.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,43 +29,57 @@ import by.training.parser.JSONParser;
 
 public class RESTTransport implements TransportDAO {
 
-    private static final List<Metric> DEFAULT = new ArrayList<>(0);
+    private HTTPException status = HTTP_404;
 
-    private Object                    block;
-    private HTTPException             status;
-    private Client                    client;
-    private WebTarget                 service;
+    private Client        client;
+    private WebTarget     service;
 
     public RESTTransport(final ParametersElement parameters) {
-        block = new Object();
         client = ClientBuilder.newClient(new ClientConfig());
         setParameters(parameters);
     }
 
     @Override
-    public Metric getLast(final MetricType typeMetric) throws JSONException {
+    public Metric getLast(final MetricType typeMetric) {
+        Metric metric = DEFAULT_VALUE;
         String str;
-        synchronized (block) {
-            str = service.path(typeMetric.name()).request().accept(MediaType.APPLICATION_JSON)
-                    .get(String.class);
+
+        try {
+            synchronized (this) {
+                str = service.path(typeMetric.name()).request().accept(MediaType.APPLICATION_JSON)
+                        .get(String.class);
+            }
+            try {
+                metric = JSONParser.parseLineJSON(str);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            status = HTTP_200;
+        } catch (ProcessingException | ServiceUnavailableException e) {
+            status = HTTP_503;
         }
-        return JSONParser.parseLineJSON(str);
+
+        return metric;
     }
 
     @Override
-    public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to)
-            throws JSONException {
-        List<Metric> list = DEFAULT;
+    public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to) {
+        String str = "";
+        List<Metric> list = DEFAULT_LIST;
 
-        synchronized (block) {
-            try {
-                String str = service
-                        .path(typeMetric.name() + "/" + from.getTime() + "_" + to.getTime())
+        try {
+            synchronized (this) {
+                str = service.path(typeMetric.name() + "/" + from.getTime() + "_" + to.getTime())
                         .request().accept(MediaType.APPLICATION_JSON).get(String.class);
-                list = JSONParser.parseArrayJSON(str);
-            } catch (ProcessingException | ServiceUnavailableException e) {
-                status = HTTP_503;
             }
+            try {
+                list = JSONParser.parseArrayJSON(str);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            status = HTTP_200;
+        } catch (ProcessingException | ServiceUnavailableException e) {
+            status = HTTP_503;
         }
 
         return list;
@@ -73,7 +87,7 @@ public class RESTTransport implements TransportDAO {
 
     @Override
     public void setParameters(final ParametersElement parameters) {
-        synchronized (block) {
+        synchronized (this) {
             service = client.target(TransportEditor.getBaseURI(parameters.getAddress()));
         }
 

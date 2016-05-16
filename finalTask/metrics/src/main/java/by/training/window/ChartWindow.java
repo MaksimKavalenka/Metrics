@@ -23,7 +23,7 @@ import javax.swing.border.MatteBorder;
 
 import by.training.editor.ConfigEditor;
 import by.training.editor.JPanelEditor;
-import by.training.exception.JPanelEditorException;
+import by.training.exception.ConfigEditorException;
 import by.training.listener.ChartWidgetButtonListener;
 import by.training.ui.JWidgetPanel;
 
@@ -59,7 +59,7 @@ public class ChartWindow extends JFrame {
         });
     }
 
-    private ChartWindow() throws JPanelEditorException {
+    private ChartWindow() throws ConfigEditorException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1400, 950);
         JPanel contentPane = new JPanel();
