@@ -55,6 +55,5 @@
     <xsd:attribute name="address" type="xsd:string" use="optional" />
     <xsd:attribute name="host" type="xsd:string" use="optional" />
     <xsd:attribute name="port" type="xsd:int" use="optional" />
-    <xsd:attribute name="name" type="xsd:string" use="optional" />
   </xsd:complexType>
 </xsd:schema>

@@ -9,44 +9,44 @@ public class ConcurrentBoundedSkipListSet<E> extends ConcurrentSkipListSet<E> {
 
     private static final long serialVersionUID = 7653681659363720608L;
 
-    private int               maxSize          = Integer.MAX_VALUE;
+    private long              maxSize          = Long.MAX_VALUE;
 
     public ConcurrentBoundedSkipListSet() {
         super();
     }
 
-    public ConcurrentBoundedSkipListSet(final int maxSize) {
+    public ConcurrentBoundedSkipListSet(final long maxSize) {
         super();
         setMaxSize(maxSize);
     }
 
-    public ConcurrentBoundedSkipListSet(final int maxSize, final Collection<? extends E> c) {
+    public ConcurrentBoundedSkipListSet(final long maxSize, final Collection<? extends E> c) {
         super(c);
         setMaxSize(maxSize);
     }
 
-    public ConcurrentBoundedSkipListSet(final int maxSize, final Comparator<? super E> c) {
+    public ConcurrentBoundedSkipListSet(final long maxSize, final Comparator<? super E> c) {
         super(c);
         setMaxSize(maxSize);
     }
 
-    public ConcurrentBoundedSkipListSet(final int maxSize, final SortedSet<E> s) {
+    public ConcurrentBoundedSkipListSet(final long maxSize, final SortedSet<E> s) {
         super(s);
         setMaxSize(maxSize);
     }
 
-    public int getMaxSize() {
+    public long getMaxSize() {
         return maxSize;
     }
 
-    public void setMaxSize(final int max) {
+    public void setMaxSize(final long max) {
         maxSize = max;
         adjust();
     }
 
-    private void adjust() {
+    private synchronized void adjust() {
         while (maxSize < size()) {
-            remove(first());
+            pollFirst();
         }
     }
 

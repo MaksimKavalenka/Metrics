@@ -15,7 +15,7 @@ import by.training.storage.StorageMXBean;
 
 public class RMITransport implements RMIWebServiceInterface {
 
-    public static void registry() throws RemoteException, AlreadyBoundException {
+    public static void publish() throws RemoteException, AlreadyBoundException {
         final Registry registry = LocateRegistry.createRegistry(8082);
         final RMIWebServiceInterface service = new RMITransport();
         final Remote stub = UnicastRemoteObject.exportObject(service, 0);

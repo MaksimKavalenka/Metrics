@@ -72,7 +72,7 @@ public class RMITransport implements TransportDAO {
             Registry registry = LocateRegistry.getRegistry(parameters.getHost(),
                     Integer.parseInt(parameters.getPort()));
             synchronized (this) {
-                service = (RMIWebServiceInterface) registry.lookup(parameters.getName());
+                service = (RMIWebServiceInterface) registry.lookup("metrics/rmi");
             }
             status = HTTP_200;
         } catch (RemoteException | NotBoundException | IllegalArgumentException e) {

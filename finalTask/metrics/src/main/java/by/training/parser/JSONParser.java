@@ -27,8 +27,8 @@ public class JSONParser {
         JSONArray arr = new JSONArray(str);
 
         for (int i = 0; i < arr.length(); i++) {
-            Metric storage = parseLineJSON(arr.getString(i));
-            list.add(storage);
+            Metric metric = parseLineJSON(arr.getString(i));
+            list.add(metric);
         }
 
         return list;

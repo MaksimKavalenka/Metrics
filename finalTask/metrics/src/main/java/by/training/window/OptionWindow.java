@@ -69,8 +69,6 @@ public class OptionWindow extends JDialog {
     private JTextField          textFieldHost;
     private JLabel              labelPort;
     private JFormattedTextField textFieldPort;
-    private JLabel              labelName;
-    private JTextField          textFieldName;
 
     {
         save = false;
@@ -103,10 +101,10 @@ public class OptionWindow extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.NORTH);
         GridBagLayout gbl_contentPanel = new GridBagLayout();
         gbl_contentPanel.columnWidths = new int[] {0, 0, 0, 0};
-        gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_contentPanel.columnWeights = new double[] {0.0, 1.0, 0.0, Double.MIN_VALUE};
         gbl_contentPanel.rowWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, Double.MIN_VALUE};
+                Double.MIN_VALUE};
         contentPanel.setLayout(gbl_contentPanel);
         {
             JLabel labelTitle = new JLabel("Title");
@@ -211,7 +209,7 @@ public class OptionWindow extends JDialog {
         {
             JButton buttonSetDefaultAddress = new JButton("Default");
             GridBagConstraints gbc_buttonSetDefaultAddress = new GridBagConstraints();
-            gbc_buttonSetDefaultAddress.gridheight = 4;
+            gbc_buttonSetDefaultAddress.gridheight = 3;
             gbc_buttonSetDefaultAddress.insets = new Insets(0, 0, 5, 0);
             gbc_buttonSetDefaultAddress.gridx = 2;
             gbc_buttonSetDefaultAddress.gridy = 4;
@@ -268,33 +266,13 @@ public class OptionWindow extends JDialog {
             textFieldPort.setColumns(10);
         }
         {
-            labelName = new JLabel("Name");
-            GridBagConstraints gbc_labelName = new GridBagConstraints();
-            gbc_labelName.fill = GridBagConstraints.VERTICAL;
-            gbc_labelName.insets = new Insets(0, 0, 5, 5);
-            gbc_labelName.anchor = GridBagConstraints.EAST;
-            gbc_labelName.gridx = 0;
-            gbc_labelName.gridy = 7;
-            contentPanel.add(labelName, gbc_labelName);
-        }
-        {
-            textFieldName = new JTextField();
-            GridBagConstraints gbc_textFieldName = new GridBagConstraints();
-            gbc_textFieldName.insets = new Insets(0, 0, 5, 5);
-            gbc_textFieldName.fill = GridBagConstraints.BOTH;
-            gbc_textFieldName.gridx = 1;
-            gbc_textFieldName.gridy = 7;
-            contentPanel.add(textFieldName, gbc_textFieldName);
-            textFieldName.setColumns(10);
-        }
-        {
             JLabel labelPeriod = new JLabel("Period");
             GridBagConstraints gbc_labelPeriod = new GridBagConstraints();
             gbc_labelPeriod.fill = GridBagConstraints.VERTICAL;
             gbc_labelPeriod.anchor = GridBagConstraints.EAST;
             gbc_labelPeriod.insets = new Insets(0, 0, 5, 5);
             gbc_labelPeriod.gridx = 0;
-            gbc_labelPeriod.gridy = 8;
+            gbc_labelPeriod.gridy = 7;
             contentPanel.add(labelPeriod, gbc_labelPeriod);
         }
         {
@@ -303,7 +281,7 @@ public class OptionWindow extends JDialog {
             gbc_comboBoxPeriod.insets = new Insets(0, 0, 5, 5);
             gbc_comboBoxPeriod.fill = GridBagConstraints.BOTH;
             gbc_comboBoxPeriod.gridx = 1;
-            gbc_comboBoxPeriod.gridy = 8;
+            gbc_comboBoxPeriod.gridy = 7;
             contentPanel.add(comboBoxPeriod, gbc_comboBoxPeriod);
             comboBoxPeriod.addItemListener(new ItemListener() {
                 @Override
@@ -323,7 +301,7 @@ public class OptionWindow extends JDialog {
             gbc_buttonCalendar.fill = GridBagConstraints.VERTICAL;
             gbc_buttonCalendar.insets = new Insets(0, 0, 5, 0);
             gbc_buttonCalendar.gridx = 2;
-            gbc_buttonCalendar.gridy = 8;
+            gbc_buttonCalendar.gridy = 7;
             contentPanel.add(buttonCalendar, gbc_buttonCalendar);
             buttonCalendar.addActionListener(new ActionListener() {
                 @Override
@@ -339,7 +317,7 @@ public class OptionWindow extends JDialog {
             gbc_labelRefreshInterval.anchor = GridBagConstraints.EAST;
             gbc_labelRefreshInterval.insets = new Insets(0, 0, 0, 5);
             gbc_labelRefreshInterval.gridx = 0;
-            gbc_labelRefreshInterval.gridy = 9;
+            gbc_labelRefreshInterval.gridy = 8;
             contentPanel.add(labelRefreshInterval, gbc_labelRefreshInterval);
         }
         {
@@ -349,7 +327,7 @@ public class OptionWindow extends JDialog {
             gbc_comboBoxRefreshInterval.insets = new Insets(0, 0, 0, 5);
             gbc_comboBoxRefreshInterval.fill = GridBagConstraints.BOTH;
             gbc_comboBoxRefreshInterval.gridx = 1;
-            gbc_comboBoxRefreshInterval.gridy = 9;
+            gbc_comboBoxRefreshInterval.gridy = 8;
             contentPanel.add(comboBoxRefreshInterval, gbc_comboBoxRefreshInterval);
         }
         {
@@ -432,6 +410,7 @@ public class OptionWindow extends JDialog {
                 setVisibilities(true, false, false, false);
                 break;
             case RMI:
+            case JMX:
                 setVisibilities(false, true, true, true);
                 break;
         }
@@ -445,8 +424,6 @@ public class OptionWindow extends JDialog {
         textFieldHost.setVisible(hostField);
         labelPort.setVisible(portField);
         textFieldPort.setVisible(portField);
-        labelName.setVisible(nameField);
-        textFieldName.setVisible(nameField);
     }
 
     private void initParameterFields(final ParametersElement parameters) {
@@ -462,6 +439,7 @@ public class OptionWindow extends JDialog {
                 break;
 
             case RMI:
+            case JMX:
                 if (parameters.getHost() != null) {
                     textFieldHost.setText(parameters.getHost());
                 } else {
@@ -472,12 +450,6 @@ public class OptionWindow extends JDialog {
                     textFieldPort.setText(parameters.getPort());
                 } else {
                     textFieldPort.setText(transport.getDefaultParameters().getPort());
-                }
-
-                if (parameters.getName() != null) {
-                    textFieldName.setText(parameters.getName());
-                } else {
-                    textFieldName.setText(transport.getDefaultParameters().getName());
                 }
                 break;
         }
@@ -526,22 +498,21 @@ public class OptionWindow extends JDialog {
 
                 if (!address.equals(transportElement.getParameters().getAddress())) {
                     listener.getOptions().getTransportElement().getParameters()
-                            .setParameters(address, null, null, null);
+                            .setParameters(address, null, null);
                     pChanged = true;
                 }
 
                 break;
 
             case RMI:
+            case JMX:
                 String host = textFieldHost.getText();
                 String port = textFieldPort.getText();
-                String name = textFieldName.getText();
 
                 if (!host.equals(transportElement.getParameters().getHost())
-                        || !port.equals(transportElement.getParameters().getPort())
-                        || !name.equals(transportElement.getParameters().getName())) {
+                        || !port.equals(transportElement.getParameters().getPort())) {
                     listener.getOptions().getTransportElement().getParameters().setParameters(null,
-                            host, port, name);
+                            host, port);
                     pChanged = true;
                 }
                 break;
