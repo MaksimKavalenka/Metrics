@@ -12,7 +12,6 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.ServiceUnavailableException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
@@ -57,6 +56,8 @@ public class RESTTransport implements TransportDAO {
             status = HTTP_200;
         } catch (ProcessingException | ServiceUnavailableException e) {
             status = HTTP_503;
+        } catch (NotFoundException e) {
+            status = HTTP_404;
         }
 
         return metric;
@@ -80,6 +81,8 @@ public class RESTTransport implements TransportDAO {
             status = HTTP_200;
         } catch (ProcessingException | ServiceUnavailableException e) {
             status = HTTP_503;
+        } catch (NotFoundException e) {
+            status = HTTP_404;
         }
 
         return list;
@@ -95,7 +98,7 @@ public class RESTTransport implements TransportDAO {
             service.path("").request().get(Object.class);
         } catch (NotAllowedException e) {
             status = HTTP_200;
-        } catch (ResponseProcessingException | NotFoundException e) {
+        } catch (ProcessingException | NotFoundException e) {
             status = HTTP_404;
         }
     }

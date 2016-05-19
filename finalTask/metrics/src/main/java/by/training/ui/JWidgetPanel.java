@@ -8,7 +8,7 @@ import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.NavigableSet;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -33,8 +33,6 @@ import by.training.listener.OptionWindowButtonListener;
 public class JWidgetPanel extends JPanel {
 
     private static final long serialVersionUID = 8939398023502921495L;
-
-    private static final int  MAX_COLUMNS      = 10;
 
     private static int        count            = 0;
 
@@ -109,6 +107,8 @@ public class JWidgetPanel extends JPanel {
         private XYPlot     plot;
         private JFreeChart chart;
 
+        private Date       lastDate;
+
         public Chart() {
             init();
         }
@@ -131,8 +131,12 @@ public class JWidgetPanel extends JPanel {
 
         private XYDataset createSeries() {
             series = new TimeSeries("");
-            series.setMaximumItemCount(MAX_COLUMNS);
+            series.setMaximumItemAge(Long.MAX_VALUE);
             return new TimeSeriesCollection(series);
+        }
+
+        public void setText(final String text) {
+            labelCurrentValue.setText(text);
         }
 
         public void setTitle(final String title) {
@@ -143,48 +147,30 @@ public class JWidgetPanel extends JPanel {
             plot.getRangeAxis().setLabel(unit);
         }
 
-        public void setText(final String text) {
-            labelCurrentValue.setText(text);
+        public void setPeriod(final long period) {
+            series.setMaximumItemAge(period);
         }
 
-        public synchronized void refresh(final NavigableSet<Metric> set) {
+        public void clear() {
+            lastDate = null;
             series.clear();
+        }
+
+        public Date getLastDate() {
+            return lastDate;
+        }
+
+        public synchronized void refresh(final Set<Metric> set) {
+            Metric metric = null;
 
             Iterator<Metric> iterator = set.iterator();
-            if (set.size() > MAX_COLUMNS) {
-                int part = (int) Math.ceil((double) set.size() / MAX_COLUMNS);
-
-                if ((set.size() % MAX_COLUMNS) != 0) {
-                    calcAverage(iterator, 0, set.size() % MAX_COLUMNS, part);
-                    --part;
-                }
-                calcAverage(iterator, set.size() % MAX_COLUMNS, MAX_COLUMNS, part);
-            } else {
-                for (int i = 0; i < set.size(); i++) {
-                    Metric metric = iterator.next();
-                    series.addOrUpdate(new Second(metric.getDate()), metric.getValue());
-                }
+            while (iterator.hasNext()) {
+                metric = iterator.next();
+                series.addOrUpdate(new Second(metric.getDate()), metric.getValue());
             }
-        }
 
-        private void calcAverage(final Iterator<Metric> iterator, final int startIndex,
-                final int endIndex, final int part) {
-            long avgDate = 0;
-            double avgValue = 0;
-
-            for (int i = startIndex; i < endIndex; i++) {
-                avgDate = 0;
-                avgValue = 0;
-
-                for (int j = 0; j < part; j++) {
-                    Metric store = iterator.next();
-                    avgDate += store.getDate().getTime();
-                    avgValue += store.getValue();
-                }
-                avgDate /= part;
-                avgValue /= part;
-
-                series.addOrUpdate(new Second(new Date(avgDate)), avgValue);
+            if (metric != null) {
+                lastDate = metric.getDate();
             }
         }
 
@@ -207,6 +193,7 @@ public class JWidgetPanel extends JPanel {
                 this.iconPanel = iconPanel;
                 this.iconPanel.titleChanged();
                 this.iconPanel.metricTypeChanged();
+                this.iconPanel.periodChanged();
 
                 ((OptionWindowButtonListener) buttonOptions.getActionListeners()[0])
                         .setIconPanel(iconPanel);

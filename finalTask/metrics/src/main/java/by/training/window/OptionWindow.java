@@ -488,8 +488,8 @@ public class OptionWindow extends JDialog {
         TransportElement transportElement = listener.getOptions().getTransportElement();
         Transport transport = Transport.values()[comboBoxTransport.getSelectedIndex()];
 
-        boolean pChanged = false;
         boolean changed = false;
+        boolean tChanged = false;
 
         switch (transport) {
             case REST:
@@ -499,7 +499,7 @@ public class OptionWindow extends JDialog {
                 if (!address.equals(transportElement.getParameters().getAddress())) {
                     listener.getOptions().getTransportElement().getParameters()
                             .setParameters(address, null, null);
-                    pChanged = true;
+                    changed = true;
                 }
 
                 break;
@@ -513,7 +513,7 @@ public class OptionWindow extends JDialog {
                         || !port.equals(transportElement.getParameters().getPort())) {
                     listener.getOptions().getTransportElement().getParameters().setParameters(null,
                             host, port);
-                    pChanged = true;
+                    changed = true;
                 }
                 break;
         }
@@ -521,10 +521,10 @@ public class OptionWindow extends JDialog {
         if (transportElement.getTransport() != transport) {
             listener.getOptions().getTransportElement().setTransport(transport);
             listener.transportChanged();
-            changed = true;
+            tChanged = true;
         }
 
-        if (pChanged) {
+        if (!tChanged) {
             listener.parametersChanged(changed);
         }
     }

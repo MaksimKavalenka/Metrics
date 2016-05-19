@@ -32,15 +32,13 @@ public class RMITransport implements TransportDAO {
 
         try {
             synchronized (this) {
-                try {
-                    metric = service.getLast(metricType.name());
-                } catch (NullPointerException e) {
-                    status = HTTP_404;
-                }
+                metric = service.getLast(metricType.name());
             }
             status = HTTP_200;
         } catch (RemoteException e) {
             status = HTTP_503;
+        } catch (NullPointerException e) {
+            status = HTTP_404;
         }
 
         return metric;
@@ -52,15 +50,13 @@ public class RMITransport implements TransportDAO {
 
         try {
             synchronized (this) {
-                try {
-                    list = service.getList(metricType.name(), from, to);
-                } catch (NullPointerException e) {
-                    status = HTTP_404;
-                }
+                list = service.getList(metricType.name(), from, to);
             }
             status = HTTP_200;
         } catch (RemoteException e) {
             status = HTTP_503;
+        } catch (NullPointerException e) {
+            status = HTTP_404;
         }
 
         return list;

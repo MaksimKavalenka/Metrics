@@ -51,10 +51,15 @@ public class JMXTransport implements TransportDAO {
         Metric metric = DEFAULT_VALUE;
 
         try {
-            CompositeData compositeData = (CompositeData) mbeanServerConnection.invoke(name,
-                    "getLast", new Object[] {metricType.name()},
-                    new String[] {String.class.getName()});
+            CompositeData compositeData;
+
+            synchronized (this) {
+                compositeData = (CompositeData) mbeanServerConnection.invoke(name, "getLast",
+                        new Object[] {metricType.name()}, new String[] {String.class.getName()});
+            }
+
             metric = CompositeDataParser.parseSingleData(compositeData);
+            status = HTTP_200;
         } catch (InstanceNotFoundException | MBeanException | ReflectionException | IOException e) {
             status = HTTP_503;
         }
@@ -67,10 +72,17 @@ public class JMXTransport implements TransportDAO {
         List<Metric> list = DEFAULT_LIST;
 
         try {
-            CompositeData[] compositeDatas = (CompositeData[]) mbeanServerConnection.invoke(name,
-                    "getList", new Object[] {metricType.name(), from, to}, new String[] {
-                            String.class.getName(), Date.class.getName(), Date.class.getName()});
+            CompositeData[] compositeDatas;
+
+            synchronized (this) {
+                compositeDatas = (CompositeData[]) mbeanServerConnection.invoke(name, "getList",
+                        new Object[] {metricType.name(), from, to},
+                        new String[] {String.class.getName(), Date.class.getName(),
+                                Date.class.getName()});
+            }
+
             list = CompositeDataParser.parseArrayDatas(compositeDatas);
+            status = HTTP_200;
         } catch (InstanceNotFoundException | MBeanException | ReflectionException | IOException e) {
             status = HTTP_503;
         }
@@ -103,7 +115,9 @@ public class JMXTransport implements TransportDAO {
     @Override
     public void close() {
         try {
-            jmxConnector.close();
+            if (jmxConnector != null) {
+                jmxConnector.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

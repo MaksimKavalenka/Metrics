@@ -51,6 +51,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
                 options.getTransportElement().getParameters());
         titleChanged();
         metricTypeChanged();
+
         new Thread(this).start();
     }
 
@@ -99,21 +100,16 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
                     callStorage(String.valueOf(storage.getLast().getValue()));
                     break;
 
-                case HTTP_503:
-                    callStorage(HTTP_503.getMessage());
-                    break;
-
                 case HTTP_404:
-                    labelIconCurrentValue.setText(HTTP_404.getMessage());
-                    if (chart != null) {
-                        chart.setText(HTTP_404.getMessage());
-                    }
+                    storage.setParameters(options.getTransportElement().getParameters());
+                case HTTP_503:
+                    callStorage(String.valueOf(storage.getStatus().getMessage()));
                     break;
             }
 
             synchronized (this) {
                 try {
-                    wait(options.getRefreshInterval().getValue());
+                    wait(options.getRefreshInterval().getNanoTime());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -132,7 +128,12 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
                 if (chart != null) {
                     chart.setText(message);
-                    chart.refresh(storage.getList(periodElement.getPeriod().getDate()));
+
+                    if (chart.getLastDate() != null) {
+                        chart.refresh(storage.getList(chart.getLastDate()));
+                    } else {
+                        chart.refresh(storage.getList(periodElement.getPeriod().getDate()));
+                    }
                 }
                 break;
 
@@ -203,6 +204,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
         storage.setMetricType(metricType);
 
         if (chart != null) {
+            chart.clear();
             chart.setUnit(metricType.getUnit());
         }
 
@@ -223,7 +225,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
     @Override
     public void parametersChanged(final boolean changed) {
-        if (!changed || (storage.getStatus() == HTTP_404)) {
+        if (changed || (storage.getStatus() != HTTP_200)) {
             storage.setParameters(options.getTransportElement().getParameters());
 
             synchronized (this) {
@@ -234,6 +236,10 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
     @Override
     public void periodChanged() {
+        if (chart != null) {
+            chart.clear();
+            chart.setPeriod(options.getPeriodElement().getPeriod().getTime());
+        }
         synchronized (this) {
             notify();
         }
@@ -242,6 +248,11 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
     @Override
     public void customPeriodChanged() {
         setCustom = false;
+
+        if (chart != null) {
+            chart.clear();
+            chart.setPeriod(options.getPeriodElement().getPeriod().getTime());
+        }
         synchronized (this) {
             notify();
         }

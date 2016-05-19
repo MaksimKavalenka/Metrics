@@ -26,8 +26,8 @@ public class MXBean implements Runnable {
         storage = new Storage();
         init();
 
-        future = executor.scheduleWithFixedDelay(this, 0, RefreshInterval.SECOND.getValue(),
-                TimeUnit.MILLISECONDS);
+        future = executor.scheduleWithFixedDelay(this, 0, RefreshInterval.SECOND.getTime(),
+                TimeUnit.SECONDS);
     }
 
     public Storage getStorage() {

@@ -4,7 +4,7 @@ import static by.training.exception.HTTPException.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.NavigableSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -34,8 +34,8 @@ public class Storage implements Runnable {
     public Storage(final MetricType metricType) {
         this.metricType = metricType;
         storage = new ConcurrentBoundedSkipListSet<>(MAX_COUNT);
-        future = executor.scheduleWithFixedDelay(this, 0, RefreshInterval.SECOND_5.getValue(),
-                TimeUnit.MILLISECONDS);
+        future = executor.scheduleWithFixedDelay(this, 0, RefreshInterval.SECOND_5.getTime(),
+                TimeUnit.SECONDS);
     }
 
     public Metric getLast() {
@@ -47,12 +47,12 @@ public class Storage implements Runnable {
         return storage.last();
     }
 
-    public NavigableSet<Metric> getList(final Date from) {
+    public Set<Metric> getList(final Date from) {
         checkAndLoad(from);
         return storage.tailSet(new Metric(from, 0), true);
     }
 
-    public NavigableSet<Metric> getList(final Date from, final Date to) {
+    public Set<Metric> getList(final Date from, final Date to) {
         checkAndLoad(from, to);
         return storage.subSet(new Metric(from, 0), true, new Metric(to, 0), true);
     }

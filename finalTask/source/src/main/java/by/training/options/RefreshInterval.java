@@ -5,19 +5,23 @@ public enum RefreshInterval {
     SECOND("1 second", 1000), SECOND_5("5 seconds", 5000), SECOND_15("15 seconds", 15000);
 
     private String name;
-    private int    value;
+    private long   nanoTime;
 
-    private RefreshInterval(final String name, final int value) {
+    private RefreshInterval(final String name, final long nanoTime) {
         this.name = name;
-        this.value = value;
+        this.nanoTime = nanoTime;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getValue() {
-        return value;
+    public long getNanoTime() {
+        return nanoTime;
+    }
+
+    public long getTime() {
+        return nanoTime / 1000;
     }
 
 }
