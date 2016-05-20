@@ -12,6 +12,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import by.training.storage.StorageMXBean;
+import by.training.transport.jms.JMSTransport;
 import by.training.transport.jmx.JMXTransport;
 import by.training.transport.rmi.RMITransport;
 
@@ -26,6 +27,7 @@ public class AppServletContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
+        destroyAll();
         StorageMXBean.deactivate();
     }
 
@@ -40,6 +42,20 @@ public class AppServletContextListener implements ServletContextListener {
             JMXTransport.publish();
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException
                 | NotCompliantMBeanException | MalformedObjectNameException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JMSTransport.publish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void destroyAll() {
+        try {
+            JMSTransport.destroy();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -2,8 +2,9 @@ package by.training.options;
 
 import by.training.bean.element.ParametersElement;
 import by.training.dao.TransportDAO;
+import by.training.transport.jms.JMSTransport;
 import by.training.transport.jmx.JMXTransport;
-import by.training.transport.rest.*;
+import by.training.transport.rest.RESTTransport;
 import by.training.transport.rmi.RMITransport;
 import by.training.transport.soap.SOAPTransport;
 
@@ -36,6 +37,13 @@ public enum Transport {
         @Override
         public TransportDAO createDAO(final ParametersElement parameters) {
             return new JMXTransport(parameters);
+        }
+    },
+
+    JMS("JMS", new ParametersElement(null, "localhost", "8084")) {
+        @Override
+        public TransportDAO createDAO(final ParametersElement parameters) {
+            return new JMSTransport(parameters);
         }
     };
 

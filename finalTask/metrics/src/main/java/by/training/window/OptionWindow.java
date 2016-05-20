@@ -411,6 +411,7 @@ public class OptionWindow extends JDialog {
                 break;
             case RMI:
             case JMX:
+            case JMS:
                 setVisibilities(false, true, true, true);
                 break;
         }
@@ -440,6 +441,7 @@ public class OptionWindow extends JDialog {
 
             case RMI:
             case JMX:
+            case JMS:
                 if (parameters.getHost() != null) {
                     textFieldHost.setText(parameters.getHost());
                 } else {
@@ -506,6 +508,7 @@ public class OptionWindow extends JDialog {
 
             case RMI:
             case JMX:
+            case JMS:
                 String host = textFieldHost.getText();
                 String port = textFieldPort.getText();
 
