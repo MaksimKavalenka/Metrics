@@ -34,6 +34,7 @@ public class ClientMessageListener implements MessageListener {
     }
 
     public boolean isReceived() {
+        System.console();
         return received;
     }
 

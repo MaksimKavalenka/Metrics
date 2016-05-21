@@ -25,7 +25,10 @@ import by.training.options.MetricType;
 
 public class JMSTransport implements TransportDAO {
 
+    private static int            count  = 0;
+
     private HTTPException         status = HTTP_404;
+    private int                   number;
 
     private Connection            connection;
     private Session               session;
@@ -33,6 +36,7 @@ public class JMSTransport implements TransportDAO {
     private ClientMessageListener listener;
 
     public JMSTransport(final ParametersElement parameters) {
+        number = ++count;
         listener = new ClientMessageListener();
         setParameters(parameters);
     }
@@ -43,15 +47,16 @@ public class JMSTransport implements TransportDAO {
 
         try {
             Message msg = session.createMessage();
+            msg.setStringProperty(QUEUE, CLIENT_QUEUE + number);
             msg.setStringProperty(TYPE, metricType.name());
 
-            synchronized (this) {
+            synchronized (JMSTransport.class) {
                 producer.send(msg);
                 while (!listener.isReceived());
                 metric = listener.getList().get(0);
             }
-        } catch (JMSException e) {
-            e.printStackTrace();
+        } catch (JMSException | IllegalStateException e) {
+            status = HTTP_503;
         }
 
         return metric;
@@ -63,17 +68,18 @@ public class JMSTransport implements TransportDAO {
 
         try {
             Message msg = session.createMessage();
+            msg.setStringProperty(QUEUE, CLIENT_QUEUE + number);
             msg.setStringProperty(TYPE, metricType.name());
             msg.setLongProperty(FROM, from.getTime());
             msg.setLongProperty(TO, to.getTime());
 
-            synchronized (this) {
+            synchronized (JMSTransport.class) {
                 producer.send(msg);
                 while (!listener.isReceived());
                 list = listener.getList();
             }
-        } catch (JMSException e) {
-            e.printStackTrace();
+        } catch (JMSException | IllegalStateException e) {
+            status = HTTP_503;
         }
 
         return list;
@@ -89,10 +95,10 @@ public class JMSTransport implements TransportDAO {
                 connection = connectionFactory.createConnection();
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                Queue queue = session.createQueue("QueueForServer");
+                Queue queue = session.createQueue(SERVER_QUEUE);
                 producer = session.createProducer(queue);
 
-                queue = session.createQueue("QueueForClient");
+                queue = session.createQueue(CLIENT_QUEUE + number);
                 session.createConsumer(queue).setMessageListener(listener);
 
                 connection.start();
@@ -100,8 +106,7 @@ public class JMSTransport implements TransportDAO {
 
             status = HTTP_200;
         } catch (JMSException e) {
-            e.printStackTrace();
-            // javax.jms.JMSException: Cannot send, channel has already failed: tcp://127.0.0.1:8083
+            status = HTTP_404;
         }
     }
 

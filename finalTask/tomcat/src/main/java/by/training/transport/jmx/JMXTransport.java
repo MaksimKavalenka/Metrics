@@ -19,9 +19,9 @@ public class JMXTransport implements JMXWebServiceMXBean {
 
     public static void publish() throws InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException, MalformedObjectNameException {
-        JMXTransport ws = new JMXTransport();
+        JMXTransport transport = new JMXTransport();
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        server.registerMBean(ws, new ObjectName("by.training:type=metrics,name=jmx"));
+        server.registerMBean(transport, new ObjectName("by.training:type=metrics,name=jmx"));
     }
 
     @Override

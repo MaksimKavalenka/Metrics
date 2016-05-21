@@ -13,6 +13,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 
+import by.training.constants.JMSKeyConstants;
+
 public class JMSTransport {
 
     private static BrokerService broker;
@@ -24,7 +26,7 @@ public class JMSTransport {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:8084");
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Queue queue = session.createQueue("QueueForServer");
+        Queue queue = session.createQueue(JMSKeyConstants.SERVER_QUEUE);
         MessageConsumer consumer = session.createConsumer(queue);
         consumer.setMessageListener(new ServerMessageListener(session));
         connection.start();
