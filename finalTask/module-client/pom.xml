@@ -15,7 +15,7 @@
   </properties>
 
   <modules>
-    <module>../metrics</module>
+    <module>../client</module>
     <module>../source</module>
   </modules>
 </project>

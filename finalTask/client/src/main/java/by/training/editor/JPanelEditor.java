@@ -18,7 +18,7 @@ import by.training.exception.ConfigEditorException;
 import by.training.listener.ChartWidgetButtonListener;
 import by.training.ui.JIconPanel;
 import by.training.ui.JWidgetPanel;
-import by.training.window.OptionWindow;
+import by.training.window.OptionsWindow;
 
 public class JPanelEditor {
 
@@ -79,8 +79,8 @@ public class JPanelEditor {
                     options.add(metric);
 
                     JIconPanel iconPanel = addPanel(metric);
-                    OptionWindow.createDialog(iconPanel);
-                    if (!OptionWindow.isSave()) {
+                    OptionsWindow.createDialog(iconPanel);
+                    if (!OptionsWindow.isSave()) {
                         try {
                             removePanel(iconPanel);
                         } catch (ConfigEditorException e) {

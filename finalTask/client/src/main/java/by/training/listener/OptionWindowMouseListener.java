@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 
 import by.training.ui.JIconPanel;
 import by.training.ui.JIconPanelPopupMenu;
-import by.training.window.OptionWindow;
+import by.training.window.OptionsWindow;
 
 public class OptionWindowMouseListener implements MouseListener {
 
@@ -20,7 +20,7 @@ public class OptionWindowMouseListener implements MouseListener {
     @Override
     public void mouseClicked(final MouseEvent event) {
         if (SwingUtilities.isLeftMouseButton(event)) {
-            OptionWindow.createDialog(listener);
+            OptionsWindow.createDialog(listener);
         } else if (SwingUtilities.isRightMouseButton(event)) {
             if (JIconPanel.class.isInstance(listener)) {
                 JIconPanelPopupMenu menu = new JIconPanelPopupMenu((JIconPanel) listener);

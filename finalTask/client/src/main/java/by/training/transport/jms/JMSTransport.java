@@ -105,7 +105,7 @@ public class JMSTransport implements TransportDAO {
             }
 
             status = HTTP_200;
-        } catch (JMSException e) {
+        } catch (JMSException | IllegalArgumentException e) {
             status = HTTP_404;
         }
     }

@@ -13,7 +13,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
-public class IncorrectInputDatesWindow extends JDialog {
+public class IncorrectDatesWindow extends JDialog {
 
     private static final long serialVersionUID = 333083131375570586L;
 
@@ -25,7 +25,7 @@ public class IncorrectInputDatesWindow extends JDialog {
 
     public static void createDialog() {
         try {
-            IncorrectInputDatesWindow dialog = new IncorrectInputDatesWindow();
+        	IncorrectDatesWindow dialog = new IncorrectDatesWindow();
             dialog.setTitle("Warning");
             dialog.setMinimumSize(new Dimension(450, 100));
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -38,7 +38,7 @@ public class IncorrectInputDatesWindow extends JDialog {
         }
     }
 
-    private IncorrectInputDatesWindow() {
+    private IncorrectDatesWindow() {
         JPanel contentPanel = new JPanel();
         setBounds(100, 100, 450, 100);
         getContentPane().setLayout(new BorderLayout());

@@ -3,7 +3,7 @@ package by.training.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import by.training.window.OptionWindow;
+import by.training.window.OptionsWindow;
 
 public class OptionWindowButtonListener implements ActionListener {
 
@@ -19,7 +19,7 @@ public class OptionWindowButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-        OptionWindow.createDialog(listener);
+    	OptionsWindow.createDialog(listener);
     }
 
 }

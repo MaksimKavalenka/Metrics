@@ -15,7 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 
-public class ResourceIsNotAvailableWindow extends JDialog {
+public class ResourceFailedWindow extends JDialog {
 
     private static final long serialVersionUID = -3222979601104635484L;
 
@@ -23,8 +23,8 @@ public class ResourceIsNotAvailableWindow extends JDialog {
 
     public static void createDialog() {
         try {
-            ResourceIsNotAvailableWindow dialog = new ResourceIsNotAvailableWindow();
-            dialog.setTitle("Resource is not available");
+        	ResourceFailedWindow dialog = new ResourceFailedWindow();
+            dialog.setTitle("Resource is not available or not found");
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.setLocationRelativeTo(null);
             dialog.setModal(true);
@@ -35,7 +35,7 @@ public class ResourceIsNotAvailableWindow extends JDialog {
         }
     }
 
-    public ResourceIsNotAvailableWindow() {
+    public ResourceFailedWindow() {
         JPanel contentPanel = new JPanel();
         setBounds(100, 100, 350, 125);
         getContentPane().setLayout(new BorderLayout());
@@ -43,12 +43,12 @@ public class ResourceIsNotAvailableWindow extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new GridLayout(0, 1, 0, 0));
         {
-            JLabel labelMessage1 = new JLabel("The requested resource is not available.");
+            JLabel labelMessage1 = new JLabel("The requested resource is not available or not found.");
             labelMessage1.setHorizontalAlignment(SwingConstants.CENTER);
             contentPanel.add(labelMessage1);
         }
         {
-            JLabel labelMessage2 = new JLabel("You should change parameters");
+            JLabel labelMessage2 = new JLabel("Try to change parameters");
             labelMessage2.setHorizontalAlignment(SwingConstants.CENTER);
             contentPanel.add(labelMessage2);
         }

@@ -209,8 +209,8 @@ public class DatesWindow extends JDialog {
                             if (fromDate.getTime() > toDate.getTime()) {
                                 lblMessage.setText(MORE_DATE_MESSAGE);
 
-                                IncorrectInputDatesWindow.createDialog();
-                                if (IncorrectInputDatesWindow.isSwap()) {
+                                IncorrectDatesWindow.createDialog();
+                                if (IncorrectDatesWindow.isSwap()) {
                                     to = fromDate;
                                     from = toDate;
                                     dispose();

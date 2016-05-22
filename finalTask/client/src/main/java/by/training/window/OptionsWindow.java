@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -24,7 +23,6 @@ import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
 import by.training.options.Transport;
-import by.training.other.Moonwalker;
 
 import java.awt.GridBagLayout;
 
@@ -37,10 +35,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.swing.JComboBox;
 import javax.swing.ImageIcon;
@@ -48,27 +45,27 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 
-public class OptionWindow extends JDialog {
+public class OptionsWindow extends JDialog {
 
-    private static final long   serialVersionUID = -29982346605979633L;
+    private static final long serialVersionUID = -29982346605979633L;
 
-    private static boolean      save;
+    private static boolean    save;
 
-    private OptionListener      listener;
-    private JButton             buttonCalendar;
+    private OptionListener    listener;
+    private JButton           buttonCalendar;
 
-    private JTextField          textFieldTitle;
-    private JCheckBox           checkBoxSetTitle;
-    private JComboBox<Object>   comboBoxTypeMetric;
-    private JComboBox<Object>   comboBoxTransport;
-    private JComboBox<Object>   comboBoxPeriod;
-    private JComboBox<Object>   comboBoxRefreshInterval;
-    private JLabel              labelAddress;
-    private JTextField          textFieldAddress;
-    private JLabel              labelHost;
-    private JTextField          textFieldHost;
-    private JLabel              labelPort;
-    private JFormattedTextField textFieldPort;
+    private JTextField        textFieldTitle;
+    private JCheckBox         checkBoxSetTitle;
+    private JComboBox<Object> comboBoxTypeMetric;
+    private JComboBox<Object> comboBoxTransport;
+    private JComboBox<Object> comboBoxPeriod;
+    private JComboBox<Object> comboBoxRefreshInterval;
+    private JLabel            labelAddress;
+    private JTextField        textFieldAddress;
+    private JLabel            labelHost;
+    private JTextField        textFieldHost;
+    private JLabel            labelPort;
+    private JTextField        textFieldPort;
 
     {
         save = false;
@@ -76,7 +73,7 @@ public class OptionWindow extends JDialog {
 
     public static void createDialog(final OptionListener listener) {
         try {
-            OptionWindow dialog = new OptionWindow(listener);
+        	OptionsWindow dialog = new OptionsWindow(listener);
             dialog.setTitle("Options");
             dialog.setMinimumSize(new Dimension(450, 300));
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -89,7 +86,7 @@ public class OptionWindow extends JDialog {
         }
     }
 
-    private OptionWindow(final OptionListener listener) {
+    private OptionsWindow(final OptionListener listener) {
         this.listener = listener;
         DatesWindow.setFrom(listener.getOptions().getPeriodElement().getFrom());
         DatesWindow.setTo(listener.getOptions().getPeriodElement().getTo());
@@ -209,6 +206,7 @@ public class OptionWindow extends JDialog {
         {
             JButton buttonSetDefaultAddress = new JButton("Default");
             GridBagConstraints gbc_buttonSetDefaultAddress = new GridBagConstraints();
+            gbc_buttonSetDefaultAddress.fill = GridBagConstraints.HORIZONTAL;
             gbc_buttonSetDefaultAddress.gridheight = 3;
             gbc_buttonSetDefaultAddress.insets = new Insets(0, 0, 5, 0);
             gbc_buttonSetDefaultAddress.gridx = 2;
@@ -253,10 +251,7 @@ public class OptionWindow extends JDialog {
             contentPanel.add(labelPort, gbc_labelPort);
         }
         {
-            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-            DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
-            decimalFormat.setGroupingUsed(false);
-            textFieldPort = new JFormattedTextField(decimalFormat);
+            textFieldPort = new JTextField();
             GridBagConstraints gbc_textFieldPort = new GridBagConstraints();
             gbc_textFieldPort.insets = new Insets(0, 0, 5, 5);
             gbc_textFieldPort.fill = GridBagConstraints.BOTH;
@@ -264,6 +259,16 @@ public class OptionWindow extends JDialog {
             gbc_textFieldPort.gridy = 6;
             contentPanel.add(textFieldPort, gbc_textFieldPort);
             textFieldPort.setColumns(10);
+            textFieldPort.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyTyped(final KeyEvent event) {
+                    char ch = event.getKeyChar();
+                    if (!Character.isDigit(ch) || (ch == KeyEvent.VK_BACK_SPACE)
+                            || (ch == KeyEvent.VK_DELETE)) {
+                        event.consume();
+                    }
+                };
+            });
         }
         {
             JLabel labelPeriod = new JLabel("Period");
@@ -311,7 +316,7 @@ public class OptionWindow extends JDialog {
             });
         }
         {
-            JLabel labelRefreshInterval = new JLabel("Refresh Interval");
+            JLabel labelRefreshInterval = new JLabel("Refresh interval");
             GridBagConstraints gbc_labelRefreshInterval = new GridBagConstraints();
             gbc_labelRefreshInterval.fill = GridBagConstraints.VERTICAL;
             gbc_labelRefreshInterval.anchor = GridBagConstraints.EAST;
@@ -350,8 +355,8 @@ public class OptionWindow extends JDialog {
                             editRefreshInterval();
 
                             if (!listener.isResourceExist()) {
-                                ResourceIsNotAvailableWindow.createDialog();
-                                if (ResourceIsNotAvailableWindow.isLater()) {
+                            	ResourceFailedWindow.createDialog();
+                                if (ResourceFailedWindow.isLater()) {
                                     dispose();
                                 }
                             } else {
@@ -365,7 +370,6 @@ public class OptionWindow extends JDialog {
                             }
 
                             save = true;
-                            Moonwalker.orNot(listener.getOptions().getTitle());
                         }
                     }
                 });
