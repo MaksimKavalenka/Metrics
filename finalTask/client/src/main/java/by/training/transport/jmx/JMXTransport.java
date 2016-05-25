@@ -81,7 +81,7 @@ public class JMXTransport implements TransportDAO {
                                 Date.class.getName()});
             }
 
-            list = CompositeDataParser.parseArrayDatas(compositeDatas);
+            list = CompositeDataParser.parseArrayData(compositeDatas);
             status = HTTP_200;
         } catch (InstanceNotFoundException | MBeanException | ReflectionException | IOException e) {
             status = HTTP_503;

@@ -1,15 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>by.training</groupId>
   <artifactId>client</artifactId>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
-  <parent>
-    <groupId>by.training</groupId>
-    <artifactId>module-client</artifactId>
-    <version>1.0</version>
-    <relativePath>../module-client/pom.xml</relativePath>
-  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -75,7 +74,7 @@
   </dependencies>
 
   <build>
-    <finalName>Client Metrics</finalName>
+    <finalName>Metrics</finalName>
 
     <plugins>
       <plugin>

@@ -16,7 +16,7 @@ public class CompositeDataParser {
         return new Metric(date, value);
     }
 
-    public static List<Metric> parseArrayDatas(final CompositeData[] arr) {
+    public static List<Metric> parseArrayData(final CompositeData[] arr) {
         List<Metric> list = new LinkedList<>();
 
         for (CompositeData element : arr) {
