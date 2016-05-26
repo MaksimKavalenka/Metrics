@@ -1,25 +1,15 @@
 package by.training.constants;
 
-import java.awt.Dimension;
-import java.awt.datatransfer.DataFlavor;
 import java.util.LinkedList;
 import java.util.List;
 
-import by.training.bean.element.OptionsElement;
 import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
-import by.training.options.Transport;
 
 public abstract class AppDefaultConstants {
 
-    public static final Dimension    DIMENSION             = new Dimension(100, 53);
-
-    public static final DataFlavor   DATA_FLAVOR           = new DataFlavor(OptionsElement.class,
-            OptionsElement.class.getSimpleName());
-
     public static final List<String> METRIC_TYPE_LIST      = new LinkedList<>();
-    public static final List<String> TRANSPORT_LIST        = new LinkedList<>();
     public static final List<String> PERIOD_LIST           = new LinkedList<>();
     public static final List<String> REFRESH_INTERVAL_LIST = new LinkedList<>();
 
@@ -28,17 +18,13 @@ public abstract class AppDefaultConstants {
             METRIC_TYPE_LIST.add(metricType.getTitle());
         }
 
-        for (Transport transport : Transport.values()) {
-            TRANSPORT_LIST.add(transport.getName());
-        }
-
-        for (Period period : Period.values()) {
-            PERIOD_LIST.add(period.getName());
-        }
-
         for (RefreshInterval refreshInterval : RefreshInterval.values()) {
             REFRESH_INTERVAL_LIST.add(refreshInterval.getName());
         }
+
+        PERIOD_LIST.add(Period.LAST_MINUTES_15.getName());
+        PERIOD_LIST.add(Period.LAST_MINUTES_30.getName());
+        PERIOD_LIST.add(Period.LAST_HOUR.getName());
     }
 
 }

@@ -73,7 +73,7 @@ public class OptionsWindow extends JDialog {
 
     public static void createDialog(final OptionListener listener) {
         try {
-        	OptionsWindow dialog = new OptionsWindow(listener);
+            OptionsWindow dialog = new OptionsWindow(listener);
             dialog.setTitle("Options");
             dialog.setMinimumSize(new Dimension(450, 300));
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -134,13 +134,13 @@ public class OptionsWindow extends JDialog {
             contentPanel.add(labelMetricType, gbc_labelMetricType);
         }
         {
-            comboBoxTypeMetric = new JComboBox<>(AppDefaultConstants.TYPE_METRIC_LIST.toArray());
-            GridBagConstraints gbc_comboBoxTypeMetric = new GridBagConstraints();
-            gbc_comboBoxTypeMetric.insets = new Insets(0, 0, 5, 5);
-            gbc_comboBoxTypeMetric.fill = GridBagConstraints.BOTH;
-            gbc_comboBoxTypeMetric.gridx = 1;
-            gbc_comboBoxTypeMetric.gridy = 1;
-            contentPanel.add(comboBoxTypeMetric, gbc_comboBoxTypeMetric);
+            comboBoxTypeMetric = new JComboBox<>(AppDefaultConstants.METRIC_TYPE_LIST.toArray());
+            GridBagConstraints gbc_comboBoxMetricType = new GridBagConstraints();
+            gbc_comboBoxMetricType.insets = new Insets(0, 0, 5, 5);
+            gbc_comboBoxMetricType.fill = GridBagConstraints.BOTH;
+            gbc_comboBoxMetricType.gridx = 1;
+            gbc_comboBoxMetricType.gridy = 1;
+            contentPanel.add(comboBoxTypeMetric, gbc_comboBoxMetricType);
         }
         {
             checkBoxSetTitle = new JCheckBox("Set the name of metric type to the title");
@@ -355,7 +355,7 @@ public class OptionsWindow extends JDialog {
                             editRefreshInterval();
 
                             if (!listener.isResourceExist()) {
-                            	ResourceFailedWindow.createDialog();
+                                ResourceFailedWindow.createDialog();
                                 if (ResourceFailedWindow.isLater()) {
                                     dispose();
                                 }

@@ -3,7 +3,7 @@ package by.training.bean;
 import java.io.Serializable;
 import java.util.List;
 
-public class Config implements Comparable<Config>, Serializable {
+public class Dashboard implements Comparable<Dashboard>, Serializable {
 
     private static final long serialVersionUID = 1569833650274367256L;
 
@@ -12,10 +12,10 @@ public class Config implements Comparable<Config>, Serializable {
     private String            description;
     private List<Integer>     widgetIds;
 
-    public Config() {
+    public Dashboard() {
     }
 
-    public Config(final int id, final String name, final String description,
+    public Dashboard(final int id, final String name, final String description,
             final List<Integer> widgetIds) {
         this.id = id;
         this.name = name;
@@ -74,7 +74,7 @@ public class Config implements Comparable<Config>, Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Config other = (Config) obj;
+        Dashboard other = (Dashboard) obj;
         if (id != other.id) {
             return false;
         }
@@ -82,7 +82,7 @@ public class Config implements Comparable<Config>, Serializable {
     }
 
     @Override
-    public int compareTo(final Config ob) {
+    public int compareTo(final Dashboard ob) {
         return id - ob.getId();
     }
 

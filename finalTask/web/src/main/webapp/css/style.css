@@ -70,20 +70,57 @@ td.window {
 }
 
 tr.title {
-    color: white;
-    background: #3F3F3F;
-    font-size: 12px;
+	font-size: 12px;
     line-height: 40px;
     font-weight: normal;
     text-transform: uppercase;
     font-family: 'Rockwell';
     text-align: center;
     letter-spacing: 1px;
+    color: white;
+    background: #444444;
+    background: -moz-radial-gradient(center, ellipse cover, #444444, #FF0000);
+	background: -webkit-linear-gradient(top, #444444, #FF0000);
+	background: -o-linear-gradient(top, #444444, #FF0000);
+	background: -ms-linear-gradient(top, #444444, #FF0000);
+}
+
+tr.content {
+    color: #3F3F3F;
+    background: white;
+    font-size: 20px;
+    line-height: 40px;
+    font-weight: 700;
+    font-family: 'Andalus';
+    vertical-align: center;
+    letter-spacing: 1px;
+}
+
+tr.content td {
+	padding-left: 10px;
+	padding-right: 10px;
+	border-top: 1px solid #FF0000;
+	border-bottom: 1px solid #FFFFFF;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background-position: 0 0, 100% 0;
+	background-repeat: no-repeat;
+	-webkit-background-size: 1px 100%;
+	-moz-background-size: 1px 100%;
+	background-size: 1px 100%;
+	background-image: -webkit-linear-gradient(top, #FF0000 0%, #FFFFFF 70%), -webkit-linear-gradient(top, #FF0000 0%, #FFFFFF 70%);
+	background-image: -moz-linear-gradient(top, #FF0000 0%, #FFFFFF 70%), -moz-linear-gradient(top, #FF0000 0%, #FFFFFF 70%);
+	background-image: -o-linear-gradient(top, #FF0000 0%, #FFFFFF 70%), -o-linear-gradient(top, #FF0000 0%, #FFFFFF 70%);
+	background-image: linear-gradient(to bottom, #FF0000 0%, #FFFFFF 70%), linear-gradient(to bottom, #FF0000 0%, #FFFFFF 70%);
 }
 
 tr.head {
 	height: 10%;
 	text-align: center;
+	background: url(/web/image/title.jpg);
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 tr.body {
@@ -123,10 +160,9 @@ input.cancel {
 	width: 100px;
 }
 
-a.title {
-	color: white;
-    background: #CD853F;
-    font-size: 12px;
+a.add {
+	width: 15%;
+	font-size: 12px;
     line-height: 40px;
     font-weight: normal;
     text-transform: uppercase;
@@ -134,6 +170,12 @@ a.title {
     text-align: center;
     letter-spacing: 1px;
     display: block;
+	color: white;
+	background: #00FF00;
+    background: -moz-radial-gradient(center, ellipse cover, #00FF00, #008B00);
+	background: -webkit-linear-gradient(top, #00FF00, #008B00);
+	background: -o-linear-gradient(top, #00FF00, #008B00);
+	background: -ms-linear-gradient(top, #00FF00, #008B00);
 }
 
 a.title:hover {

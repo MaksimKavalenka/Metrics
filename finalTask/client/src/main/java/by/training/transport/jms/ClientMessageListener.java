@@ -17,25 +17,28 @@ public class ClientMessageListener implements MessageListener {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onMessage(final Message message) {
+    public synchronized void onMessage(final Message message) {
         list = StubConstants.DEFAULT_LIST;
 
         try {
             list = (List<Metric>) ((ObjectMessage) message).getObject();
             received = true;
+            notify();
         } catch (JMSException e) {
             e.printStackTrace();
         }
     }
 
-    public List<Metric> getList() {
+    public synchronized List<Metric> getList() {
+        if (!received) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         received = false;
         return list;
-    }
-
-    public boolean isReceived() {
-        System.console();
-        return received;
     }
 
 }

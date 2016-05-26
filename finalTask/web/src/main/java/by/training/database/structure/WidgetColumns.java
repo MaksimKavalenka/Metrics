@@ -2,7 +2,7 @@ package by.training.database.structure;
 
 public enum WidgetColumns {
 
-    ID("IdWidget"), TITLE("Title"), METRIC_TYPE("MetricType"), PERIOD("Period"), REFRESH_INTERVAL(
+    ID("IdWidget"), NAME("Name"), METRIC_TYPE("MetricType"), PERIOD("Period"), REFRESH_INTERVAL(
             "RefreshInterval");
 
     private String column;

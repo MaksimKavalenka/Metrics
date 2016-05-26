@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
@@ -20,23 +21,21 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
 import by.training.dao.TransportDAO;
+import by.training.editor.TransportEditor;
 import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 
 public class JMSTransport implements TransportDAO {
 
-    private static int            count  = 0;
-
     private HTTPException         status = HTTP_404;
-    private int                   number;
 
     private Connection            connection;
     private Session               session;
     private MessageProducer       producer;
     private ClientMessageListener listener;
+    private Destination           destination;
 
     public JMSTransport(final ParametersElement parameters) {
-        number = ++count;
         listener = new ClientMessageListener();
         setParameters(parameters);
     }
@@ -47,12 +46,12 @@ public class JMSTransport implements TransportDAO {
 
         try {
             Message msg = session.createMessage();
-            msg.setStringProperty(QUEUE, CLIENT_QUEUE + number);
             msg.setStringProperty(TYPE, metricType.name());
+            msg.setJMSReplyTo(destination);
+            msg.setJMSCorrelationID(TransportEditor.getRandomString());
 
             synchronized (JMSTransport.class) {
                 producer.send(msg);
-                while (!listener.isReceived());
                 metric = listener.getList().get(0);
             }
         } catch (JMSException | IllegalStateException e) {
@@ -68,14 +67,14 @@ public class JMSTransport implements TransportDAO {
 
         try {
             Message msg = session.createMessage();
-            msg.setStringProperty(QUEUE, CLIENT_QUEUE + number);
             msg.setStringProperty(TYPE, metricType.name());
             msg.setLongProperty(FROM, from.getTime());
             msg.setLongProperty(TO, to.getTime());
+            msg.setJMSReplyTo(destination);
+            msg.setJMSCorrelationID(TransportEditor.getRandomString());
 
             synchronized (JMSTransport.class) {
                 producer.send(msg);
-                while (!listener.isReceived());
                 list = listener.getList();
             }
         } catch (JMSException | IllegalStateException e) {
@@ -98,8 +97,8 @@ public class JMSTransport implements TransportDAO {
                 Queue queue = session.createQueue(SERVER_QUEUE);
                 producer = session.createProducer(queue);
 
-                queue = session.createQueue(CLIENT_QUEUE + number);
-                session.createConsumer(queue).setMessageListener(listener);
+                destination = session.createTemporaryQueue();
+                session.createConsumer(destination).setMessageListener(listener);
 
                 connection.start();
             }

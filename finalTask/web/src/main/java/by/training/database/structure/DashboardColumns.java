@@ -1,12 +1,12 @@
 package by.training.database.structure;
 
-public enum ConfigColumns {
+public enum DashboardColumns {
 
-    ID("IdConfig"), NAME("Name"), DESCRIPTION("Description");
+    ID("IdDashboard"), NAME("Name"), DESCRIPTION("Description");
 
     private String column;
 
-    private ConfigColumns(final String column) {
+    private DashboardColumns(final String column) {
         this.column = column;
     }
 

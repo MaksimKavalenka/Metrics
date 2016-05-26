@@ -5,13 +5,16 @@ import java.util.List;
 import by.training.bean.Widget;
 import by.training.dao.IWidgetDAO;
 import by.training.memory.Memory;
+import by.training.options.MetricType;
+import by.training.options.Period;
+import by.training.options.RefreshInterval;
 
 public class MemoryWidgetEditor implements IWidgetDAO {
 
     @Override
-    public void addWidget(final String title, final int metricType, final int period,
-            final int refreshInterval) {
-        Widget widget = new Widget(Memory.getWidgetLastId(), title, metricType, period,
+    public void addWidget(final String name, final MetricType metricType, final Period period,
+            final RefreshInterval refreshInterval) {
+        Widget widget = new Widget(Memory.getWidgetLastId(), name, metricType, period,
                 refreshInterval);
         Memory.getWidgets().add(widget);
         Memory.incWidgetLastId();

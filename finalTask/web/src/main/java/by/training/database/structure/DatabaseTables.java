@@ -2,7 +2,7 @@ package by.training.database.structure;
 
 public enum DatabaseTables {
 
-    CONFIG("Config"), WIDGET("Widget"), CONFIG_WIDGET("ConfigWidget");
+    DASHBOARD("Dashboard"), WIDGET("Widget"), DASHBOARD_WIDGET("DashboardWidget");
 
     private String table;
 

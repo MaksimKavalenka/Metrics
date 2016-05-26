@@ -60,7 +60,7 @@ public class ChartWindow extends JFrame {
 
     private ChartWindow() throws ConfigEditorException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1200, 900);
+        setBounds(100, 100, 1200, 800);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);

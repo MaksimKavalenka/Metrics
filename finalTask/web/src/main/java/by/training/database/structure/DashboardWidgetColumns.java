@@ -1,12 +1,12 @@
 package by.training.database.structure;
 
-public enum ConfigWidgetColumns {
+public enum DashboardWidgetColumns {
 
-    ID_CONFIG("ConfigId"), ID_WIDGET("WidgetId");
+    ID_DASHBOARD("DashboardId"), ID_WIDGET("WidgetId");
 
     private String column;
 
-    private ConfigWidgetColumns(final String column) {
+    private DashboardWidgetColumns(final String column) {
         this.column = column;
     }
 

@@ -2,23 +2,27 @@ package by.training.bean;
 
 import java.io.Serializable;
 
+import by.training.options.MetricType;
+import by.training.options.Period;
+import by.training.options.RefreshInterval;
+
 public class Widget implements Comparable<Widget>, Serializable {
 
     private static final long serialVersionUID = 8296154453314999388L;
 
     private int               id;
-    private String            title;
-    private int               metricType;
-    private int               period;
-    private int               refreshInterval;
+    private String            name;
+    private MetricType        metricType;
+    private Period            period;
+    private RefreshInterval   refreshInterval;
 
     public Widget() {
     }
 
-    public Widget(final Integer id, final String title, final int metricType, final int period,
-            final int refreshInterval) {
+    public Widget(final Integer id, final String name, final MetricType metricType,
+            final Period period, final RefreshInterval refreshInterval) {
         this.id = id;
-        this.title = title;
+        this.name = name;
         this.metricType = metricType;
         this.period = period;
         this.refreshInterval = refreshInterval;
@@ -32,35 +36,35 @@ public class Widget implements Comparable<Widget>, Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
+    public void setName(final String name) {
+        this.name = name;
     }
 
-    public int getMetricType() {
+    public MetricType getMetricType() {
         return metricType;
     }
 
-    public void setMetricType(final int metricType) {
+    public void setMetricType(final MetricType metricType) {
         this.metricType = metricType;
     }
 
-    public int getPeriod() {
+    public Period getPeriod() {
         return period;
     }
 
-    public void setPeriod(final int period) {
+    public void setPeriod(final Period period) {
         this.period = period;
     }
 
-    public int getRefreshInterval() {
+    public RefreshInterval getRefreshInterval() {
         return refreshInterval;
     }
 
-    public void setRefreshInterval(final int refreshInterval) {
+    public void setRefreshInterval(final RefreshInterval refreshInterval) {
         this.refreshInterval = refreshInterval;
     }
 
