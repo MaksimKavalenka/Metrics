@@ -1,5 +1,7 @@
 package by.training.action;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import by.training.constants.ActionConstants;
@@ -19,9 +21,7 @@ public class EditDataAction {
 
     public static void edit(final HttpServletRequest request) throws IllegalDataException {
         DataAction.checkError(request);
-
-        String value = request.getParameter(PropertyConstants.ACTION);
-        ActionConstants action = DataAction.searchEnum(ActionConstants.class, value);
+        ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);
 
         switch (action) {
             case ADD_DASHBOARD:
@@ -37,8 +37,9 @@ public class EditDataAction {
 
     private static void addDashboard(final HttpServletRequest request) {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
-            String name = request.getParameter(DashboardColumns.NAME.toString());
-            String description = request.getParameter(DashboardColumns.DESCRIPTION.toString());
+            String name = (String) request.getAttribute(DashboardColumns.NAME.toString());
+            String description = (String) request
+                    .getAttribute(DashboardColumns.DESCRIPTION.toString());
             // int count = Integer.parseInt(request.getParameter(PropertyConstants.WIDGET_COUNT));
 
             dashboardDAO.addDashboard(name, description, null);
@@ -47,15 +48,21 @@ public class EditDataAction {
 
     private static void addWidget(final HttpServletRequest request) {
         try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
-            String name = request.getParameter(WidgetColumns.NAME.toString());
-            int metricType = Integer
-                    .valueOf(request.getParameter(WidgetColumns.METRIC_TYPE.toString()));
-            int period = Integer.valueOf(request.getParameter(WidgetColumns.PERIOD.toString()));
-            int refreshInterval = Integer
-                    .valueOf(request.getParameter(WidgetColumns.REFRESH_INTERVAL.toString()));
+            String name = (String) request.getAttribute(WidgetColumns.NAME.toString());
+            MetricType metricType = (MetricType) request
+                    .getAttribute(WidgetColumns.METRIC_TYPE.toString());
+            RefreshInterval refreshInterval = (RefreshInterval) request
+                    .getAttribute(WidgetColumns.REFRESH_INTERVAL.toString());
+            Period period = (Period) request.getAttribute(WidgetColumns.PERIOD.toString());
 
-            widgetDAO.addWidget(name, MetricType.values()[metricType - 1],
-                    Period.values()[period - 1], RefreshInterval.values()[refreshInterval - 1]);
+            boolean isCustom = (boolean) request.getAttribute(Period.CUSTOM.toString());
+            if (!isCustom) {
+                widgetDAO.addWidget(name, metricType, refreshInterval, period, null, null);
+            } else {
+                Date from = (Date) request.getAttribute(WidgetColumns.FROM.toString());
+                Date to = (Date) request.getAttribute(WidgetColumns.TO.toString());
+                widgetDAO.addWidget(name, metricType, refreshInterval, period, from, to);
+            }
         }
     }
 

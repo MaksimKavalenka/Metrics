@@ -11,22 +11,22 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
 import by.training.action.DataAction;
+import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
 
 @WebFilter(servletNames = "page")
 public class PageFilter implements Filter {
 
     @Override
-    public void init(final FilterConfig fConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) throws ServletException {
     }
 
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
-
         String uri = ((HttpServletRequest) request).getRequestURI().toString();
-        request.setAttribute(PropertyConstants.ACTION, DataAction.getAction(uri));
-
+        ActionConstants action = DataAction.getAction(uri);
+        request.setAttribute(PropertyConstants.ACTION, action);
         chain.doFilter(request, response);
     }
 

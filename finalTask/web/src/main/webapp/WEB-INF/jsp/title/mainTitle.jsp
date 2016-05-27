@@ -7,9 +7,9 @@
 	</head>
 
 	<body>
-		<section class="border">
-			<input type="button" class="button" value="Dashboards" onClick="javascript:window.location='/web/dashboard/show'">
-			<input type="button" class="button" value="Widgets" onClick="javascript:window.location='/web/widget/show'">
+		<section class="title">
+			<input class="title" type="button" value="Dashboards" onClick="javascript:window.location='/web/dashboard/show'">
+			<input class="title" type="button" value="Widgets" onClick="javascript:window.location='/web/widget/show'">
 		</section>
 	</body>
 </html>

@@ -1,6 +1,7 @@
 package by.training.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import by.training.options.MetricType;
 import by.training.options.Period;
@@ -13,19 +14,24 @@ public class Widget implements Comparable<Widget>, Serializable {
     private int               id;
     private String            name;
     private MetricType        metricType;
-    private Period            period;
     private RefreshInterval   refreshInterval;
+    private Period            period;
+    private Date              from;
+    private Date              to;
 
     public Widget() {
     }
 
     public Widget(final Integer id, final String name, final MetricType metricType,
-            final Period period, final RefreshInterval refreshInterval) {
+            final RefreshInterval refreshInterval, final Period period, final Date from,
+            final Date to) {
         this.id = id;
         this.name = name;
         this.metricType = metricType;
-        this.period = period;
         this.refreshInterval = refreshInterval;
+        this.period = period;
+        this.from = from;
+        this.to = to;
     }
 
     public int getId() {
@@ -52,6 +58,14 @@ public class Widget implements Comparable<Widget>, Serializable {
         this.metricType = metricType;
     }
 
+    public RefreshInterval getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public void setRefreshInterval(final RefreshInterval refreshInterval) {
+        this.refreshInterval = refreshInterval;
+    }
+
     public Period getPeriod() {
         return period;
     }
@@ -60,12 +74,20 @@ public class Widget implements Comparable<Widget>, Serializable {
         this.period = period;
     }
 
-    public RefreshInterval getRefreshInterval() {
-        return refreshInterval;
+    public Date getFrom() {
+        return from;
     }
 
-    public void setRefreshInterval(final RefreshInterval refreshInterval) {
-        this.refreshInterval = refreshInterval;
+    public void setFrom(final Date from) {
+        this.from = from;
+    }
+
+    public Date getTo() {
+        return to;
+    }
+
+    public void setTo(final Date to) {
+        this.to = to;
     }
 
     @Override

@@ -27,15 +27,6 @@ public class DataAction {
         return null;
     }
 
-    public static <T extends Enum<?>> T searchEnum(final Class<T> enumeration, final String value) {
-        for (T each : enumeration.getEnumConstants()) {
-            if (each.name().compareToIgnoreCase(value) == 0) {
-                return each;
-            }
-        }
-        return null;
-    }
-
     public static void checkError(final HttpServletRequest request) throws IllegalDataException {
         if (request.getAttribute(PropertyConstants.ERROR) != null) {
             String error = (String) request.getAttribute(PropertyConstants.ERROR);

@@ -1,5 +1,6 @@
 package by.training.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import by.training.bean.Widget;
@@ -9,8 +10,8 @@ import by.training.options.RefreshInterval;
 
 public interface IWidgetDAO extends IDAO {
 
-    public void addWidget(String name, MetricType metricType, Period period,
-            RefreshInterval refreshInterval);
+    public void addWidget(String name, MetricType metricType, RefreshInterval refreshInterval,
+            Period period, Date from, Date to);
 
     public List<Widget> getAll();
 
