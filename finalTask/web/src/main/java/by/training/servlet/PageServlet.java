@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import by.training.action.DataAction;
 import by.training.action.LoadDataAction;
 
-@WebServlet(urlPatterns = "/page")
+@WebServlet(name = "page", urlPatterns = {"/dashboard/show", "/dashboard/add", "/widget/show",
+        "/widget/add"})
 public class PageServlet extends AbstractServlet {
 
     private static final long serialVersionUID = 5306106036240520824L;
@@ -19,7 +20,7 @@ public class PageServlet extends AbstractServlet {
     protected void performTask(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         LoadDataAction.load(request);
-        jump(DataAction.getJsp(request), request, response);
+        jump(DataAction.getPath(request), request, response);
     }
 
 }

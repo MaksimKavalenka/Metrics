@@ -15,16 +15,16 @@ public abstract class AppDefaultConstants {
 
     static {
         for (MetricType metricType : MetricType.values()) {
-            METRIC_TYPE_LIST.add(metricType.getTitle());
+            METRIC_TYPE_LIST.add(metricType.toString());
         }
 
         for (RefreshInterval refreshInterval : RefreshInterval.values()) {
-            REFRESH_INTERVAL_LIST.add(refreshInterval.getName());
+            REFRESH_INTERVAL_LIST.add(refreshInterval.toString());
         }
 
-        PERIOD_LIST.add(Period.LAST_MINUTES_15.getName());
-        PERIOD_LIST.add(Period.LAST_MINUTES_30.getName());
-        PERIOD_LIST.add(Period.LAST_HOUR.getName());
+        PERIOD_LIST.add(Period.LAST_MINUTES_15.toString());
+        PERIOD_LIST.add(Period.LAST_MINUTES_30.toString());
+        PERIOD_LIST.add(Period.LAST_HOUR.toString());
     }
 
 }

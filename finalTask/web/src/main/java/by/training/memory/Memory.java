@@ -14,11 +14,6 @@ public class Memory {
     private static int             dashboardLastId = 1;
     private static int             widgetLastId    = 1;
 
-    static {
-        dashboards.add(new Dashboard(1, "hello", "yo!", null));
-        dashboards.add(new Dashboard(2, "hey", "yo!", null));
-    }
-
     public static List<Dashboard> getDashboards() {
         return dashboards;
     }

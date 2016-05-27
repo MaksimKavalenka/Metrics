@@ -15,10 +15,6 @@ public enum Period {
         this.nano = nano;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public long getNanoTime() {
         return nano;
     }
@@ -29,6 +25,11 @@ public enum Period {
 
     public Date getDate() {
         return new Date(new Date().getTime() - nano);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

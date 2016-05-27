@@ -15,25 +15,25 @@
 				<th width="20%">Metric type</th>
 				<th width="15%">Period</th>
 				<th width="15%">Refresh interval</th>
-				<th width="20%">Settings</th>
+				<th width="20%">Actions</th>
 			</tr>
 
 			<c:forEach var="widget" items="${Widget}" varStatus="counter">
-				<tr>
-					<td>
+				<tr class="content">
+					<td align="right">
 						${counter.count}
 					</td>
 					<td>
 						${widget.name}
 					</td>
 					<td>
-						${widget.metricType}
+						${widget.metricType.toString()}
 					</td>
 					<td>
-						${widget.period}
+						${widget.period.toString()}
 					</td>
 					<td>
-						${widget.refreshInterval}
+						${widget.refreshInterval.toString()}
 					</td>
 					<td>
 						TO DO
@@ -42,8 +42,6 @@
 			</c:forEach>
 		</table>
 
-		<div id="add" class="footer">
-			<a class="add" href="javascript:window.location='page?action=add_widget'">Add widget</a>
-		</div>
+		<a class="add" href="javascript:window.location='/web/widget/add'">Add widget</a>
 	</body>
 </html>

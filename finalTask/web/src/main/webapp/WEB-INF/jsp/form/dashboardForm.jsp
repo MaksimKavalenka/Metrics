@@ -12,6 +12,18 @@
 
 			<table class="form">
 				<tr>
+					<td colspan="2" align="center">
+						<c:choose>
+							<c:when test="${empty error}">
+								<b class="success">The dashboard is saved successfully</b>
+							</c:when>
+							<c:otherwise>
+								<b class="error">${error}</b>
+							</c:otherwise>
+						</c:choose>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center">Dashboard settings</td>
 				</tr>
 				<tr>
@@ -30,16 +42,22 @@
 					<td class="name">Widget</td>
 					<td>
 						<select name="Widget">
-							<option disabled>Choose the widget</option>
-							<c:forEach var="widget" items="${Widget}">
-								<option value="${widget.id}">${widget.title}</option>
-							</c:forEach>
+							<c:choose>
+								<c:when test="${not empty Widget}">
+									<c:forEach var="widget" items="${Widget}">
+										<option value="${widget.id}">${widget.name}</option>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<option disabled>Empty</option>
+								</c:otherwise>
+							</c:choose>
 						</select>
 					</td>
 				</tr>
 			</table>
 		</form>
-		<form method="POST" name="cancelForm" action="/web/page?action=show_dashboard"></form>
+		<form method="POST" name="cancelForm" action="/web/dashboard/show"></form>
 
 		<input class="agree" type="submit" value="Save" onClick="JavaScript:document.dashboardForm.submit()">
 		<input class="cancel" type="button" value="Back" onClick="JavaScript:document.cancelForm.submit()">

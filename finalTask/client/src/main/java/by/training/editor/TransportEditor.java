@@ -10,11 +10,11 @@ import javax.xml.ws.WebServiceException;
 
 public class TransportEditor {
 
-    public static URI getBaseURI(final String address) {
+    public static URI getBaseUri(final String address) {
         return UriBuilder.fromUri(address).build();
     }
 
-    public static URL getURL(final String address) {
+    public static URL getUrl(final String address) {
         try {
             return new URL(address);
         } catch (MalformedURLException e) {

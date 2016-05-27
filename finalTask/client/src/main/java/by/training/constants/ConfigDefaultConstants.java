@@ -25,27 +25,27 @@ public abstract class ConfigDefaultConstants {
     public static final RefreshInterval REFRESH_INTERVAL = RefreshInterval.SECOND;
 
     public static final OptionsElement  OPTIONS_1        = new OptionsElement(
-            MetricType.FREE_PHYSICAL_MEMORY_SIZE.getTitle(),
+            MetricType.FREE_PHYSICAL_MEMORY_SIZE.toString(),
             new MetricTypeElement(MetricType.FREE_PHYSICAL_MEMORY_SIZE, true),
             new TransportElement(Transport.REST,
                     new ParametersElement(Transport.REST.getDefaultParameters())),
             new PeriodElement(PERIOD, null, null), REFRESH_INTERVAL);
 
     public static final OptionsElement  OPTIONS_2        = new OptionsElement(
-            MetricType.HEAP_USED.getTitle(), new MetricTypeElement(MetricType.HEAP_USED, true),
+            MetricType.HEAP_USED.toString(), new MetricTypeElement(MetricType.HEAP_USED, true),
             new TransportElement(Transport.SOAP,
                     new ParametersElement(Transport.SOAP.getDefaultParameters())),
             new PeriodElement(PERIOD, null, null), REFRESH_INTERVAL);
 
     public static final OptionsElement  OPTIONS_3        = new OptionsElement(
-            MetricType.DAEMON_THREAD_COUNT.getTitle(),
+            MetricType.DAEMON_THREAD_COUNT.toString(),
             new MetricTypeElement(MetricType.DAEMON_THREAD_COUNT, true),
             new TransportElement(Transport.RMI,
                     new ParametersElement(Transport.RMI.getDefaultParameters())),
             new PeriodElement(PERIOD, null, null), REFRESH_INTERVAL);
 
     public static final OptionsElement  OPTIONS_4        = new OptionsElement(
-            MetricType.UPTIME.getTitle(), new MetricTypeElement(MetricType.UPTIME, true),
+            MetricType.UPTIME.toString(), new MetricTypeElement(MetricType.UPTIME, true),
             new TransportElement(Transport.JMX,
                     new ParametersElement(Transport.JMX.getDefaultParameters())),
             new PeriodElement(PERIOD, null, null), REFRESH_INTERVAL);
@@ -59,7 +59,7 @@ public abstract class ConfigDefaultConstants {
     public static final ConfigElement   CONFIG           = new ConfigElement(WIDGET, ICON);
 
     public static OptionsElement createDefaultMetricElement() {
-        return new OptionsElement(METRIC_TYPE.getTitle(), new MetricTypeElement(METRIC_TYPE, true),
+        return new OptionsElement(METRIC_TYPE.toString(), new MetricTypeElement(METRIC_TYPE, true),
                 new TransportElement(TRANSPORT,
                         new ParametersElement(TRANSPORT.getDefaultParameters())),
                 new PeriodElement(PERIOD, null, null), REFRESH_INTERVAL);

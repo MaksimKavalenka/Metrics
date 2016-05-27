@@ -25,7 +25,7 @@ public abstract class AppDefaultConstants {
 
     static {
         for (MetricType metricType : MetricType.values()) {
-            METRIC_TYPE_LIST.add(metricType.getTitle());
+            METRIC_TYPE_LIST.add(metricType.toString());
         }
 
         for (Transport transport : Transport.values()) {
@@ -33,11 +33,11 @@ public abstract class AppDefaultConstants {
         }
 
         for (Period period : Period.values()) {
-            PERIOD_LIST.add(period.getName());
+            PERIOD_LIST.add(period.toString());
         }
 
         for (RefreshInterval refreshInterval : RefreshInterval.values()) {
-            REFRESH_INTERVAL_LIST.add(refreshInterval.getName());
+            REFRESH_INTERVAL_LIST.add(refreshInterval.toString());
         }
     }
 

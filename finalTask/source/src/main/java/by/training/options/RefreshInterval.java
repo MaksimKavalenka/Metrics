@@ -12,16 +12,17 @@ public enum RefreshInterval {
         this.nanoTime = nanoTime;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public long getNanoTime() {
         return nanoTime;
     }
 
     public long getTime() {
         return nanoTime / 1000;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

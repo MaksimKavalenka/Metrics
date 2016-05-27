@@ -67,7 +67,7 @@ public class SOAPTransport implements TransportDAO {
     public void setParameters(final ParametersElement parameters) {
         try {
             transportService = new SOAPTransportService(
-                    TransportEditor.getURL(parameters.getAddress() + WSDL));
+                    TransportEditor.getUrl(parameters.getAddress() + WSDL));
             synchronized (this) {
                 serviceInterface = transportService.getSOAPTransportPort();
             }

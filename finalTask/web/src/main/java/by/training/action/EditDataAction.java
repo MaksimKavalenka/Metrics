@@ -8,6 +8,7 @@ import by.training.dao.IDashboardDAO;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
 import by.training.database.structure.WidgetColumns;
+import by.training.exception.IllegalDataException;
 import by.training.factory.DashboardFactory;
 import by.training.factory.WidgetFactory;
 import by.training.options.MetricType;
@@ -16,7 +17,9 @@ import by.training.options.RefreshInterval;
 
 public class EditDataAction {
 
-    public static void edit(final HttpServletRequest request) {
+    public static void edit(final HttpServletRequest request) throws IllegalDataException {
+        DataAction.checkError(request);
+
         String value = request.getParameter(PropertyConstants.ACTION);
         ActionConstants action = DataAction.searchEnum(ActionConstants.class, value);
 
@@ -34,8 +37,8 @@ public class EditDataAction {
 
     private static void addDashboard(final HttpServletRequest request) {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
-            String name = request.getParameter(DashboardColumns.NAME.name());
-            String description = request.getParameter(DashboardColumns.DESCRIPTION.name());
+            String name = request.getParameter(DashboardColumns.NAME.toString());
+            String description = request.getParameter(DashboardColumns.DESCRIPTION.toString());
             // int count = Integer.parseInt(request.getParameter(PropertyConstants.WIDGET_COUNT));
 
             dashboardDAO.addDashboard(name, description, null);
@@ -44,12 +47,12 @@ public class EditDataAction {
 
     private static void addWidget(final HttpServletRequest request) {
         try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
-            String name = request.getParameter(WidgetColumns.NAME.name());
+            String name = request.getParameter(WidgetColumns.NAME.toString());
             int metricType = Integer
-                    .valueOf(request.getParameter(WidgetColumns.METRIC_TYPE.name()));
-            int period = Integer.valueOf(request.getParameter(WidgetColumns.PERIOD.name()));
+                    .valueOf(request.getParameter(WidgetColumns.METRIC_TYPE.toString()));
+            int period = Integer.valueOf(request.getParameter(WidgetColumns.PERIOD.toString()));
             int refreshInterval = Integer
-                    .valueOf(request.getParameter(WidgetColumns.REFRESH_INTERVAL.name()));
+                    .valueOf(request.getParameter(WidgetColumns.REFRESH_INTERVAL.toString()));
 
             widgetDAO.addWidget(name, MetricType.values()[metricType - 1],
                     Period.values()[period - 1], RefreshInterval.values()[refreshInterval - 1]);

@@ -91,7 +91,7 @@ public class RESTTransport implements TransportDAO {
     @Override
     public void setParameters(final ParametersElement parameters) {
         synchronized (this) {
-            service = client.target(TransportEditor.getBaseURI(parameters.getAddress()));
+            service = client.target(TransportEditor.getBaseUri(parameters.getAddress()));
         }
 
         try {

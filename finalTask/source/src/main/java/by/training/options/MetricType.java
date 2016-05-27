@@ -36,12 +36,13 @@ public enum MetricType {
         this.unit = unit;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public String getUnit() {
         return unit;
+    }
+
+    @Override
+    public String toString() {
+        return title;
     }
 
 }

@@ -467,7 +467,7 @@ public class OptionsWindow extends JDialog {
 
         if (checkBoxSetTitle.isSelected()) {
             MetricType metricType = MetricType.values()[comboBoxTypeMetric.getSelectedIndex()];
-            newTitle = metricType.getTitle();
+            newTitle = metricType.toString();
         } else {
             newTitle = textFieldTitle.getText();
         }

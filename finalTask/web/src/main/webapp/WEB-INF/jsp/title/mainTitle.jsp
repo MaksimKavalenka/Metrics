@@ -8,8 +8,8 @@
 
 	<body>
 		<section class="border">
-			<input type="button" class="button" value="Dashboards" onClick="javascript:window.location='page?action=show_dashboard'">
-			<input type="button" class="button" value="Widgets" onClick="javascript:window.location='page?action=show_widget'">
+			<input type="button" class="button" value="Dashboards" onClick="javascript:window.location='/web/dashboard/show'">
+			<input type="button" class="button" value="Widgets" onClick="javascript:window.location='/web/widget/show'">
 		</section>
 	</body>
 </html>

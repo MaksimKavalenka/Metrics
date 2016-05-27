@@ -13,7 +13,7 @@
 				<th width="5%">No.</th>
 				<th width="30%">Name</th>
 				<th width="45%">Description</th>
-				<th width="20%">Settings</th>
+				<th width="20%">Actions</th>
 			</tr>
 
 			<c:forEach var="dashboard" items="${Dashboard}" varStatus="counter">
@@ -34,8 +34,6 @@
 			</c:forEach>
 		</table>
 
-		<div id="add" class="footer">
-			<a class="add" href="javascript:window.location='page?action=add_dashboard'">Add dashboard</a>
-		</div>
+		<a class="add" href="javascript:window.location='/web/dashboard/add'">Add dashboard</a>
 	</body>
 </html>

@@ -8,11 +8,12 @@ import by.training.bean.Dashboard;
 import by.training.bean.Widget;
 import by.training.constants.ActionConstants;
 import by.training.constants.AppDefaultConstants;
-import by.training.constants.JSPNameConstants;
+import by.training.constants.PathConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IDashboardDAO;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DatabaseTables;
+import by.training.database.structure.WidgetColumns;
 import by.training.factory.DashboardFactory;
 import by.training.factory.WidgetFactory;
 
@@ -20,12 +21,11 @@ public class LoadDataAction {
 
     public static String init(final HttpServletRequest request) {
         loadDashboard(request);
-        return JSPNameConstants.Pages.DASHBOARD_PAGE_JSP;
+        return PathConstants.Pages.DASHBOARD_PAGE_PATH;
     }
 
     public static void load(final HttpServletRequest request) {
-        String value = request.getParameter(PropertyConstants.ACTION);
-        ActionConstants action = DataAction.searchEnum(ActionConstants.class, value);
+        ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);
 
         switch (action) {
             case SHOW_DASHBOARD:
@@ -44,10 +44,10 @@ public class LoadDataAction {
     }
 
     private static void loadDefaultParameters(final HttpServletRequest request) {
-        request.setAttribute(PropertyConstants.METRIC_TYPE_LIST,
+        request.setAttribute(WidgetColumns.METRIC_TYPE.toString(),
                 AppDefaultConstants.METRIC_TYPE_LIST);
-        request.setAttribute(PropertyConstants.PERIOD_LIST, AppDefaultConstants.PERIOD_LIST);
-        request.setAttribute(PropertyConstants.REFRESH_INTERVAL_LIST,
+        request.setAttribute(WidgetColumns.PERIOD.toString(), AppDefaultConstants.PERIOD_LIST);
+        request.setAttribute(WidgetColumns.REFRESH_INTERVAL.toString(),
                 AppDefaultConstants.REFRESH_INTERVAL_LIST);
     }
 
