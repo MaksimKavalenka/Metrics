@@ -31,8 +31,8 @@ public class LoadDataAction {
             case SHOW_DASHBOARD:
                 loadDashboard(request);
                 break;
-            case SHOW_WIDGET:
             case ADD_DASHBOARD:
+            case SHOW_WIDGET:
                 loadWidget(request);
                 break;
             case ADD_WIDGET:
@@ -53,14 +53,14 @@ public class LoadDataAction {
 
     private static void loadDashboard(final HttpServletRequest request) {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
-            final List<Dashboard> dashboards = dashboardDAO.getAll();
+            final List<Dashboard> dashboards = dashboardDAO.getDashboards();
             request.setAttribute(DatabaseTables.DASHBOARD.toString(), dashboards);
         }
     }
 
     private static void loadWidget(final HttpServletRequest request) {
         try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
-            final List<Widget> widgets = widgetDAO.getAll();
+            final List<Widget> widgets = widgetDAO.getWidgets();
             request.setAttribute(DatabaseTables.WIDGET.toString(), widgets);
         }
     }

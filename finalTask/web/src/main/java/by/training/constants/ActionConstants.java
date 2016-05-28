@@ -4,9 +4,11 @@ public enum ActionConstants {
 
     SHOW_DASHBOARD(UriConstants.Pages.DASHBOARD_PAGE_URI, PathConstants.Pages.DASHBOARD_PAGE_PATH),
     ADD_DASHBOARD(UriConstants.Forms.DASHBOARD_FORM_URI, PathConstants.Forms.DASHBOARD_FORM_PATH),
+    DELETE_DASHBOARD(UriConstants.Pages.DASHBOARD_PAGE_URI, PathConstants.Pages.DASHBOARD_PAGE_PATH),
     SHOW_WIDGET(UriConstants.Pages.WIDGET_PAGE_URI, PathConstants.Pages.WIDGET_PAGE_PATH),
-    ADD_WIDGET(UriConstants.Forms.WIDGET_FORM_URI, PathConstants.Forms.WIDGET_FORM_PATH);
-
+    ADD_WIDGET(UriConstants.Forms.WIDGET_FORM_URI, PathConstants.Forms.WIDGET_FORM_PATH),
+    DELETE_WIDGET(UriConstants.Pages.WIDGET_PAGE_URI, PathConstants.Pages.WIDGET_PAGE_PATH);
+    
     private String uri;
     private String path;
 

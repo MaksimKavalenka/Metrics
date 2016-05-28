@@ -2,7 +2,7 @@ package by.training.database.structure;
 
 public enum DashboardWidgetColumns {
 
-    ID_DASHBOARD("DashboardId"), ID_WIDGET("WidgetId");
+    ID_DASHBOARD("IdDashboard"), ID_WIDGET("IdWidget");
 
     private String column;
 

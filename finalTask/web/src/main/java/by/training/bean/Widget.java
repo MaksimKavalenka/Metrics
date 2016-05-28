@@ -117,8 +117,8 @@ public class Widget implements Comparable<Widget>, Serializable {
     }
 
     @Override
-    public int compareTo(final Widget ob) {
-        return id - ob.getId();
+    public int compareTo(final Widget o) {
+        return id - o.getId();
     }
 
 }

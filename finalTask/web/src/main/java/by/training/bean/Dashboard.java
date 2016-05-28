@@ -1,7 +1,6 @@
 package by.training.bean;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Dashboard implements Comparable<Dashboard>, Serializable {
 
@@ -10,17 +9,14 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
     private int               id;
     private String            name;
     private String            description;
-    private List<Integer>     widgetIds;
 
     public Dashboard() {
     }
 
-    public Dashboard(final int id, final String name, final String description,
-            final List<Integer> widgetIds) {
+    public Dashboard(final int id, final String name, final String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.widgetIds = widgetIds;
     }
 
     public int getId() {
@@ -45,14 +41,6 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
 
     public void setDescription(final String description) {
         this.description = description;
-    }
-
-    public List<Integer> getWidgetIds() {
-        return widgetIds;
-    }
-
-    public void setWidgetIds(final List<Integer> widgetIds) {
-        this.widgetIds = widgetIds;
     }
 
     @Override
@@ -82,8 +70,8 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
     }
 
     @Override
-    public int compareTo(final Dashboard ob) {
-        return id - ob.getId();
+    public int compareTo(final Dashboard o) {
+        return id - o.getId();
     }
 
 }

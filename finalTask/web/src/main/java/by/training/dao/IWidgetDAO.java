@@ -13,6 +13,10 @@ public interface IWidgetDAO extends IDAO {
     public void addWidget(String name, MetricType metricType, RefreshInterval refreshInterval,
             Period period, Date from, Date to);
 
-    public List<Widget> getAll();
+    public Widget getWidget(int id);
+
+    public List<Widget> getWidgets();
+
+    public void deleteWidget(int id);
 
 }

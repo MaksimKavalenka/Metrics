@@ -17,26 +17,16 @@
 	</head>
 
 	<body>
-		<form method="POST" name="widgetForm" action="/web/edit">
-			<input type="hidden" name="action" value="add_widget">
-
+		<form method="POST" name="addWidgetForm" action="/web/edit?action=add_widget">
 			<table class="form">
-				<tr>
-					<td class="title" colspan="2">Widget settings</td>
-				</tr>
-				<tr>
-					<td class="error" colspan="2">${error}</td>
-				</tr>
-				<tr>
-					<td class="name">Name</td>
-					<td>
-						<input type="text" name="Name" size="30" maxlength="30">
-					</td>
-				</tr>
-				<tr>
-					<td class="name">Metric type</td>
-					<td>
-						<select name="MetricType">
+				<tr><td class="title" colspan="2">Widget settings
+				<tr><td class="error" colspan="2">${error}
+
+				<tr><td class="name">Name
+					<td><input type="text" name="Name" size="30" maxlength="30">
+
+				<tr><td class="name">Metric type
+					<td><select name="MetricType">
 							<c:choose>
 								<c:when test="${not empty MetricType}">
 									<c:forEach var="metricType" items="${MetricType}" varStatus="counter">
@@ -48,12 +38,9 @@
 								</c:otherwise>
 							</c:choose>
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="name">Refresh interval</td>
-					<td>
-						<select name="RefreshInterval">
+
+				<tr><td class="name">Refresh interval
+					<td><select name="RefreshInterval">
 							<c:choose>
 								<c:when test="${not empty RefreshInterval}">
 									<c:forEach var="refreshInterval" items="${RefreshInterval}" varStatus="counter">
@@ -65,12 +52,9 @@
 								</c:otherwise>
 							</c:choose>
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="name"><input type="radio" name="Custom" value="false" checked>Period</td>
-					<td>
-						<select name="Period">
+
+				<tr><td class="name"><input type="radio" name="Custom" value="false" checked>Period
+					<td><select name="Period">
 							<c:choose>
 								<c:when test="${not empty Period}">
 									<c:forEach var="period" items="${Period}" varStatus="counter">
@@ -82,12 +66,9 @@
 								</c:otherwise>
 							</c:choose>
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td class="name"><input type="radio" name="Custom" value="true">From/To</td>
-					<td>
-						<div class="well">
+
+				<tr><td class="name"><input type="radio" name="Custom" value="true">From/To
+					<td><div class="well">
 							<div id="from" class="input-append date">
 								<input type="text" name="From" data-format="dd.MM.yyyy hh:mm:ss"/>
 								<span class="add-on">
@@ -101,13 +82,11 @@
 								</span>
 							</div>
 						</div>
-					</td>
-				</tr>
 			</table>
 		</form>
 		<form method="POST" name="cancelForm" action="/web/widget/show"></form>
 
-		<input class="action" type="submit" value="Save" onClick="JavaScript:document.widgetForm.submit()">
-		<input class="action" type="button" value="Back" onClick="JavaScript:document.cancelForm.submit()">
+		<input class="form" type="submit" value="Save" onClick="javascript:document.addWidgetForm.submit()">
+		<input class="form" type="button" value="Back" onClick="javascript:document.cancelForm.submit()">
 	</body>
 </html>

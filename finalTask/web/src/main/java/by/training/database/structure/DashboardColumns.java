@@ -2,7 +2,7 @@ package by.training.database.structure;
 
 public enum DashboardColumns {
 
-    ID("IdDashboard"), NAME("Name"), DESCRIPTION("Description");
+    ID("Id"), NAME("Name"), DESCRIPTION("Description");
 
     private String column;
 

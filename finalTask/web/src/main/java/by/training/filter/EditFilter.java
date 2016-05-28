@@ -2,6 +2,8 @@ package by.training.filter;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,6 +17,7 @@ import by.training.constants.ActionConstants;
 import by.training.constants.MessageConstants;
 import by.training.constants.PropertyConstants;
 import by.training.database.structure.DashboardColumns;
+import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.WidgetColumns;
 import by.training.options.MetricType;
 import by.training.options.Period;
@@ -34,14 +37,21 @@ public class EditFilter implements Filter {
 
         switch (checkAction(request)) {
             case ADD_DASHBOARD:
-                DashboardEdit.checkName(request);
-                DashboardEdit.checkDescription(request);
+                DashboardEditFilter.checkName(request);
+                DashboardEditFilter.checkDescription(request);
+                DashboardEditFilter.checkWidgets(request);
+                break;
+            case DELETE_DASHBOARD:
+                DashboardEditFilter.checkId(request);
                 break;
             case ADD_WIDGET:
-                WidgetEdit.checkName(request);
-                WidgetEdit.checkMetricType(request);
-                WidgetEdit.checkRefreshInterval(request);
-                WidgetEdit.checkPeriod(request);
+                WidgetEditFilter.checkName(request);
+                WidgetEditFilter.checkMetricType(request);
+                WidgetEditFilter.checkRefreshInterval(request);
+                WidgetEditFilter.checkPeriod(request);
+                break;
+            case DELETE_WIDGET:
+                WidgetEditFilter.checkId(request);
                 break;
             default:
                 break;
@@ -61,7 +71,12 @@ public class EditFilter implements Filter {
         return action;
     }
 
-    private static class DashboardEdit {
+    private static class DashboardEditFilter {
+
+        private static void checkId(final ServletRequest request) {
+            int id = Integer.valueOf(request.getParameter(DashboardColumns.ID.toString()));
+            request.setAttribute(DashboardColumns.ID.toString(), id);
+        }
 
         private static void checkName(final ServletRequest request) {
             String name = request.getParameter(DashboardColumns.NAME.toString());
@@ -78,9 +93,31 @@ public class EditFilter implements Filter {
             request.setAttribute(DashboardColumns.DESCRIPTION.toString(), description);
         }
 
+        private static void checkWidgets(final ServletRequest request) {
+            int number = Integer.valueOf(request.getParameter(PropertyConstants.WIDGET_NUMBER));
+            List<Integer> list = new ArrayList<>(number);
+
+            try {
+                for (int i = 1; i <= number; i++) {
+                    int id = Integer.valueOf(
+                            request.getParameter(DashboardWidgetColumns.ID_WIDGET.toString() + i));
+                    list.add(id);
+                }
+                request.setAttribute(DashboardWidgetColumns.ID_WIDGET.toString(), list);
+            } catch (NumberFormatException e) {
+                request.setAttribute(PropertyConstants.ERROR,
+                        MessageConstants.SPECIFIED_WIDGET_ERROR);
+            }
+        }
+
     }
 
-    private static class WidgetEdit {
+    private static class WidgetEditFilter {
+
+        private static void checkId(final ServletRequest request) {
+            int id = Integer.valueOf(request.getParameter(WidgetColumns.ID.toString()));
+            request.setAttribute(WidgetColumns.ID.toString(), id);
+        }
 
         private static void checkName(final ServletRequest request) {
             String name = request.getParameter(WidgetColumns.NAME.toString());

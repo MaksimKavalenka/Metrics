@@ -24,8 +24,28 @@ public class MemoryWidgetEditor implements IWidgetDAO {
     }
 
     @Override
-    public List<Widget> getAll() {
+    public Widget getWidget(final int id) {
+        for (Widget widget : Memory.getWidgets()) {
+            if (widget.getId() == id) {
+                return widget;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Widget> getWidgets() {
         return Memory.getWidgets();
+    }
+
+    @Override
+    public void deleteWidget(final int id) {
+        for (Widget widget : Memory.getWidgets()) {
+            if (widget.getId() == id) {
+                Memory.getWidgets().remove(widget);
+                return;
+            }
+        }
     }
 
     @Override
