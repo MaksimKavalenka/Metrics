@@ -13,9 +13,9 @@ public class DataAction {
         return action.getPath();
     }
 
-    public static String getUri(final HttpServletRequest request) {
+    public static String getLocation(final HttpServletRequest request) {
         ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);
-        return action.getUri();
+        return action.getLocation();
     }
 
     public static ActionConstants getAction(final String uri) {

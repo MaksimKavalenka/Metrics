@@ -20,7 +20,7 @@ public class EditServlet extends AbstractServlet {
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
-        jump(DataAction.getPath(request), request, response);
+        request.getRequestDispatcher(DataAction.getPath(request)).forward(request, response);
     }
 
     @Override
@@ -28,10 +28,10 @@ public class EditServlet extends AbstractServlet {
             throws ServletException, IOException {
         try {
             EditDataAction.edit(request);
-            response.sendRedirect(DataAction.getUri(request));
+            response.sendRedirect(DataAction.getLocation(request));
         } catch (IllegalDataException e) {
             LoadDataAction.load(request);
-            jump(DataAction.getPath(request), request, response);
+            request.getRequestDispatcher(DataAction.getPath(request)).forward(request, response);
         }
     }
 

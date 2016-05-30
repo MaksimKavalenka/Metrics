@@ -6,6 +6,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
 		<script type="text/javascript">
+			function modifyWidget(id) {
+				document.modifyWidgetForm.Id.value = id;
+				document.modifyWidgetForm.submit();
+			}
+		</script>
+		<script type="text/javascript">
 			function deleteWidget(id) {
 				document.deleteWidgetForm.Id.value = id;
 				document.deleteWidgetForm.submit();
@@ -14,10 +20,13 @@
 	</head>
 
 	<body>
+		<form method="POST" name="modifyWidgetForm" action="/web/widget/modify">
+			<input type="hidden" name="Id">
+		</form>
 		<form method="POST" name="deleteWidgetForm" action="/web/edit?action=delete_widget">
 			<input type="hidden" name="Id">
 		</form>
-	
+
 		<table class="body">
 			<tr class="title">
 				<th width="5%">No.
@@ -35,7 +44,7 @@
 					<td>${widget.period.toString()}
 					<td>${widget.refreshInterval.toString()}
 					<td>
-						<input class="action" type="button" value="Modify" onClick="javascript:window.location='/web/widget/add'">
+						<input class="action" type="button" value="Modify" onClick="javascript:modifyWidget('${widget.id}')">
 						<input class="action" type="button" value="Delete" onClick="javascript:deleteWidget('${widget.id}')">
 			</c:forEach>
 		</table>

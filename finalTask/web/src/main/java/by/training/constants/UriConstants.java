@@ -6,15 +6,17 @@ public class UriConstants {
 
     public static class Pages {
 
-        public static final String DASHBOARD_PAGE_URI = URI + "/dashboard/show";
-        public static final String WIDGET_PAGE_URI    = URI + "/widget/show";
+        public static final String DASHBOARD_SHOW_PAGE_URI = URI + "/dashboard/show";
+        public static final String WIDGET_SHOW_PAGE_URI    = URI + "/widget/show";
 
     }
 
     public static class Forms {
 
-        public static final String DASHBOARD_FORM_URI = URI + "/dashboard/add";
-        public static final String WIDGET_FORM_URI    = URI + "/widget/add";
+        public static final String DASHBOARD_ADD_FORM_URI    = URI + "/dashboard/add";
+        public static final String DASHBOARD_MODIFY_FORM_URI = URI + "/dashboard/modify";
+        public static final String WIDGET_ADD_FORM_URI       = URI + "/widget/add";
+        public static final String WIDGET_MODIFY_FORM_URI    = URI + "/widget/modify";
 
     }
 

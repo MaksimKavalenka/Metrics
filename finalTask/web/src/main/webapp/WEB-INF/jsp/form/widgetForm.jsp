@@ -17,7 +17,7 @@
 	</head>
 
 	<body>
-		<form method="POST" name="addWidgetForm" action="/web/edit?action=add_widget">
+		<form method="POST" name="widgetForm" action="/web/edit?action=add_widget">
 			<table class="form">
 				<tr><td class="title" colspan="2">Widget settings
 				<tr><td class="error" colspan="2">${error}
@@ -86,7 +86,7 @@
 		</form>
 		<form method="POST" name="cancelForm" action="/web/widget/show"></form>
 
-		<input class="form" type="submit" value="Save" onClick="javascript:document.addWidgetForm.submit()">
+		<input class="form" type="submit" value="Save" onClick="javascript:document.widgetForm.submit()">
 		<input class="form" type="button" value="Back" onClick="javascript:document.cancelForm.submit()">
 	</body>
 </html>

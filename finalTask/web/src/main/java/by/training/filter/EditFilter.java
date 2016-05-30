@@ -36,6 +36,8 @@ public class EditFilter implements Filter {
             final FilterChain chain) throws IOException, ServletException {
 
         switch (checkAction(request)) {
+            case MODIFY_DASHBOARD:
+                DashboardEditFilter.checkId(request);
             case ADD_DASHBOARD:
                 DashboardEditFilter.checkName(request);
                 DashboardEditFilter.checkDescription(request);

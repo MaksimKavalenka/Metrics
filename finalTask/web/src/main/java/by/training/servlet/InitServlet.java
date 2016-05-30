@@ -17,7 +17,7 @@ public class InitServlet extends AbstractServlet {
     @Override
     protected void performTask(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
-        jump(LoadDataAction.init(request), request, response);
+        request.getRequestDispatcher(LoadDataAction.init(request)).forward(request, response);
     }
 
 }

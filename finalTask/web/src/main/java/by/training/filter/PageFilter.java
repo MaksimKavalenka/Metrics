@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import by.training.action.DataAction;
 import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
+import by.training.database.structure.DashboardColumns;
 
 @WebFilter(servletNames = "page")
 public class PageFilter implements Filter {
@@ -24,14 +25,32 @@ public class PageFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response,
             final FilterChain chain) throws IOException, ServletException {
-        String uri = ((HttpServletRequest) request).getRequestURI().toString();
-        ActionConstants action = DataAction.getAction(uri);
-        request.setAttribute(PropertyConstants.ACTION, action);
+
+        switch (checkAction(request)) {
+            case MODIFY_DASHBOARD:
+                checkId(request);
+                break;
+            default:
+                break;
+        }
+
         chain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
+    }
+
+    private ActionConstants checkAction(final ServletRequest request) {
+        String uri = ((HttpServletRequest) request).getRequestURI().toString();
+        ActionConstants action = DataAction.getAction(uri);
+        request.setAttribute(PropertyConstants.ACTION, action);
+        return action;
+    }
+
+    private static void checkId(final ServletRequest request) {
+        int id = Integer.valueOf(request.getParameter(DashboardColumns.ID.toString()));
+        request.setAttribute(DashboardColumns.ID.toString(), id);
     }
 
 }

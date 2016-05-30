@@ -8,14 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IDashboardDAO;
-import by.training.dao.IDashboardWidgetDAO;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
 import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.WidgetColumns;
 import by.training.exception.IllegalDataException;
 import by.training.factory.DashboardFactory;
-import by.training.factory.DashboardWidgetFactory;
 import by.training.factory.WidgetFactory;
 import by.training.options.MetricType;
 import by.training.options.Period;
@@ -30,18 +28,18 @@ public class EditDataAction {
         switch (action) {
             case ADD_DASHBOARD:
                 DashboardEditData.addDashboard(request);
-                DashboardWidgetEditData.addDashboardWidget(request);
+                break;
+            case MODIFY_DASHBOARD:
+                DashboardEditData.modifyDashboard(request);
                 break;
             case DELETE_DASHBOARD:
                 DashboardEditData.deleteDashboard(request);
-                DashboardWidgetEditData.deleteDashboard(request);
                 break;
             case ADD_WIDGET:
                 WidgetEditData.addWidget(request);
                 break;
             case DELETE_WIDGET:
                 WidgetEditData.deleteWidget(request);
-                DashboardWidgetEditData.deleteWidget(request);
                 break;
             default:
                 break;
@@ -55,8 +53,23 @@ public class EditDataAction {
                 String name = (String) request.getAttribute(DashboardColumns.NAME.toString());
                 String description = (String) request
                         .getAttribute(DashboardColumns.DESCRIPTION.toString());
-                int id = dashboardDAO.addDashboard(name, description);
-                request.setAttribute(DashboardColumns.ID.toString(), id);
+                @SuppressWarnings("unchecked")
+                List<Integer> widgetIds = (List<Integer>) request
+                        .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
+                dashboardDAO.addDashboard(name, description, widgetIds);
+            }
+        }
+
+        private static void modifyDashboard(final HttpServletRequest request) {
+            try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
+                int id = (int) request.getAttribute(DashboardColumns.ID.toString());
+                String name = (String) request.getAttribute(DashboardColumns.NAME.toString());
+                String description = (String) request
+                        .getAttribute(DashboardColumns.DESCRIPTION.toString());
+                @SuppressWarnings("unchecked")
+                List<Integer> widgetIds = (List<Integer>) request
+                        .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
+                dashboardDAO.modifyDashboard(id, name, description, widgetIds);
             }
         }
 
@@ -95,36 +108,6 @@ public class EditDataAction {
             try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
                 int id = (int) request.getAttribute(WidgetColumns.ID.toString());
                 widgetDAO.deleteWidget(id);
-            }
-        }
-
-    }
-
-    private static class DashboardWidgetEditData {
-
-        private static void addDashboardWidget(final HttpServletRequest request) {
-            try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
-                int idDashboard = (int) request.getAttribute(DashboardColumns.ID.toString());
-                @SuppressWarnings("unchecked")
-                List<Integer> list = (List<Integer>) request
-                        .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
-                for (int i = 0; i < list.size(); i++) {
-                    dashboardWidgetDAO.addDashboardWidget(idDashboard, list.get(i));
-                }
-            }
-        }
-
-        private static void deleteDashboard(final HttpServletRequest request) {
-            try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
-                int idDashboard = (int) request.getAttribute(DashboardColumns.ID.toString());
-                dashboardWidgetDAO.deleteDashboard(idDashboard);
-            }
-        }
-
-        private static void deleteWidget(final HttpServletRequest request) {
-            try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
-                int idWidget = (int) request.getAttribute(WidgetColumns.ID.toString());
-                dashboardWidgetDAO.deleteWidget(idWidget);
             }
         }
 

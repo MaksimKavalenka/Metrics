@@ -10,13 +10,13 @@ import by.training.options.RefreshInterval;
 
 public interface IWidgetDAO extends IDAO {
 
-    public void addWidget(String name, MetricType metricType, RefreshInterval refreshInterval,
+    void addWidget(String name, MetricType metricType, RefreshInterval refreshInterval,
             Period period, Date from, Date to);
 
-    public Widget getWidget(int id);
+    Widget getWidget(int id);
 
-    public List<Widget> getWidgets();
+    List<Widget> getWidgets();
 
-    public void deleteWidget(int id);
+    void deleteWidget(int id);
 
 }

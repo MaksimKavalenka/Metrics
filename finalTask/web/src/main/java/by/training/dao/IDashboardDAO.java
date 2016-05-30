@@ -6,10 +6,14 @@ import by.training.bean.Dashboard;
 
 public interface IDashboardDAO extends IDAO {
 
-    public int addDashboard(String name, String description);
+    void addDashboard(String name, String description, List<Integer> widgetIds);
 
-    public List<Dashboard> getDashboards();
+    void modifyDashboard(int id, String name, String description, List<Integer> widgetIds);
 
-    public void deleteDashboard(int id);
+    Dashboard getDashboard(int id);
+
+    List<Dashboard> getDashboards();
+
+    void deleteDashboard(int id);
 
 }
