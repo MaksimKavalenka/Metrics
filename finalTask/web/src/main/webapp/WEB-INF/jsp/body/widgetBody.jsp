@@ -41,11 +41,11 @@
 					<td align="right">${counter.count}
 					<td>${widget.name}
 					<td>${widget.metricType.toString()}
-					<td>${widget.period.toString()}
 					<td>${widget.refreshInterval.toString()}
+					<td>${widget.period.toString()}
 					<td>
-						<input class="action" type="button" value="Modify" onClick="javascript:modifyWidget('${widget.id}')">
-						<input class="action" type="button" value="Delete" onClick="javascript:deleteWidget('${widget.id}')">
+						<input class="action" type="button" value="Modify" onClick="modifyWidget(${widget.id})">
+						<input class="action" type="button" value="Delete" onClick="deleteWidget(${widget.id})">
 			</c:forEach>
 		</table>
 

@@ -1,5 +1,6 @@
 package by.training.editor.memory;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class MemoryDashboardWidgetEditor implements IDashboardWidgetDAO {
     @Override
     public void deleteDashboard(final int idDashboard) {
         synchronized (MemoryDashboardWidgetEditor.class) {
-            for (DashboardWidget dashboardWidget : Memory.getDashboardWidgets()) {
-                if (dashboardWidget.getIdDashboard() == idDashboard) {
-                    Memory.getDashboards().remove(dashboardWidget);
-                    return;
+            Iterator<DashboardWidget> iterator = Memory.getDashboardWidgets().iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getIdDashboard() == idDashboard) {
+                    iterator.remove();
                 }
             }
         }
@@ -45,9 +46,10 @@ public class MemoryDashboardWidgetEditor implements IDashboardWidgetDAO {
     @Override
     public void deleteWidget(final int idWidget) {
         synchronized (MemoryDashboardWidgetEditor.class) {
-            for (DashboardWidget dashboardWidget : Memory.getDashboardWidgets()) {
-                if (dashboardWidget.getIdWidget() == idWidget) {
-                    Memory.getDashboards().remove(dashboardWidget);
+            Iterator<DashboardWidget> iterator = Memory.getDashboardWidgets().iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getIdWidget() == idWidget) {
+                    iterator.remove();
                 }
             }
         }

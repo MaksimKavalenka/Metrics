@@ -40,8 +40,8 @@
 					<td>${dashboard.name}
 					<td>${dashboard.description}
 					<td>
-						<input class="action" type="button" value="Modify" onClick="javascript:modifyDashboard('${dashboard.id}')">
-						<input class="action" type="button" value="Delete" onClick="javascript:deleteDashboard('${dashboard.id}')">
+						<input class="action" type="button" value="Modify" onClick="modifyDashboard(${dashboard.id})">
+						<input class="action" type="button" value="Delete" onClick="deleteDashboard(${dashboard.id})">
 			</c:forEach>
 		</table>
 

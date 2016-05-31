@@ -30,7 +30,7 @@ public class EditServlet extends AbstractServlet {
             EditDataAction.edit(request);
             response.sendRedirect(DataAction.getLocation(request));
         } catch (IllegalDataException e) {
-            LoadDataAction.load(request);
+            LoadDataAction.loadAfterError(request);
             request.getRequestDispatcher(DataAction.getPath(request)).forward(request, response);
         }
     }

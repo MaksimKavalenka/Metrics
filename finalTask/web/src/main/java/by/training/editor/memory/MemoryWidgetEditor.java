@@ -33,6 +33,21 @@ public class MemoryWidgetEditor implements IWidgetDAO {
     }
 
     @Override
+    public void modifyWidget(final int id, final String name, final MetricType metricType,
+            final RefreshInterval refreshInterval, final Period period, final Date from,
+            final Date to) {
+        synchronized (MemoryWidgetEditor.class) {
+            Widget widget = getWidget(id);
+            widget.setName(name);
+            widget.setMetricType(metricType);
+            widget.setRefreshInterval(refreshInterval);
+            widget.setPeriod(period);
+            widget.setFrom(from);
+            widget.setTo(to);
+        }
+    }
+
+    @Override
     public Widget getWidget(final int id) {
         for (Widget widget : Memory.getWidgets()) {
             if (widget.getId() == id) {
@@ -51,8 +66,8 @@ public class MemoryWidgetEditor implements IWidgetDAO {
     public void deleteWidget(final int id) {
         synchronized (MemoryWidgetEditor.class) {
             Widget widget = getWidget(id);
-            Memory.getWidgets().remove(widget);
             DASHBOARD_WIDGET_DAO.deleteWidget(widget.getId());
+            Memory.getWidgets().remove(widget);
         }
     }
 

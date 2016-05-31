@@ -1,6 +1,6 @@
 package by.training.action;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,24 +8,45 @@ import javax.servlet.http.HttpServletRequest;
 import by.training.bean.Dashboard;
 import by.training.bean.Widget;
 import by.training.constants.ActionConstants;
-import by.training.constants.AppDefaultConstants;
 import by.training.constants.PathConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IDashboardDAO;
 import by.training.dao.IDashboardWidgetDAO;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
+import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.DatabaseTables;
 import by.training.database.structure.WidgetColumns;
 import by.training.factory.DashboardFactory;
 import by.training.factory.DashboardWidgetFactory;
 import by.training.factory.WidgetFactory;
+import by.training.options.MetricType;
+import by.training.options.Period;
+import by.training.options.RefreshInterval;
+import by.training.parser.DateFormatParser;
 
 public class LoadDataAction {
 
     public static String init(final HttpServletRequest request) {
         getDashboards(request);
         return PathConstants.Pages.DASHBOARD_PAGE_PATH;
+    }
+
+    public static void loadAfterError(final HttpServletRequest request) {
+        ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);
+
+        switch (action) {
+            case MODIFY_DASHBOARD:
+            case ADD_DASHBOARD:
+                getWidgets(request);
+                break;
+            case MODIFY_WIDGET:
+            case ADD_WIDGET:
+                getDefaultParameters(request);
+                break;
+            default:
+                break;
+        }
     }
 
     public static void load(final HttpServletRequest request) {
@@ -42,6 +63,8 @@ public class LoadDataAction {
             case SHOW_WIDGET:
                 getWidgets(request);
                 break;
+            case MODIFY_WIDGET:
+                getWidget(request);
             case ADD_WIDGET:
                 getDefaultParameters(request);
                 break;
@@ -51,18 +74,22 @@ public class LoadDataAction {
     }
 
     private static void getDefaultParameters(final HttpServletRequest request) {
-        request.setAttribute(WidgetColumns.METRIC_TYPE.toString(),
-                AppDefaultConstants.METRIC_TYPE_LIST);
-        request.setAttribute(WidgetColumns.PERIOD.toString(), AppDefaultConstants.PERIOD_LIST);
-        request.setAttribute(WidgetColumns.REFRESH_INTERVAL.toString(),
-                AppDefaultConstants.REFRESH_INTERVAL_LIST);
+        final List<Period> periodList = new LinkedList<>();
+        periodList.add(Period.LAST_MINUTES_15);
+        periodList.add(Period.LAST_MINUTES_30);
+        periodList.add(Period.LAST_HOUR);
+        request.setAttribute(PropertyConstants.METRIC_TYPE_LIST, MetricType.values());
+        request.setAttribute(PropertyConstants.REFRESH_INTERVAL_LIST, RefreshInterval.values());
+        request.setAttribute(PropertyConstants.PERIOD_LIST, periodList);
     }
 
     private static void getDashboard(final HttpServletRequest request) {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
             int id = (int) request.getAttribute(DashboardColumns.ID.toString());
             final Dashboard dashboard = dashboardDAO.getDashboard(id);
-            request.setAttribute(DatabaseTables.DASHBOARD.toString(), dashboard);
+            request.setAttribute(DashboardColumns.NAME.toString(), dashboard.getName());
+            request.setAttribute(DashboardColumns.DESCRIPTION.toString(),
+                    dashboard.getDescription());
         }
     }
 
@@ -70,6 +97,28 @@ public class LoadDataAction {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
             final List<Dashboard> dashboards = dashboardDAO.getDashboards();
             request.setAttribute(DatabaseTables.DASHBOARD.toString(), dashboards);
+        }
+    }
+
+    private static void getWidget(final HttpServletRequest request) {
+        try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+            int id = (int) request.getAttribute(WidgetColumns.ID.toString());
+            final Widget widget = widgetDAO.getWidget(id);
+            request.setAttribute(WidgetColumns.NAME.toString(), widget.getName());
+            request.setAttribute(WidgetColumns.METRIC_TYPE.toString(), widget.getMetricType());
+            request.setAttribute(WidgetColumns.REFRESH_INTERVAL.toString(),
+                    widget.getRefreshInterval());
+            request.setAttribute(WidgetColumns.PERIOD.toString(), widget.getPeriod());
+
+            if (widget.getPeriod() == Period.CUSTOM) {
+                request.setAttribute(Period.CUSTOM.toString(), true);
+                request.setAttribute(WidgetColumns.FROM.toString(),
+                        DateFormatParser.dateToString(widget.getFrom()));
+                request.setAttribute(WidgetColumns.TO.toString(),
+                        DateFormatParser.dateToString(widget.getTo()));
+            } else {
+                request.setAttribute(Period.CUSTOM.toString(), false);
+            }
         }
     }
 
@@ -81,20 +130,12 @@ public class LoadDataAction {
     }
 
     private static void getDashboardWidgets(final HttpServletRequest request) {
-        try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+        try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
             int idDashboard = (int) request.getAttribute(DashboardColumns.ID.toString());
-            List<Integer> widgetIds = null;
-
-            try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
-                widgetIds = dashboardWidgetDAO.getWidgetIds(idDashboard);
-            }
-
-            List<Widget> widgets = new ArrayList<>(widgetIds.size());
-            for (Integer id : widgetIds) {
-                widgets.add(widgetDAO.getWidget(id));
-            }
-            request.setAttribute(DatabaseTables.WIDGET.toString(), widgets);
+            List<Integer> widgetIds = dashboardWidgetDAO.getWidgetIds(idDashboard);
+            request.setAttribute(DashboardWidgetColumns.ID_WIDGET.toString(), widgetIds);
         }
+
     }
 
 }

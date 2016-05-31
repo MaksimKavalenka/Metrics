@@ -37,23 +37,25 @@ public class EditFilter implements Filter {
 
         switch (checkAction(request)) {
             case MODIFY_DASHBOARD:
-                DashboardEditFilter.checkId(request);
+                DashboardEditFilter.checkDashboardId(request);
             case ADD_DASHBOARD:
-                DashboardEditFilter.checkName(request);
-                DashboardEditFilter.checkDescription(request);
-                DashboardEditFilter.checkWidgets(request);
+                DashboardEditFilter.checkDashboardName(request);
+                DashboardEditFilter.checkDashboardDescription(request);
+                DashboardEditFilter.checkDashboardWidgets(request);
                 break;
             case DELETE_DASHBOARD:
-                DashboardEditFilter.checkId(request);
+                DashboardEditFilter.checkDashboardId(request);
                 break;
+            case MODIFY_WIDGET:
+                WidgetEditFilter.checkWidgetId(request);
             case ADD_WIDGET:
-                WidgetEditFilter.checkName(request);
-                WidgetEditFilter.checkMetricType(request);
-                WidgetEditFilter.checkRefreshInterval(request);
-                WidgetEditFilter.checkPeriod(request);
+                WidgetEditFilter.checkWidgetName(request);
+                WidgetEditFilter.checkWidgetMetricType(request);
+                WidgetEditFilter.checkWidgetRefreshInterval(request);
+                WidgetEditFilter.checkWidgetPeriod(request);
                 break;
             case DELETE_WIDGET:
-                WidgetEditFilter.checkId(request);
+                WidgetEditFilter.checkWidgetId(request);
                 break;
             default:
                 break;
@@ -75,12 +77,12 @@ public class EditFilter implements Filter {
 
     private static class DashboardEditFilter {
 
-        private static void checkId(final ServletRequest request) {
+        private static void checkDashboardId(final ServletRequest request) {
             int id = Integer.valueOf(request.getParameter(DashboardColumns.ID.toString()));
             request.setAttribute(DashboardColumns.ID.toString(), id);
         }
 
-        private static void checkName(final ServletRequest request) {
+        private static void checkDashboardName(final ServletRequest request) {
             String name = request.getParameter(DashboardColumns.NAME.toString());
 
             if (name.trim().isEmpty()) {
@@ -90,12 +92,12 @@ public class EditFilter implements Filter {
             }
         }
 
-        private static void checkDescription(final ServletRequest request) {
+        private static void checkDashboardDescription(final ServletRequest request) {
             String description = request.getParameter(DashboardColumns.DESCRIPTION.toString());
             request.setAttribute(DashboardColumns.DESCRIPTION.toString(), description);
         }
 
-        private static void checkWidgets(final ServletRequest request) {
+        private static void checkDashboardWidgets(final ServletRequest request) {
             int number = Integer.valueOf(request.getParameter(PropertyConstants.WIDGET_NUMBER));
             List<Integer> list = new ArrayList<>(number);
 
@@ -116,12 +118,12 @@ public class EditFilter implements Filter {
 
     private static class WidgetEditFilter {
 
-        private static void checkId(final ServletRequest request) {
+        private static void checkWidgetId(final ServletRequest request) {
             int id = Integer.valueOf(request.getParameter(WidgetColumns.ID.toString()));
             request.setAttribute(WidgetColumns.ID.toString(), id);
         }
 
-        private static void checkName(final ServletRequest request) {
+        private static void checkWidgetName(final ServletRequest request) {
             String name = request.getParameter(WidgetColumns.NAME.toString());
 
             if (name.trim().isEmpty()) {
@@ -131,21 +133,21 @@ public class EditFilter implements Filter {
             }
         }
 
-        private static void checkMetricType(final ServletRequest request) {
+        private static void checkWidgetMetricType(final ServletRequest request) {
             int metricType = Integer
                     .valueOf(request.getParameter(WidgetColumns.METRIC_TYPE.toString()));
             request.setAttribute(WidgetColumns.METRIC_TYPE.toString(),
                     MetricType.values()[metricType - 1]);
         }
 
-        private static void checkRefreshInterval(final ServletRequest request) {
+        private static void checkWidgetRefreshInterval(final ServletRequest request) {
             int refreshInterval = Integer
                     .valueOf(request.getParameter(WidgetColumns.REFRESH_INTERVAL.toString()));
             request.setAttribute(WidgetColumns.REFRESH_INTERVAL.toString(),
                     RefreshInterval.values()[refreshInterval - 1]);
         }
 
-        private static void checkPeriod(final ServletRequest request) {
+        private static void checkWidgetPeriod(final ServletRequest request) {
             boolean isCustom = Boolean.valueOf(request.getParameter(Period.CUSTOM.toString()));
             request.setAttribute(Period.CUSTOM.toString(), isCustom);
 

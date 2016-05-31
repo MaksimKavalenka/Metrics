@@ -14,6 +14,7 @@ import by.training.action.DataAction;
 import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
 import by.training.database.structure.DashboardColumns;
+import by.training.database.structure.WidgetColumns;
 
 @WebFilter(servletNames = "page")
 public class PageFilter implements Filter {
@@ -28,7 +29,10 @@ public class PageFilter implements Filter {
 
         switch (checkAction(request)) {
             case MODIFY_DASHBOARD:
-                checkId(request);
+                checkDashboardId(request);
+                break;
+            case MODIFY_WIDGET:
+                checkWidgetId(request);
                 break;
             default:
                 break;
@@ -48,9 +52,14 @@ public class PageFilter implements Filter {
         return action;
     }
 
-    private static void checkId(final ServletRequest request) {
+    private static void checkDashboardId(final ServletRequest request) {
         int id = Integer.valueOf(request.getParameter(DashboardColumns.ID.toString()));
         request.setAttribute(DashboardColumns.ID.toString(), id);
+    }
+
+    private static void checkWidgetId(final ServletRequest request) {
+        int id = Integer.valueOf(request.getParameter(WidgetColumns.ID.toString()));
+        request.setAttribute(WidgetColumns.ID.toString(), id);
     }
 
 }

@@ -79,7 +79,11 @@ public class Widget implements Comparable<Widget>, Serializable {
     }
 
     public void setFrom(final Date from) {
-        this.from = from;
+        if ((this.from == null) || (from == null)) {
+            this.from = from;
+        } else {
+            this.from.setTime(from.getTime());
+        }
     }
 
     public Date getTo() {
@@ -87,7 +91,11 @@ public class Widget implements Comparable<Widget>, Serializable {
     }
 
     public void setTo(final Date to) {
-        this.to = to;
+        if ((this.to == null) || (to == null)) {
+            this.to = to;
+        } else {
+            this.to.setTime(to.getTime());
+        }
     }
 
     @Override

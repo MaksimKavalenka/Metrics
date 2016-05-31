@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <html>
 	<head>
@@ -25,36 +26,41 @@
 		</script>
 	</head>
 
-	<body>
-		<c:set var="action" value="${(empty Dashboard) ? 'add_dashboard' : 'modify_dashboard'}"/>
+	<body onLoad="setVisibility('${(empty IdWidget) ? 4 : fn:length(IdWidget)}')">
+		<c:set var="action" value="${(empty Id) ? 'add_dashboard' : 'modify_dashboard'}"/>
 
 		<form method="POST" name="editDashboardForm" action="/web/edit">
 			<input type="hidden" name="action" value="${action}">
-			<input type="hidden" name="number" value="4">
-			<c:if test="${not empty Dashboard}">
-				<input type="hidden" name="Id" value="${Dashboard.id}">
-			</c:if>
+			<input type="hidden" name="number">
+			<input type="hidden" name="Id" value="${Id}">
 
 			<table class="form">
 				<tr><td class="title" colspan="2">Dashboard settings
 				<tr><td class="error" colspan="2">${error}
 
 				<tr><td class="name">Name
-					<td><input type="text" name="Name" size="30" maxlength="30" value="${(not empty Dashboard) ? Dashboard.name : ''}">
+					<td><input type="text" name="Name" size="30" maxlength="30" value="${Name}">
 
 				<tr><td class="name">Description
-					<td><input type="text" name="Description" size="30" maxlength="100" value="${(not empty Dashboard) ? Dashboard.description : ''}">
+					<td><input type="text" name="Description" size="30" maxlength="100" value="${Description}">
 
 				<tr><td class="name">Number of widgets
-					<td><a href="javascript:setVisibility('1')">1</a>
-						<a href="javascript:setVisibility('2')">2</a>
-						<a href="javascript:setVisibility('4')">4</a>
+					<td><a href="javascript:setVisibility(1)">1</a>
+						<a href="javascript:setVisibility(2)">2</a>
+						<a href="javascript:setVisibility(4)">4</a>
 
 				<tr><td><select name="IdWidget1">
 							<c:choose>
 								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}">
-										<option value="${widget.id}">${widget.name}</option> //add setting of widget
+									<c:forEach var="widget" items="${Widget}" varStatus="counter">
+										<c:choose>
+											<c:when test="${IdWidget[0] eq counter.count}">
+												<option value="${widget.id}" selected>${widget.name}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${widget.id}">${widget.name}</option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
@@ -65,8 +71,15 @@
 					<td><select name="IdWidget2">
 							<c:choose>
 								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}">
-										<option value="${widget.id}">${widget.name}</option>
+									<c:forEach var="widget" items="${Widget}" varStatus="counter">
+										<c:choose>
+											<c:when test="${IdWidget[1] eq counter.count}">
+												<option value="${widget.id}" selected>${widget.name}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${widget.id}">${widget.name}</option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
@@ -78,8 +91,15 @@
 				<tr><td><select name="IdWidget3">
 							<c:choose>
 								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}">
-										<option value="${widget.id}">${widget.name}</option>
+									<c:forEach var="widget" items="${Widget}" varStatus="counter">
+										<c:choose>
+											<c:when test="${IdWidget[2] eq counter.count}">
+												<option value="${widget.id}" selected>${widget.name}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${widget.id}">${widget.name}</option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
@@ -90,8 +110,15 @@
 					<td><select name="IdWidget4">
 							<c:choose>
 								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}">
-										<option value="${widget.id}">${widget.name}</option>
+									<c:forEach var="widget" items="${Widget}" varStatus="counter">
+										<c:choose>
+											<c:when test="${IdWidget[3] eq counter.count}">
+												<option value="${widget.id}" selected>${widget.name}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${widget.id}">${widget.name}</option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
@@ -103,7 +130,7 @@
 		</form>
 		<form method="POST" name="cancelForm" action="/web/dashboard/show"></form>
 
-		<input class="form" type="submit" value="Save" onClick="javascript:document.editDashboardForm.submit()">
-		<input class="form" type="button" value="Back" onClick="javascript:document.cancelForm.submit()">
+		<input class="form" type="submit" value="Save" onClick="document.editDashboardForm.submit()">
+		<input class="form" type="button" value="Back" onClick="document.cancelForm.submit()">
 	</body>
 </html>

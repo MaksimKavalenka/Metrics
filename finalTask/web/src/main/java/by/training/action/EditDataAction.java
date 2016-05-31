@@ -38,6 +38,9 @@ public class EditDataAction {
             case ADD_WIDGET:
                 WidgetEditData.addWidget(request);
                 break;
+            case MODIFY_WIDGET:
+                WidgetEditData.modifyWidget(request);
+                break;
             case DELETE_WIDGET:
                 WidgetEditData.deleteWidget(request);
                 break;
@@ -100,6 +103,28 @@ public class EditDataAction {
                     Date from = (Date) request.getAttribute(WidgetColumns.FROM.toString());
                     Date to = (Date) request.getAttribute(WidgetColumns.TO.toString());
                     widgetDAO.addWidget(name, metricType, refreshInterval, period, from, to);
+                }
+            }
+        }
+
+        private static void modifyWidget(final HttpServletRequest request) {
+            try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+                int id = (int) request.getAttribute(WidgetColumns.ID.toString());
+                String name = (String) request.getAttribute(WidgetColumns.NAME.toString());
+                MetricType metricType = (MetricType) request
+                        .getAttribute(WidgetColumns.METRIC_TYPE.toString());
+                RefreshInterval refreshInterval = (RefreshInterval) request
+                        .getAttribute(WidgetColumns.REFRESH_INTERVAL.toString());
+                Period period = (Period) request.getAttribute(WidgetColumns.PERIOD.toString());
+
+                boolean isCustom = (boolean) request.getAttribute(Period.CUSTOM.toString());
+                if (!isCustom) {
+                    widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, null,
+                            null);
+                } else {
+                    Date from = (Date) request.getAttribute(WidgetColumns.FROM.toString());
+                    Date to = (Date) request.getAttribute(WidgetColumns.TO.toString());
+                    widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, from, to);
                 }
             }
         }
