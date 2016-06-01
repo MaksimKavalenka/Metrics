@@ -58,7 +58,7 @@ public class MemoryWidgetEditor implements IWidgetDAO {
     }
 
     @Override
-    public List<Widget> getWidgets() {
+    public List<Widget> getAllWidgets() {
         return Memory.getWidgets();
     }
 

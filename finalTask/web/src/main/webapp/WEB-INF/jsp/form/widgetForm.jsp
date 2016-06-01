@@ -4,10 +4,6 @@
 	<head>
 		<title>Add widget</title>
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
-		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" media="screen" href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-		<script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>
 		<script type="text/javascript">
 			$(function() {
 				$('#from').datetimepicker({language: 'en-EN'});
@@ -110,20 +106,8 @@
 							<input type="radio" name="Custom" value="true">From/To
 						</c:otherwise>
 					</c:choose>
-					<td><div class="well">
-							<div id="from" class="input-append date">
-								<input type="text" name="From" data-format="dd.MM.yyyy hh:mm:ss" value="${From}"/>
-								<span class="add-on">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-								</span>
-							</div>
-							<div id="to" class="input-append date">
-								<input type="text" name="To" data-format="dd.MM.yyyy hh:mm:ss" value="${To}"/>
-								<span class="add-on">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-								</span>
-							</div>
-						</div>
+					<td><input type="datetime-local" name="From" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${From}"/>
+					<br><input type="datetime-local" name="To" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${To}"/>
 			</table>
 		</form>
 		<form method="POST" name="cancelForm" action="/web/widget/show"></form>

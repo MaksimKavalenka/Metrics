@@ -18,7 +18,7 @@ public interface IWidgetDAO extends IDAO {
 
     Widget getWidget(int id);
 
-    List<Widget> getWidgets();
+    List<Widget> getAllWidgets();
 
     void deleteWidget(int id);
 

@@ -11,7 +11,7 @@ import by.training.action.DataAction;
 import by.training.action.LoadDataAction;
 
 @WebServlet(name = "page", urlPatterns = {"/dashboard/show", "/dashboard/add", "/dashboard/modify",
-        "/widget/show", "/widget/add", "/widget/modify"})
+        "/widget/show", "/widget/add", "/widget/modify", "/chart"})
 public class PageServlet extends AbstractServlet {
 
     private static final long serialVersionUID = 5306106036240520824L;

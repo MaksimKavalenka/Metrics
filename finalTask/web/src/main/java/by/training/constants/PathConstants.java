@@ -12,6 +12,7 @@ public abstract class PathConstants {
 
         public static final String  DASHBOARD_PAGE_PATH = FULL_PATH + "/dashboardPage" + EXT;
         public static final String  WIDGET_PAGE_PATH    = FULL_PATH + "/widgetPage" + EXT;
+        public static final String  CHART_PAGE_PATH     = FULL_PATH + "/chartPage" + EXT;
 
     }
 

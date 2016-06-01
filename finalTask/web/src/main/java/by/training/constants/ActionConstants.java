@@ -9,7 +9,8 @@ public enum ActionConstants {
     SHOW_WIDGET(UriConstants.Pages.WIDGET_SHOW_PAGE_URI, PathConstants.Pages.WIDGET_PAGE_PATH, UriConstants.Pages.WIDGET_SHOW_PAGE_URI),
     ADD_WIDGET(UriConstants.Forms.WIDGET_ADD_FORM_URI, PathConstants.Forms.WIDGET_FORM_PATH, UriConstants.Forms.WIDGET_ADD_FORM_URI),
     MODIFY_WIDGET(UriConstants.Forms.WIDGET_MODIFY_FORM_URI, PathConstants.Forms.WIDGET_FORM_PATH, UriConstants.Pages.WIDGET_SHOW_PAGE_URI),
-    DELETE_WIDGET(UriConstants.Pages.WIDGET_SHOW_PAGE_URI, PathConstants.Pages.WIDGET_PAGE_PATH, UriConstants.Pages.WIDGET_SHOW_PAGE_URI);
+    DELETE_WIDGET(UriConstants.Pages.WIDGET_SHOW_PAGE_URI, PathConstants.Pages.WIDGET_PAGE_PATH, UriConstants.Pages.WIDGET_SHOW_PAGE_URI),
+    CHART(UriConstants.Pages.CHART_PAGE_URI, PathConstants.Pages.CHART_PAGE_PATH, UriConstants.Pages.CHART_PAGE_URI);
 
     private String uri;
     private String path;
@@ -28,7 +29,7 @@ public enum ActionConstants {
     public String getPath() {
         return path;
     }
-    
+
     public String getLocation() {
         return location;
     }

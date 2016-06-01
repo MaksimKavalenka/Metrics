@@ -55,7 +55,7 @@ public class MemoryDashboardEditor implements IDashboardDAO {
     }
 
     @Override
-    public List<Dashboard> getDashboards() {
+    public List<Dashboard> getAllDashboards() {
         return Memory.getDashboards();
     }
 

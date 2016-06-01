@@ -1,5 +1,6 @@
 package by.training.action;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import by.training.parser.DateFormatParser;
 public class LoadDataAction {
 
     public static String init(final HttpServletRequest request) {
-        getDashboards(request);
+        getAllDashboards(request);
         return PathConstants.Pages.DASHBOARD_PAGE_PATH;
     }
 
@@ -38,7 +39,7 @@ public class LoadDataAction {
         switch (action) {
             case MODIFY_DASHBOARD:
             case ADD_DASHBOARD:
-                getWidgets(request);
+                getAllWidgets(request);
                 break;
             case MODIFY_WIDGET:
             case ADD_WIDGET:
@@ -54,19 +55,22 @@ public class LoadDataAction {
 
         switch (action) {
             case SHOW_DASHBOARD:
-                getDashboards(request);
+                getAllDashboards(request);
                 break;
             case MODIFY_DASHBOARD:
                 getDashboard(request);
                 getDashboardWidgets(request);
             case ADD_DASHBOARD:
             case SHOW_WIDGET:
-                getWidgets(request);
+                getAllWidgets(request);
                 break;
             case MODIFY_WIDGET:
                 getWidget(request);
             case ADD_WIDGET:
                 getDefaultParameters(request);
+                break;
+            case CHART:
+                getWidgets(request);
                 break;
             default:
                 break;
@@ -93,9 +97,9 @@ public class LoadDataAction {
         }
     }
 
-    private static void getDashboards(final HttpServletRequest request) {
+    private static void getAllDashboards(final HttpServletRequest request) {
         try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
-            final List<Dashboard> dashboards = dashboardDAO.getDashboards();
+            final List<Dashboard> dashboards = dashboardDAO.getAllDashboards();
             request.setAttribute(DatabaseTables.DASHBOARD.toString(), dashboards);
         }
     }
@@ -123,8 +127,22 @@ public class LoadDataAction {
     }
 
     private static void getWidgets(final HttpServletRequest request) {
+        getDashboardWidgets(request);
         try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
-            final List<Widget> widgets = widgetDAO.getWidgets();
+            @SuppressWarnings("unchecked")
+            List<Integer> widgetIds = (List<Integer>) request
+                    .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
+            final List<Widget> widgets = new ArrayList<>(widgetIds.size());
+            for (Integer id : widgetIds) {
+                widgets.add(widgetDAO.getWidget(id));
+            }
+            request.setAttribute(DatabaseTables.WIDGET.toString(), widgets);
+        }
+    }
+
+    private static void getAllWidgets(final HttpServletRequest request) {
+        try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+            final List<Widget> widgets = widgetDAO.getAllWidgets();
             request.setAttribute(DatabaseTables.WIDGET.toString(), widgets);
         }
     }

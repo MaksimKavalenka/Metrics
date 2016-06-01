@@ -8,6 +8,7 @@ public class UriConstants {
 
         public static final String DASHBOARD_SHOW_PAGE_URI = URI + "/dashboard/show";
         public static final String WIDGET_SHOW_PAGE_URI    = URI + "/widget/show";
+        public static final String CHART_PAGE_URI          = URI + "/chart";
 
     }
 

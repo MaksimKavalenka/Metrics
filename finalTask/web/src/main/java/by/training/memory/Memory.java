@@ -6,6 +6,9 @@ import java.util.List;
 import by.training.bean.Dashboard;
 import by.training.bean.DashboardWidget;
 import by.training.bean.Widget;
+import by.training.options.MetricType;
+import by.training.options.Period;
+import by.training.options.RefreshInterval;
 
 public class Memory {
 
@@ -15,6 +18,15 @@ public class Memory {
 
     private static int                   dashboardLastId  = 1;
     private static int                   widgetLastId     = 1;
+
+    static {
+        widgets.add(new Widget(1, "Hello", MetricType.AVAILABLE_PROCESSORS, RefreshInterval.SECOND,
+                Period.LAST_MINUTES_15, null, null));
+        dashboards.add(new Dashboard(1, "Hey", "Yo"));
+        dashboardWidgets.add(new DashboardWidget(1, 1));
+        incDashboardLastId();
+        incWidgetLastId();
+    }
 
     public static List<Dashboard> getDashboards() {
         return dashboards;

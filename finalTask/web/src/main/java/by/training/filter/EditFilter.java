@@ -163,6 +163,7 @@ public class EditFilter implements Filter {
 
                     request.setAttribute(WidgetColumns.PERIOD.toString(), Period.CUSTOM);
                 } catch (ParseException e) {
+                    e.printStackTrace();
                     request.setAttribute(PropertyConstants.ERROR,
                             MessageConstants.SPECIFIED_DATE_ERROR);
                 }

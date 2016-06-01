@@ -12,7 +12,7 @@ public interface IDashboardDAO extends IDAO {
 
     Dashboard getDashboard(int id);
 
-    List<Dashboard> getDashboards();
+    List<Dashboard> getAllDashboards();
 
     void deleteDashboard(int id);
 

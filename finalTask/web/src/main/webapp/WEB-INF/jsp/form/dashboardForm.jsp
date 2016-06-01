@@ -5,7 +5,6 @@
 	<head>
 		<title>Add dashboard</title>
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
-		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
 		<script type="text/javascript">
 			function setVisibility(number) {
 				document.editDashboardForm.number.value = number;
@@ -49,12 +48,13 @@
 						<a href="javascript:setVisibility(2)">2</a>
 						<a href="javascript:setVisibility(4)">4</a>
 
-				<tr><td><select name="IdWidget1">
+				<tr><c:forEach var="i" begin="1" end="4">
+					<td><select name="IdWidget${i}">
 							<c:choose>
 								<c:when test="${not empty Widget}">
 									<c:forEach var="widget" items="${Widget}" varStatus="counter">
 										<c:choose>
-											<c:when test="${IdWidget[0] eq counter.count}">
+											<c:when test="${IdWidget[i-1] eq counter.count}">
 												<option value="${widget.id}" selected>${widget.name}</option>
 											</c:when>
 											<c:otherwise>
@@ -68,64 +68,10 @@
 								</c:otherwise>
 							</c:choose>
 						</select>
-					<td><select name="IdWidget2">
-							<c:choose>
-								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}" varStatus="counter">
-										<c:choose>
-											<c:when test="${IdWidget[1] eq counter.count}">
-												<option value="${widget.id}" selected>${widget.name}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${widget.id}">${widget.name}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<option disabled>Empty</option>
-								</c:otherwise>
-							</c:choose>
-						</select>
-
-				<tr><td><select name="IdWidget3">
-							<c:choose>
-								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}" varStatus="counter">
-										<c:choose>
-											<c:when test="${IdWidget[2] eq counter.count}">
-												<option value="${widget.id}" selected>${widget.name}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${widget.id}">${widget.name}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<option disabled>Empty</option>
-								</c:otherwise>
-							</c:choose>
-						</select>
-					<td><select name="IdWidget4">
-							<c:choose>
-								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}" varStatus="counter">
-										<c:choose>
-											<c:when test="${IdWidget[3] eq counter.count}">
-												<option value="${widget.id}" selected>${widget.name}</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${widget.id}">${widget.name}</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<option disabled>Empty</option>
-								</c:otherwise>
-							</c:choose>
-						</select>
+					<c:if test="${i % 2 == 0}">
+						<tr>
+					</c:if>
+				</c:forEach>
 			</table>
 		</form>
 		<form method="POST" name="cancelForm" action="/web/dashboard/show"></form>

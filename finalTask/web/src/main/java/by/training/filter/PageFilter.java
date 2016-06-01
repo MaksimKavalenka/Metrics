@@ -29,6 +29,7 @@ public class PageFilter implements Filter {
 
         switch (checkAction(request)) {
             case MODIFY_DASHBOARD:
+            case CHART:
                 checkDashboardId(request);
                 break;
             case MODIFY_WIDGET:

@@ -17,6 +17,12 @@
 				document.deleteDashboardForm.submit();
 			}
 		</script>
+		<script type="text/javascript">
+			function chart(id) {
+				document.chartForm.Id.value = id;
+				document.chartForm.submit();
+			}
+		</script>
 	</head>
 
 	<body>
@@ -24,6 +30,9 @@
 			<input type="hidden" name="Id">
 		</form>
 		<form method="POST" name="deleteDashboardForm" action="/web/edit?action=delete_dashboard">
+			<input type="hidden" name="Id">
+		</form>
+		<form method="POST" name="chartForm" action="/web/chart">
 			<input type="hidden" name="Id">
 		</form>
 
@@ -37,7 +46,7 @@
 			<c:forEach var="dashboard" items="${Dashboard}" varStatus="counter">
 				<tr class="content">
 					<td align="right">${counter.count}
-					<td>${dashboard.name}
+					<td><a class="dashboard" href="javascript:chart(${dashboard.id})">${dashboard.name}</a>
 					<td>${dashboard.description}
 					<td>
 						<input class="action" type="button" value="Modify" onClick="modifyDashboard(${dashboard.id})">
