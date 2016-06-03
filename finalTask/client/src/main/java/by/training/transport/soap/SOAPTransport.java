@@ -32,12 +32,12 @@ public class SOAPTransport implements TransportDAO {
     }
 
     @Override
-    public Metric getLast(final MetricType typeMetric) {
+    public Metric getLast(final MetricType metricType) {
         Metric metric = DEFAULT_VALUE;
 
         try {
             synchronized (this) {
-                metric = serviceInterface.getLast(typeMetric.name());
+                metric = serviceInterface.getLast(metricType.name());
             }
             status = HTTP_200;
         } catch (WebServiceException e) {
@@ -48,12 +48,12 @@ public class SOAPTransport implements TransportDAO {
     }
 
     @Override
-    public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to) {
+    public List<Metric> getList(final MetricType metricType, final Date from, final Date to) {
         List<Metric> list = DEFAULT_LIST;
 
         try {
             synchronized (this) {
-                list = Arrays.asList(serviceInterface.getList(typeMetric.name(), from, to));
+                list = Arrays.asList(serviceInterface.getList(metricType.name(), from, to));
             }
             status = HTTP_200;
         } catch (WebServiceException e) {

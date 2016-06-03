@@ -99,7 +99,6 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
                 case HTTP_200:
                     callStorage(String.valueOf(storage.getLast().getValue()));
                     break;
-
                 case HTTP_404:
                     storage.setParameters(options.getTransportElement().getParameters());
                 case HTTP_503:

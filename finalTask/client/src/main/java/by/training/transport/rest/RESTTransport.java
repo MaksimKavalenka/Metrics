@@ -39,13 +39,13 @@ public class RESTTransport implements TransportDAO {
     }
 
     @Override
-    public Metric getLast(final MetricType typeMetric) {
+    public Metric getLast(final MetricType metricType) {
         Metric metric = DEFAULT_VALUE;
         String str;
 
         try {
             synchronized (this) {
-                str = service.path(typeMetric.name()).request().accept(MediaType.APPLICATION_JSON)
+                str = service.path(metricType.name()).request().accept(MediaType.APPLICATION_JSON)
                         .get(String.class);
             }
             try {
@@ -64,13 +64,13 @@ public class RESTTransport implements TransportDAO {
     }
 
     @Override
-    public List<Metric> getList(final MetricType typeMetric, final Date from, final Date to) {
+    public List<Metric> getList(final MetricType metricType, final Date from, final Date to) {
         String str = "";
         List<Metric> list = DEFAULT_LIST;
 
         try {
             synchronized (this) {
-                str = service.path(typeMetric.name() + "/" + from.getTime() + "_" + to.getTime())
+                str = service.path(metricType.name() + "/" + from.getTime() + "_" + to.getTime())
                         .request().accept(MediaType.APPLICATION_JSON).get(String.class);
             }
             try {
