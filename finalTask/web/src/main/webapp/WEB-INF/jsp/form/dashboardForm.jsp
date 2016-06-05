@@ -46,9 +46,9 @@
 					<td><select name="IdWidget${i}">
 							<c:choose>
 								<c:when test="${not empty Widget}">
-									<c:forEach var="widget" items="${Widget}" varStatus="counter">
+									<c:forEach var="widget" items="${Widget}">
 										<c:choose>
-											<c:when test="${IdWidget[i-1] eq counter.count}">
+											<c:when test="${IdWidget[i-1] eq widget.id}">
 												<option value="${widget.id}" selected>${widget.name}</option>
 											</c:when>
 											<c:otherwise>

@@ -4,12 +4,6 @@
 	<head>
 		<title>Add widget</title>
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
-		<script type="text/javascript">
-			$(function() {
-				$('#from').datetimepicker({language: 'en-EN'});
-				$('#to').datetimepicker({language: 'en-EN'});
-			});
-		</script>
 	</head>
 
 	<body>
@@ -106,8 +100,8 @@
 							<input type="radio" name="Custom" value="true">From/To
 						</c:otherwise>
 					</c:choose>
-					<td><input type="datetime-local" name="From" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${From}"/>
-					<br><input type="datetime-local" name="To" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${To}"/>
+					<td><input type="datetime-local" name="Start" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${Start}"/>
+					<br><input type="datetime-local" name="End" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${End}"/>
 			</table>
 		</form>
 		<form method="POST" name="cancelForm" action="/web/widget/show"></form>

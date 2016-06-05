@@ -13,14 +13,12 @@ import by.training.constants.ActionConstants;
 import by.training.constants.PathConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IDashboardDAO;
-import by.training.dao.IDashboardWidgetDAO;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
 import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.DatabaseTables;
 import by.training.database.structure.WidgetColumns;
 import by.training.factory.DashboardFactory;
-import by.training.factory.DashboardWidgetFactory;
 import by.training.factory.WidgetFactory;
 import by.training.options.MetricType;
 import by.training.options.Period;
@@ -71,6 +69,7 @@ public class LoadDataAction {
                 getDefaultParameters(request);
                 break;
             case CHART:
+                getDashboardWidgets(request);
                 getWidgets(request, response);
                 break;
             default:
@@ -117,10 +116,10 @@ public class LoadDataAction {
 
             if (widget.getPeriod() == Period.CUSTOM) {
                 request.setAttribute(Period.CUSTOM.toString(), true);
-                request.setAttribute(WidgetColumns.FROM.toString(),
-                        DateFormatParser.dateToString(widget.getFrom()));
-                request.setAttribute(WidgetColumns.TO.toString(),
-                        DateFormatParser.dateToString(widget.getTo()));
+                request.setAttribute(WidgetColumns.START.toString(),
+                        DateFormatParser.dateToString(widget.getStart()));
+                request.setAttribute(WidgetColumns.END.toString(),
+                        DateFormatParser.dateToString(widget.getEnd()));
             } else {
                 request.setAttribute(Period.CUSTOM.toString(), false);
             }
@@ -129,7 +128,6 @@ public class LoadDataAction {
 
     private static void getWidgets(final HttpServletRequest request,
             final HttpServletResponse response) {
-        getDashboardWidgets(request);
         try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
             @SuppressWarnings("unchecked")
             List<Integer> widgetIds = (List<Integer>) request
@@ -150,12 +148,15 @@ public class LoadDataAction {
     }
 
     private static void getDashboardWidgets(final HttpServletRequest request) {
-        try (IDashboardWidgetDAO dashboardWidgetDAO = DashboardWidgetFactory.getEditor()) {
-            int idDashboard = (int) request.getAttribute(DashboardColumns.ID.toString());
-            List<Integer> widgetIds = dashboardWidgetDAO.getWidgetIds(idDashboard);
+        try (IDashboardDAO dashboardDAO = DashboardFactory.getEditor()) {
+            int id = (int) request.getAttribute(DashboardColumns.ID.toString());
+            Dashboard dashboard = dashboardDAO.getDashboard(id);
+            List<Integer> widgetIds = new ArrayList<>(dashboard.getWidgets().size());
+            for (Widget widget : dashboard.getWidgets()) {
+                widgetIds.add(widget.getId());
+            }
             request.setAttribute(DashboardWidgetColumns.ID_WIDGET.toString(), widgetIds);
         }
-
     }
 
 }

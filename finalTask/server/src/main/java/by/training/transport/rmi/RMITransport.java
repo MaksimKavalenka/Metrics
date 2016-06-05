@@ -1,6 +1,8 @@
 package by.training.transport.rmi;
 
+import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -15,11 +17,19 @@ import by.training.storage.StorageMXBean;
 
 public class RMITransport implements RMIWebServiceInterface {
 
+    private static Registry registry;
+    private static Remote   stub;
+
     public static void publish() throws RemoteException, AlreadyBoundException {
-        final Registry registry = LocateRegistry.createRegistry(8082);
         final RMIWebServiceInterface service = new RMITransport();
-        final Remote stub = UnicastRemoteObject.exportObject(service, 0);
+        registry = LocateRegistry.createRegistry(8082);
+        stub = UnicastRemoteObject.exportObject(service, 8082);
         registry.bind("metrics/rmi", stub);
+    }
+
+    public static void shutdown() throws AccessException, RemoteException, NotBoundException {
+        registry.unbind("metrics/rmi");
+        UnicastRemoteObject.unexportObject(stub, false);
     }
 
     @Override

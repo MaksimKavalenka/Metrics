@@ -1,52 +1,43 @@
 package by.training.editor.memory;
 
+import java.util.Iterator;
 import java.util.List;
 
 import by.training.bean.Dashboard;
+import by.training.bean.Widget;
 import by.training.dao.IDashboardDAO;
-import by.training.dao.IDashboardWidgetDAO;
-import by.training.factory.DashboardWidgetFactory;
-import by.training.memory.Memory;
+import by.training.data.memory.Memory;
 
 public class MemoryDashboardEditor implements IDashboardDAO {
 
-    private final IDashboardWidgetDAO DASHBOARD_WIDGET_DAO;
-
-    {
-        DASHBOARD_WIDGET_DAO = DashboardWidgetFactory.getEditor();
-    }
-
     @Override
     public void addDashboard(final String name, final String description,
-            final List<Integer> widgetIds) {
+            final List<Widget> widgets) {
         synchronized (MemoryDashboardEditor.class) {
-            int idDashboard = Memory.getDashboardLastId();
-            Dashboard dashboard = new Dashboard(Memory.getDashboardLastId(), name, description);
+            Dashboard dashboard = new Dashboard(Memory.getDashboardLastId(), name, description,
+                    widgets);
             Memory.getDashboards().add(dashboard);
             Memory.incDashboardLastId();
-            for (Integer idWidget : widgetIds) {
-                DASHBOARD_WIDGET_DAO.addDashboardWidget(idDashboard, idWidget);
-            }
         }
     }
 
     @Override
     public void modifyDashboard(final int id, final String name, final String description,
-            final List<Integer> widgetIds) {
+            final List<Widget> widgets) {
+        Dashboard dashboard;
         synchronized (MemoryDashboardEditor.class) {
-            Dashboard dashboard = getDashboard(id);
+            dashboard = getDashboard(id);
             dashboard.setName(name);
             dashboard.setDescription(description);
-            DASHBOARD_WIDGET_DAO.deleteDashboard(dashboard.getId());
-            for (Integer idWidget : widgetIds) {
-                DASHBOARD_WIDGET_DAO.addDashboardWidget(dashboard.getId(), idWidget);
-            }
+            dashboard.setWidgets(widgets);
         }
     }
 
     @Override
     public Dashboard getDashboard(final int id) {
-        for (Dashboard dashboard : Memory.getDashboards()) {
+        Iterator<Dashboard> iterator = Memory.getDashboards().iterator();
+        while (iterator.hasNext()) {
+            Dashboard dashboard = iterator.next();
             if (dashboard.getId() == id) {
                 return dashboard;
             }
@@ -61,10 +52,10 @@ public class MemoryDashboardEditor implements IDashboardDAO {
 
     @Override
     public void deleteDashboard(final int id) {
+        Dashboard dashboard;
         synchronized (MemoryDashboardEditor.class) {
-            Dashboard dashboard = getDashboard(id);
+            dashboard = getDashboard(id);
             Memory.getDashboards().remove(dashboard);
-            DASHBOARD_WIDGET_DAO.deleteDashboard(dashboard.getId());
         }
     }
 

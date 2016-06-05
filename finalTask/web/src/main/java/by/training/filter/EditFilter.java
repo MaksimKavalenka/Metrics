@@ -93,8 +93,8 @@ public class EditFilter implements Filter {
                     out.print(RESTTransport.getList(widget.getMetricType(),
                             widget.getPeriod().getDate(), new Date(0)));
                 } else {
-                    out.print(RESTTransport.getList(widget.getMetricType(), widget.getFrom(),
-                            widget.getTo()));
+                    out.print(RESTTransport.getList(widget.getMetricType(), widget.getStart(),
+                            widget.getEnd()));
                 }
                 out.flush();
             } catch (IOException e) {
@@ -181,13 +181,13 @@ public class EditFilter implements Filter {
 
             if (isCustom) {
                 try {
-                    String from = request.getParameter(WidgetColumns.FROM.toString());
-                    request.setAttribute(WidgetColumns.FROM.toString(),
-                            DateFormatParser.stringToDate(from));
+                    String start = request.getParameter(WidgetColumns.START.toString());
+                    request.setAttribute(WidgetColumns.START.toString(),
+                            DateFormatParser.stringToDate(start));
 
-                    String to = request.getParameter(WidgetColumns.TO.toString());
-                    request.setAttribute(WidgetColumns.TO.toString(),
-                            DateFormatParser.stringToDate(to));
+                    String end = request.getParameter(WidgetColumns.END.toString());
+                    request.setAttribute(WidgetColumns.END.toString(),
+                            DateFormatParser.stringToDate(end));
 
                     request.setAttribute(WidgetColumns.PERIOD.toString(), Period.CUSTOM);
                 } catch (ParseException e) {

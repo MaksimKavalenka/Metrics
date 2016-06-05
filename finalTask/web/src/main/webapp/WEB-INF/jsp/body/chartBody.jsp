@@ -22,9 +22,6 @@
 					type: 'POST',
 					url: '/web/edit?action=chart&Id='+widget,
 					dataType: 'json',
-					error: function(xhr, status, error) {
-						alert(xhr.responseText);
-					},
 					success: function (data) {
 						var rawData = [];
 						$.each(data, function(index, element) {

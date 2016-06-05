@@ -1,24 +1,17 @@
 package by.training.editor.memory;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import by.training.bean.Widget;
-import by.training.dao.IDashboardWidgetDAO;
 import by.training.dao.IWidgetDAO;
-import by.training.factory.DashboardWidgetFactory;
-import by.training.memory.Memory;
+import by.training.data.memory.Memory;
 import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
 
 public class MemoryWidgetEditor implements IWidgetDAO {
-
-    private final IDashboardWidgetDAO DASHBOARD_WIDGET_DAO;
-
-    {
-        DASHBOARD_WIDGET_DAO = DashboardWidgetFactory.getEditor();
-    }
 
     @Override
     public void addWidget(final String name, final MetricType metricType,
@@ -34,22 +27,24 @@ public class MemoryWidgetEditor implements IWidgetDAO {
 
     @Override
     public void modifyWidget(final int id, final String name, final MetricType metricType,
-            final RefreshInterval refreshInterval, final Period period, final Date from,
-            final Date to) {
+            final RefreshInterval refreshInterval, final Period period, final Date start,
+            final Date end) {
         synchronized (MemoryWidgetEditor.class) {
             Widget widget = getWidget(id);
             widget.setName(name);
             widget.setMetricType(metricType);
             widget.setRefreshInterval(refreshInterval);
             widget.setPeriod(period);
-            widget.setFrom(from);
-            widget.setTo(to);
+            widget.setStart(start);
+            widget.setEnd(end);
         }
     }
 
     @Override
     public Widget getWidget(final int id) {
-        for (Widget widget : Memory.getWidgets()) {
+        Iterator<Widget> iterator = Memory.getWidgets().iterator();
+        while (iterator.hasNext()) {
+            Widget widget = iterator.next();
             if (widget.getId() == id) {
                 return widget;
             }
@@ -64,9 +59,9 @@ public class MemoryWidgetEditor implements IWidgetDAO {
 
     @Override
     public void deleteWidget(final int id) {
+        Widget widget;
         synchronized (MemoryWidgetEditor.class) {
-            Widget widget = getWidget(id);
-            DASHBOARD_WIDGET_DAO.deleteWidget(widget.getId());
+            widget = getWidget(id);
             Memory.getWidgets().remove(widget);
         }
     }

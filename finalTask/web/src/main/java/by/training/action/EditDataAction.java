@@ -1,10 +1,12 @@
 package by.training.action;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import by.training.bean.Widget;
 import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IDashboardDAO;
@@ -59,7 +61,14 @@ public class EditDataAction {
                 @SuppressWarnings("unchecked")
                 List<Integer> widgetIds = (List<Integer>) request
                         .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
-                dashboardDAO.addDashboard(name, description, widgetIds);
+                List<Widget> widgets = new ArrayList<>(widgetIds.size());
+
+                try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+                    for (Integer id : widgetIds) {
+                        widgets.add(widgetDAO.getWidget(id));
+                    }
+                }
+                dashboardDAO.addDashboard(name, description, widgets);
             }
         }
 
@@ -72,7 +81,14 @@ public class EditDataAction {
                 @SuppressWarnings("unchecked")
                 List<Integer> widgetIds = (List<Integer>) request
                         .getAttribute(DashboardWidgetColumns.ID_WIDGET.toString());
-                dashboardDAO.modifyDashboard(id, name, description, widgetIds);
+                List<Widget> widgets = new ArrayList<>(widgetIds.size());
+
+                try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+                    for (Integer idWidget : widgetIds) {
+                        widgets.add(widgetDAO.getWidget(idWidget));
+                    }
+                }
+                dashboardDAO.modifyDashboard(id, name, description, widgets);
             }
         }
 
@@ -100,8 +116,8 @@ public class EditDataAction {
                 if (!isCustom) {
                     widgetDAO.addWidget(name, metricType, refreshInterval, period, null, null);
                 } else {
-                    Date from = (Date) request.getAttribute(WidgetColumns.FROM.toString());
-                    Date to = (Date) request.getAttribute(WidgetColumns.TO.toString());
+                    Date from = (Date) request.getAttribute(WidgetColumns.START.toString());
+                    Date to = (Date) request.getAttribute(WidgetColumns.END.toString());
                     widgetDAO.addWidget(name, metricType, refreshInterval, period, from, to);
                 }
             }
@@ -122,8 +138,8 @@ public class EditDataAction {
                     widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, null,
                             null);
                 } else {
-                    Date from = (Date) request.getAttribute(WidgetColumns.FROM.toString());
-                    Date to = (Date) request.getAttribute(WidgetColumns.TO.toString());
+                    Date from = (Date) request.getAttribute(WidgetColumns.START.toString());
+                    Date to = (Date) request.getAttribute(WidgetColumns.END.toString());
                     widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, from, to);
                 }
             }

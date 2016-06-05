@@ -1,12 +1,12 @@
 package by.training.factory;
 
 import by.training.dao.IWidgetDAO;
-import by.training.editor.memory.MemoryWidgetEditor;
+import by.training.editor.hibernate.HibernateWidgetEditor;
 
 public class WidgetFactory {
 
     public static IWidgetDAO getEditor() {
-        return new MemoryWidgetEditor();
+        return new HibernateWidgetEditor();
     }
 
 }

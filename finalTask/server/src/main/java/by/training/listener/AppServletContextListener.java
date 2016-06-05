@@ -1,6 +1,7 @@
 package by.training.listener;
 
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -27,7 +28,7 @@ public class AppServletContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
-        destroyAll();
+        shutdownAll();
         StorageMXBean.deactivate();
     }
 
@@ -52,9 +53,15 @@ public class AppServletContextListener implements ServletContextListener {
         }
     }
 
-    private void destroyAll() {
+    private void shutdownAll() {
         try {
-            JMSTransport.destroy();
+            RMITransport.shutdown();
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JMSTransport.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }

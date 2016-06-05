@@ -2,36 +2,79 @@ package by.training.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
 
+@Entity
+@Table(name = "Widget")
 public class Widget implements Comparable<Widget>, Serializable {
 
     private static final long serialVersionUID = 8296154453314999388L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "Id", length = 5)
     private int               id;
+
+    @Column(name = "Name", length = 30)
+    @NotNull
     private String            name;
+
+    @Column(name = "MetricType", length = 2)
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
     private MetricType        metricType;
+
+    @Column(name = "RefreshInterval", length = 1)
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
     private RefreshInterval   refreshInterval;
+
+    @Column(name = "Period", length = 1)
+    @Enumerated(EnumType.ORDINAL)
+    @NotNull
     private Period            period;
-    private Date              from;
-    private Date              to;
+
+    @Column(name = "Start")
+    @Temporal(TemporalType.TIME)
+    private Date              start;
+
+    @Column(name = "End")
+    @Temporal(TemporalType.TIME)
+    private Date              end;
+
+    @ManyToMany(mappedBy = "widgets")
+    private List<Dashboard>   dashboards;
 
     public Widget() {
     }
 
     public Widget(final Integer id, final String name, final MetricType metricType,
-            final RefreshInterval refreshInterval, final Period period, final Date from,
-            final Date to) {
+            final RefreshInterval refreshInterval, final Period period, final Date start,
+            final Date end) {
         this.id = id;
         this.name = name;
         this.metricType = metricType;
         this.refreshInterval = refreshInterval;
         this.period = period;
-        this.from = from;
-        this.to = to;
+        this.start = start;
+        this.end = end;
     }
 
     public int getId() {
@@ -74,28 +117,36 @@ public class Widget implements Comparable<Widget>, Serializable {
         this.period = period;
     }
 
-    public Date getFrom() {
-        return from;
+    public Date getStart() {
+        return start;
     }
 
-    public void setFrom(final Date from) {
-        if ((this.from == null) || (from == null)) {
-            this.from = from;
+    public void setStart(final Date start) {
+        if ((this.start == null) || (start == null)) {
+            this.start = start;
         } else {
-            this.from.setTime(from.getTime());
+            this.start.setTime(start.getTime());
         }
     }
 
-    public Date getTo() {
-        return to;
+    public Date getEnd() {
+        return end;
     }
 
-    public void setTo(final Date to) {
-        if ((this.to == null) || (to == null)) {
-            this.to = to;
+    public void setEnd(final Date end) {
+        if ((this.end == null) || (end == null)) {
+            this.end = end;
         } else {
-            this.to.setTime(to.getTime());
+            this.end.setTime(end.getTime());
         }
+    }
+
+    public List<Dashboard> getDashboards() {
+        return dashboards;
+    }
+
+    public void setDashboards(final List<Dashboard> dashboards) {
+        this.dashboards = dashboards;
     }
 
     @Override

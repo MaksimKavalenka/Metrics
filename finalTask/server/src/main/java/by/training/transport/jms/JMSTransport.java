@@ -37,7 +37,7 @@ public class JMSTransport {
         broker.start();
     }
 
-    public static void destroy() throws Exception {
+    public static void shutdown() throws Exception {
         session.close();
         if (connection != null) {
             connection.close();

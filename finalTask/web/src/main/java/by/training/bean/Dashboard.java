@@ -1,22 +1,52 @@
 package by.training.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "Dashboard")
 public class Dashboard implements Comparable<Dashboard>, Serializable {
 
     private static final long serialVersionUID = 1569833650274367256L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "Id", length = 5)
     private int               id;
+
+    @Column(name = "Name", length = 30)
+    @NotNull
     private String            name;
+
+    @Column(name = "Description", length = 30)
     private String            description;
+
+    @ManyToMany
+    @JoinTable(name = "DashboardWidget", joinColumns = {
+            @JoinColumn(name = "IdDashboard")}, inverseJoinColumns = {
+                    @JoinColumn(name = "IdWidget")})
+    private List<Widget>      widgets;
 
     public Dashboard() {
     }
 
-    public Dashboard(final int id, final String name, final String description) {
+    public Dashboard(final int id, final String name, final String description,
+            final List<Widget> widgets) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.widgets = widgets;
     }
 
     public int getId() {
@@ -41,6 +71,14 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
 
     public void setDescription(final String description) {
         this.description = description;
+    }
+
+    public List<Widget> getWidgets() {
+        return widgets;
+    }
+
+    public void setWidgets(final List<Widget> widgets) {
+        this.widgets = widgets;
     }
 
     @Override

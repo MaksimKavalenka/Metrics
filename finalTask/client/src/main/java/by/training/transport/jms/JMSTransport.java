@@ -117,7 +117,9 @@ public class JMSTransport implements TransportDAO {
     @Override
     public void close() {
         try {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
             if (connection != null) {
                 connection.close();
             }
