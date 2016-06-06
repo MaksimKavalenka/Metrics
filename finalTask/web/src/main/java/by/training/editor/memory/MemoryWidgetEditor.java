@@ -15,11 +15,11 @@ public class MemoryWidgetEditor implements IWidgetDAO {
 
     @Override
     public void addWidget(final String name, final MetricType metricType,
-            final RefreshInterval refreshInterval, final Period period, final Date from,
-            final Date to) {
+            final RefreshInterval refreshInterval, final Period period, final Date fromDate,
+            final Date toDate) {
         synchronized (MemoryWidgetEditor.class) {
             Widget widget = new Widget(Memory.getWidgetLastId(), name, metricType, refreshInterval,
-                    period, from, to);
+                    period, fromDate, toDate);
             Memory.getWidgets().add(widget);
             Memory.incWidgetLastId();
         }
@@ -27,16 +27,16 @@ public class MemoryWidgetEditor implements IWidgetDAO {
 
     @Override
     public void modifyWidget(final int id, final String name, final MetricType metricType,
-            final RefreshInterval refreshInterval, final Period period, final Date start,
-            final Date end) {
+            final RefreshInterval refreshInterval, final Period period, final Date fromDate,
+            final Date toDate) {
         synchronized (MemoryWidgetEditor.class) {
             Widget widget = getWidget(id);
             widget.setName(name);
             widget.setMetricType(metricType);
             widget.setRefreshInterval(refreshInterval);
             widget.setPeriod(period);
-            widget.setStart(start);
-            widget.setEnd(end);
+            widget.setFromDate(fromDate);
+            widget.setToDate(toDate);
         }
     }
 

@@ -25,7 +25,7 @@ import by.training.options.Period;
 import by.training.options.RefreshInterval;
 import by.training.parser.DateFormatParser;
 
-public class LoadDataAction {
+public abstract class LoadDataAction {
 
     public static String init(final HttpServletRequest request) {
         getAllDashboards(request);
@@ -116,10 +116,10 @@ public class LoadDataAction {
 
             if (widget.getPeriod() == Period.CUSTOM) {
                 request.setAttribute(Period.CUSTOM.toString(), true);
-                request.setAttribute(WidgetColumns.START.toString(),
-                        DateFormatParser.dateToString(widget.getStart()));
-                request.setAttribute(WidgetColumns.END.toString(),
-                        DateFormatParser.dateToString(widget.getEnd()));
+                request.setAttribute(WidgetColumns.FROM_DATE.toString(),
+                        DateFormatParser.dateToString(widget.getFromDate()));
+                request.setAttribute(WidgetColumns.TO_DATE.toString(),
+                        DateFormatParser.dateToString(widget.getToDate()));
             } else {
                 request.setAttribute(Period.CUSTOM.toString(), false);
             }

@@ -1,8 +1,9 @@
 package by.training.filter;
 
+import static by.training.constants.MessageConstants.*;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,12 +18,12 @@ import javax.servlet.annotation.WebFilter;
 
 import by.training.bean.Widget;
 import by.training.constants.ActionConstants;
-import by.training.constants.MessageConstants;
 import by.training.constants.PropertyConstants;
 import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
 import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.WidgetColumns;
+import by.training.exception.IllegalDataException;
 import by.training.factory.WidgetFactory;
 import by.training.options.MetricType;
 import by.training.options.Period;
@@ -93,8 +94,8 @@ public class EditFilter implements Filter {
                     out.print(RESTTransport.getList(widget.getMetricType(),
                             widget.getPeriod().getDate(), new Date(0)));
                 } else {
-                    out.print(RESTTransport.getList(widget.getMetricType(), widget.getStart(),
-                            widget.getEnd()));
+                    out.print(RESTTransport.getList(widget.getMetricType(), widget.getFromDate(),
+                            widget.getToDate()));
                 }
                 out.flush();
             } catch (IOException e) {
@@ -114,7 +115,7 @@ public class EditFilter implements Filter {
             String name = request.getParameter(DashboardColumns.NAME.toString());
 
             if (name.trim().isEmpty()) {
-                request.setAttribute(PropertyConstants.ERROR, MessageConstants.EMPTY_NAME_MESSAGE);
+                request.setAttribute(PropertyConstants.ERROR, EMPTY_NAME_MESSAGE);
             } else {
                 request.setAttribute(DashboardColumns.NAME.toString(), name);
             }
@@ -137,8 +138,7 @@ public class EditFilter implements Filter {
                 }
                 request.setAttribute(DashboardWidgetColumns.ID_WIDGET.toString(), list);
             } catch (NumberFormatException e) {
-                request.setAttribute(PropertyConstants.ERROR,
-                        MessageConstants.SPECIFIED_WIDGET_ERROR);
+                request.setAttribute(PropertyConstants.ERROR, SPECIFIED_WIDGET_MESSAGE);
             }
         }
 
@@ -155,7 +155,7 @@ public class EditFilter implements Filter {
             String name = request.getParameter(WidgetColumns.NAME.toString());
 
             if (name.trim().isEmpty()) {
-                request.setAttribute(PropertyConstants.ERROR, MessageConstants.EMPTY_NAME_MESSAGE);
+                request.setAttribute(PropertyConstants.ERROR, EMPTY_NAME_MESSAGE);
             } else {
                 request.setAttribute(WidgetColumns.NAME.toString(), name);
             }
@@ -180,20 +180,25 @@ public class EditFilter implements Filter {
             request.setAttribute(Period.CUSTOM.toString(), isCustom);
 
             if (isCustom) {
+                String start = request.getParameter(WidgetColumns.FROM_DATE.toString());
+                String end = request.getParameter(WidgetColumns.TO_DATE.toString());
+
                 try {
-                    String start = request.getParameter(WidgetColumns.START.toString());
-                    request.setAttribute(WidgetColumns.START.toString(),
+                    request.setAttribute(WidgetColumns.FROM_DATE.toString(),
                             DateFormatParser.stringToDate(start));
-
-                    String end = request.getParameter(WidgetColumns.END.toString());
-                    request.setAttribute(WidgetColumns.END.toString(),
+                    end = request.getParameter(WidgetColumns.TO_DATE.toString());
+                    request.setAttribute(WidgetColumns.TO_DATE.toString(),
                             DateFormatParser.stringToDate(end));
-
                     request.setAttribute(WidgetColumns.PERIOD.toString(), Period.CUSTOM);
-                } catch (ParseException e) {
+
+                    if (start.compareTo(end) >= 0) {
+                        throw new IllegalDataException(INCORRECT_DATES_MESSAGE);
+                    }
+                } catch (IllegalDataException e) {
                     e.printStackTrace();
-                    request.setAttribute(PropertyConstants.ERROR,
-                            MessageConstants.SPECIFIED_DATE_ERROR);
+                    request.setAttribute(WidgetColumns.FROM_DATE.toString(), start);
+                    request.setAttribute(WidgetColumns.TO_DATE.toString(), end);
+                    request.setAttribute(PropertyConstants.ERROR, e.getMessage());
                 }
             } else {
                 int period = Integer.valueOf(request.getParameter(WidgetColumns.PERIOD.toString()));

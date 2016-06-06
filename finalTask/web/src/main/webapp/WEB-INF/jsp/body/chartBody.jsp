@@ -25,7 +25,8 @@
 					success: function (data) {
 						var rawData = [];
 						$.each(data, function(index, element) {
-							rawData.push([element.date, element.value]);
+							var UTC = 10800000;
+							rawData.push([element.date + UTC, element.value]);
 						});
 						var options = {xaxis: {mode: 'time'}}
 						$.plot($('#' + id), [{data: rawData}], options);

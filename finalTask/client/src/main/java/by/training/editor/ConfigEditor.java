@@ -12,7 +12,7 @@ import by.training.constants.ConfigDefaultConstants;
 import by.training.exception.ConfigEditorException;
 import by.training.parser.JAXBParser;
 
-public class ConfigEditor {
+public abstract class ConfigEditor {
 
     private static final String CONFIG_PATH = System.getProperty("config.path");
     private static final String CONFIG_FILE = System.getProperty("config.file");

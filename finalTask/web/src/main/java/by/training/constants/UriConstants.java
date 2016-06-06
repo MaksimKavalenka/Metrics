@@ -1,6 +1,6 @@
 package by.training.constants;
 
-public class UriConstants {
+public abstract class UriConstants {
 
     private static final String URI = "/web";
 

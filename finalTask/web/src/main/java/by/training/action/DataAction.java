@@ -6,7 +6,7 @@ import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
 import by.training.exception.IllegalDataException;
 
-public class DataAction {
+public abstract class DataAction {
 
     public static String getPath(final HttpServletRequest request) {
         ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);

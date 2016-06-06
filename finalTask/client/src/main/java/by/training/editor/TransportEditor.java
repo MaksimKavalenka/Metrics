@@ -8,7 +8,7 @@ import java.util.Random;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.ws.WebServiceException;
 
-public class TransportEditor {
+public abstract class TransportEditor {
 
     public static URI getBaseUri(final String address) {
         return UriBuilder.fromUri(address).build();

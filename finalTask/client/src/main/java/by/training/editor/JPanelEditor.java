@@ -20,7 +20,7 @@ import by.training.ui.JIconPanel;
 import by.training.ui.JWidgetPanel;
 import by.training.window.OptionsWindow;
 
-public class JPanelEditor {
+public abstract class JPanelEditor {
 
     public static void generatePanels(final JPanel panelIcons, final JPanel parent)
             throws ConfigEditorException {

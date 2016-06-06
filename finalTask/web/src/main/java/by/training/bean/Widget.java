@@ -1,16 +1,16 @@
 package by.training.bean;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,14 +23,9 @@ import by.training.options.RefreshInterval;
 
 @Entity
 @Table(name = "Widget")
-public class Widget implements Comparable<Widget>, Serializable {
+public class Widget extends Model {
 
-    private static final long serialVersionUID = 8296154453314999388L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id", length = 5)
-    private int               id;
+    private static final long serialVersionUID = -5140160665446123713L;
 
     @Column(name = "Name", length = 30)
     @NotNull
@@ -51,38 +46,33 @@ public class Widget implements Comparable<Widget>, Serializable {
     @NotNull
     private Period            period;
 
-    @Column(name = "Start")
-    @Temporal(TemporalType.TIME)
-    private Date              start;
+    @Column(name = "FromDate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date              fromDate;
 
-    @Column(name = "End")
-    @Temporal(TemporalType.TIME)
-    private Date              end;
+    @Column(name = "ToDate")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date              toDate;
 
-    @ManyToMany(mappedBy = "widgets")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.PERSIST}, targetEntity = Dashboard.class)
+    @JoinTable(name = "DashboardWidget", inverseJoinColumns = @JoinColumn(name = "IdDashboard", nullable = false, updatable = false), joinColumns = @JoinColumn(name = "IdWidget", nullable = false, updatable = false))
     private List<Dashboard>   dashboards;
 
     public Widget() {
+        super();
     }
 
     public Widget(final Integer id, final String name, final MetricType metricType,
-            final RefreshInterval refreshInterval, final Period period, final Date start,
-            final Date end) {
-        this.id = id;
+            final RefreshInterval refreshInterval, final Period period, final Date fromDate,
+            final Date toDate) {
+        super(id);
         this.name = name;
         this.metricType = metricType;
         this.refreshInterval = refreshInterval;
         this.period = period;
-        this.start = start;
-        this.end = end;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
 
     public String getName() {
@@ -117,27 +107,27 @@ public class Widget implements Comparable<Widget>, Serializable {
         this.period = period;
     }
 
-    public Date getStart() {
-        return start;
+    public Date getFromDate() {
+        return fromDate;
     }
 
-    public void setStart(final Date start) {
-        if ((this.start == null) || (start == null)) {
-            this.start = start;
+    public void setFromDate(final Date fromDate) {
+        if ((this.fromDate == null) || (fromDate == null)) {
+            this.fromDate = fromDate;
         } else {
-            this.start.setTime(start.getTime());
+            this.fromDate.setTime(fromDate.getTime());
         }
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getToDate() {
+        return toDate;
     }
 
-    public void setEnd(final Date end) {
-        if ((this.end == null) || (end == null)) {
-            this.end = end;
+    public void setToDate(final Date toDate) {
+        if ((this.toDate == null) || (toDate == null)) {
+            this.toDate = toDate;
         } else {
-            this.end.setTime(end.getTime());
+            this.toDate.setTime(toDate.getTime());
         }
     }
 
@@ -147,37 +137,6 @@ public class Widget implements Comparable<Widget>, Serializable {
 
     public void setDashboards(final List<Dashboard> dashboards) {
         this.dashboards = dashboards;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Widget other = (Widget) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int compareTo(final Widget o) {
-        return id - o.getId();
     }
 
 }

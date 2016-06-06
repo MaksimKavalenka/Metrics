@@ -61,6 +61,12 @@ public class AppServletContextListener implements ServletContextListener {
         }
 
         try {
+            JMXTransport.shutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             JMSTransport.shutdown();
         } catch (Exception e) {
             e.printStackTrace();

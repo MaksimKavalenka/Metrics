@@ -13,7 +13,7 @@ import com.sun.management.OperatingSystemMXBean;
 import by.training.bean.MXBean;
 import by.training.options.MetricType;
 
-public class StorageMXBean {
+public abstract class StorageMXBean {
 
     private static final int                    PERCENT = 100;
     private static final int                    SEC     = 1000;

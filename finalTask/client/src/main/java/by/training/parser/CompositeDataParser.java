@@ -8,7 +8,7 @@ import javax.management.openmbean.CompositeData;
 
 import by.training.bean.metric.Metric;
 
-public class CompositeDataParser {
+public abstract class CompositeDataParser {
 
     public static Metric parseSingleData(final CompositeData compositeData) {
         Date date = (Date) compositeData.get("date");

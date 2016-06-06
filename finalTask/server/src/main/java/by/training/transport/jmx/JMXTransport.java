@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -17,11 +18,19 @@ import by.training.storage.StorageMXBean;
 
 public class JMXTransport implements JMXWebServiceMXBean {
 
+    private static ObjectName  objectName;
+    private static MBeanServer server;
+
     public static void publish() throws InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException, MalformedObjectNameException {
         JMXTransport transport = new JMXTransport();
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        server.registerMBean(transport, new ObjectName("by.training:type=metrics,name=jmx"));
+        objectName = new ObjectName("by.training:type=metrics,name=jmx");
+        server = ManagementFactory.getPlatformMBeanServer();
+        server.registerMBean(transport, objectName);
+    }
+
+    public static void shutdown() throws MBeanRegistrationException, InstanceNotFoundException {
+        server.unregisterMBean(objectName);
     }
 
     @Override

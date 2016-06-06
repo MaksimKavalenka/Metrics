@@ -10,7 +10,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import by.training.bean.metric.Metric;
 
-public class JSONParser {
+public abstract class JSONParser {
 
     public static Metric parseLineJSON(final String str) throws JSONException {
         JSONObject obj = new JSONObject(str);

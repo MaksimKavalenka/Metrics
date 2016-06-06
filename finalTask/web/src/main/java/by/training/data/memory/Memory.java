@@ -6,7 +6,7 @@ import java.util.List;
 import by.training.bean.Dashboard;
 import by.training.bean.Widget;
 
-public class Memory {
+public abstract class Memory {
 
     private static List<Dashboard> dashboards      = new LinkedList<>();
     private static List<Widget>    widgets         = new LinkedList<>();

@@ -21,7 +21,7 @@ import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
 
-public class EditDataAction {
+public abstract class EditDataAction {
 
     public static void edit(final HttpServletRequest request) throws IllegalDataException {
         DataAction.checkError(request);
@@ -116,8 +116,8 @@ public class EditDataAction {
                 if (!isCustom) {
                     widgetDAO.addWidget(name, metricType, refreshInterval, period, null, null);
                 } else {
-                    Date from = (Date) request.getAttribute(WidgetColumns.START.toString());
-                    Date to = (Date) request.getAttribute(WidgetColumns.END.toString());
+                    Date from = (Date) request.getAttribute(WidgetColumns.FROM_DATE.toString());
+                    Date to = (Date) request.getAttribute(WidgetColumns.TO_DATE.toString());
                     widgetDAO.addWidget(name, metricType, refreshInterval, period, from, to);
                 }
             }
@@ -138,8 +138,8 @@ public class EditDataAction {
                     widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, null,
                             null);
                 } else {
-                    Date from = (Date) request.getAttribute(WidgetColumns.START.toString());
-                    Date to = (Date) request.getAttribute(WidgetColumns.END.toString());
+                    Date from = (Date) request.getAttribute(WidgetColumns.FROM_DATE.toString());
+                    Date to = (Date) request.getAttribute(WidgetColumns.TO_DATE.toString());
                     widgetDAO.modifyWidget(id, name, metricType, refreshInterval, period, from, to);
                 }
             }

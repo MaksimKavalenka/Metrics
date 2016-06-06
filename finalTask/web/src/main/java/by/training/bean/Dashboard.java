@@ -1,13 +1,11 @@
 package by.training.bean;
 
-import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -16,14 +14,9 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Dashboard")
-public class Dashboard implements Comparable<Dashboard>, Serializable {
+public class Dashboard extends Model {
 
     private static final long serialVersionUID = 1569833650274367256L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id", length = 5)
-    private int               id;
 
     @Column(name = "Name", length = 30)
     @NotNull
@@ -32,29 +25,21 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
     @Column(name = "Description", length = 30)
     private String            description;
 
-    @ManyToMany
-    @JoinTable(name = "DashboardWidget", joinColumns = {
-            @JoinColumn(name = "IdDashboard")}, inverseJoinColumns = {
-                    @JoinColumn(name = "IdWidget")})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.REFRESH, CascadeType.PERSIST}, targetEntity = Widget.class)
+    @JoinTable(name = "DashboardWidget", inverseJoinColumns = @JoinColumn(name = "IdWidget", nullable = false, updatable = false), joinColumns = @JoinColumn(name = "IdDashboard", nullable = false, updatable = false))
     private List<Widget>      widgets;
 
     public Dashboard() {
+        super();
     }
 
     public Dashboard(final int id, final String name, final String description,
             final List<Widget> widgets) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.description = description;
         this.widgets = widgets;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -79,37 +64,6 @@ public class Dashboard implements Comparable<Dashboard>, Serializable {
 
     public void setWidgets(final List<Widget> widgets) {
         this.widgets = widgets;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        return result;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Dashboard other = (Dashboard) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int compareTo(final Dashboard o) {
-        return id - o.getId();
     }
 
 }

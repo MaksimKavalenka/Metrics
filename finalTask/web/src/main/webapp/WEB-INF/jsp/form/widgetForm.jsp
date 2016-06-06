@@ -100,8 +100,8 @@
 							<input type="radio" name="Custom" value="true">From/To
 						</c:otherwise>
 					</c:choose>
-					<td><input type="datetime-local" name="Start" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${Start}"/>
-					<br><input type="datetime-local" name="End" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${End}"/>
+					<td><input type="datetime-local" name="FromDate" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${FromDate}"/>
+					<br><input type="datetime-local" name="ToDate" step="1" data-format="dd.MM.yyyy hh:mm:ss" value="${ToDate}"/>
 			</table>
 		</form>
 		<form method="POST" name="cancelForm" action="/web/widget/show"></form>

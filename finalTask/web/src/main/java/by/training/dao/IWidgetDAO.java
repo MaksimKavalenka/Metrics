@@ -11,10 +11,10 @@ import by.training.options.RefreshInterval;
 public interface IWidgetDAO extends IDAO {
 
     void addWidget(String name, MetricType metricType, RefreshInterval refreshInterval,
-            Period period, Date start, Date end);
+            Period period, Date fromDate, Date toDate);
 
     void modifyWidget(int id, String name, MetricType metricType, RefreshInterval refreshInterval,
-            Period period, Date start, Date end);
+            Period period, Date fromDate, Date toDate);
 
     Widget getWidget(int id);
 
