@@ -133,12 +133,12 @@ a.dashboard {
 }
 
 a.dashboard:hover {
-	color: #CD0000;
+	color: #8B8378;
 	background: #FFFFFF;
-	background: -moz-radial-gradient(center, ellipse cover, #FFFFFF, #EBBD81);
-	background: -webkit-linear-gradient(top, #FFFFFF, #EBBD81);
-	background: -o-linear-gradient(top, #FFFFFF, #EBBD81);
-	background: -ms-linear-gradient(top, #FFFFFF, #EBBD81);
+	background: -moz-radial-gradient(center, ellipse cover, #FFFFFF, #FFFF00);
+	background: -webkit-linear-gradient(top, #FFFFFF, #FFFF00);
+	background: -o-linear-gradient(top, #FFFFFF, #FFFF00);
+	background: -ms-linear-gradient(top, #FFFFFF, #FFFF00);
 	text-decoration: underline;
 }
 

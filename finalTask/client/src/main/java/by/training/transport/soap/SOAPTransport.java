@@ -1,7 +1,7 @@
 package by.training.transport.soap;
 
+import static by.training.constants.ResponseStatus.*;
 import static by.training.constants.StubConstants.*;
-import static by.training.exception.HTTPException.*;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -11,9 +11,9 @@ import javax.xml.ws.WebServiceException;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
 import by.training.editor.TransportEditor;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 import by.training.transport.soap.wsdl.SOAPTransportService;
 import by.training.transport.soap.wsdl.SOAPWebServiceInterface;
@@ -22,7 +22,7 @@ public class SOAPTransport implements TransportDAO {
 
     private static final String     WSDL   = "?wsdl";
 
-    private HTTPException           status = HTTP_404;
+    private ResponseStatus          status = NOT_FOUND;
 
     private SOAPTransportService    transportService;
     private SOAPWebServiceInterface serviceInterface;
@@ -39,9 +39,9 @@ public class SOAPTransport implements TransportDAO {
             synchronized (this) {
                 metric = serviceInterface.getLast(metricType.name());
             }
-            status = HTTP_200;
+            status = OK;
         } catch (WebServiceException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return metric;
@@ -55,9 +55,9 @@ public class SOAPTransport implements TransportDAO {
             synchronized (this) {
                 list = Arrays.asList(serviceInterface.getList(metricType.name(), from, to));
             }
-            status = HTTP_200;
+            status = OK;
         } catch (WebServiceException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return list;
@@ -71,14 +71,14 @@ public class SOAPTransport implements TransportDAO {
             synchronized (this) {
                 serviceInterface = transportService.getSOAPTransportPort();
             }
-            status = HTTP_200;
+            status = OK;
         } catch (WebServiceException e) {
-            status = HTTPException.HTTP_404;
+            status = NOT_FOUND;
         }
     }
 
     @Override
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return status;
     }
 

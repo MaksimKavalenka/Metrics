@@ -1,7 +1,7 @@
 package by.training.ui;
 
 import static by.training.constants.AppDefaultConstants.DIMENSION;
-import static by.training.exception.HTTPException.*;
+import static by.training.constants.ResponseStatus.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -96,12 +96,12 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
         while (active) {
             switch (storage.getStatus()) {
-                case HTTP_200:
+                case OK:
                     callStorage(String.valueOf(storage.getLast().getValue()));
                     break;
-                case HTTP_404:
+                case NOT_FOUND:
                     storage.setParameters(options.getTransportElement().getParameters());
-                case HTTP_503:
+                case SERVICE_UNAVAILABLE:
                     callStorage(String.valueOf(storage.getStatus().getMessage()));
                     break;
             }
@@ -179,7 +179,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
     @Override
     public boolean isResourceExist() {
-        if (storage.getStatus() == HTTP_404) {
+        if (storage.getStatus() == NOT_FOUND) {
             return false;
         }
         return true;
@@ -224,7 +224,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
     @Override
     public void parametersChanged(final boolean changed) {
-        if (changed || (storage.getStatus() != HTTP_200)) {
+        if (changed || (storage.getStatus() != OK)) {
             storage.setParameters(options.getTransportElement().getParameters());
 
             synchronized (this) {

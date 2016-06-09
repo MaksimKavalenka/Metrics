@@ -5,7 +5,7 @@ import java.util.List;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
-import by.training.exception.HTTPException;
+import by.training.constants.ResponseStatus;
 import by.training.options.MetricType;
 
 public interface TransportDAO {
@@ -16,7 +16,7 @@ public interface TransportDAO {
 
     void setParameters(ParametersElement parameters);
 
-    HTTPException getStatus();
+    ResponseStatus getStatus();
 
     void close();
 

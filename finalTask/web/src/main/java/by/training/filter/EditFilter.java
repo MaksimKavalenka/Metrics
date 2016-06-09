@@ -3,9 +3,7 @@ package by.training.filter;
 import static by.training.constants.MessageConstants.*;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -16,20 +14,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import by.training.bean.Widget;
 import by.training.constants.ActionConstants;
 import by.training.constants.PropertyConstants;
-import by.training.dao.IWidgetDAO;
 import by.training.database.structure.DashboardColumns;
 import by.training.database.structure.DashboardWidgetColumns;
 import by.training.database.structure.WidgetColumns;
 import by.training.exception.IllegalDataException;
-import by.training.factory.WidgetFactory;
 import by.training.options.MetricType;
 import by.training.options.Period;
 import by.training.options.RefreshInterval;
 import by.training.parser.DateFormatParser;
-import by.training.server.RESTTransport;
 
 @WebFilter(servletNames = "edit")
 public class EditFilter implements Filter {
@@ -65,7 +59,7 @@ public class EditFilter implements Filter {
                 WidgetEditFilter.checkWidgetId(request);
                 break;
             case CHART:
-                sendChart(request, response);
+                WidgetEditFilter.checkWidgetId(request);
                 break;
             default:
                 break;
@@ -83,25 +77,6 @@ public class EditFilter implements Filter {
         ActionConstants action = ActionConstants.valueOf(value.toUpperCase());
         request.setAttribute(PropertyConstants.ACTION, action);
         return action;
-    }
-
-    private static void sendChart(final ServletRequest request, final ServletResponse response) {
-        try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
-            int id = Integer.valueOf(request.getParameter(WidgetColumns.ID.toString()));
-            Widget widget = widgetDAO.getWidget(id);
-            try (PrintWriter out = response.getWriter()) {
-                if (widget.getPeriod() != Period.CUSTOM) {
-                    out.print(RESTTransport.getList(widget.getMetricType(),
-                            widget.getPeriod().getDate(), new Date(0)));
-                } else {
-                    out.print(RESTTransport.getList(widget.getMetricType(), widget.getFromDate(),
-                            widget.getToDate()));
-                }
-                out.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private static class DashboardEditFilter {

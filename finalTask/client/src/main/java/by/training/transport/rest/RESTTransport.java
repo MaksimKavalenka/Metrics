@@ -1,63 +1,60 @@
 package by.training.transport.rest;
 
+import static by.training.constants.ResponseStatus.*;
 import static by.training.constants.StubConstants.*;
-import static by.training.exception.HTTPException.*;
 
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.NotAllowedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.ServiceUnavailableException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jettison.json.JSONException;
-import org.glassfish.jersey.client.ClientConfig;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.ClientResponse.Status;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
 import by.training.editor.TransportEditor;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 import by.training.parser.JSONParser;
 
 public class RESTTransport implements TransportDAO {
 
-    private HTTPException status = HTTP_404;
+    private ResponseStatus status = NOT_FOUND;
 
-    private Client        client;
-    private WebTarget     service;
+    private Client         client;
+    private WebResource    resource;
 
     public RESTTransport(final ParametersElement parameters) {
-        client = ClientBuilder.newClient(new ClientConfig());
+        client = Client.create();
         setParameters(parameters);
     }
 
     @Override
     public Metric getLast(final MetricType metricType) {
         Metric metric = DEFAULT_VALUE;
-        String str;
+        String str = "";
 
         try {
             synchronized (this) {
-                str = service.path(metricType.name()).request().accept(MediaType.APPLICATION_JSON)
+                str = resource.path(metricType.name()).accept(MediaType.APPLICATION_JSON)
                         .get(String.class);
             }
+            status = OK;
             try {
                 metric = JSONParser.parseLineJSON(str);
             } catch (JSONException e) {
-                e.printStackTrace();
+                status = SERVICE_UNAVAILABLE;
             }
-            status = HTTP_200;
-        } catch (ProcessingException | ServiceUnavailableException e) {
-            status = HTTP_503;
-        } catch (NotFoundException e) {
-            status = HTTP_404;
+        } catch (UniformInterfaceException | ClientHandlerException e) {
+            status = NOT_FOUND;
         }
 
         return metric;
@@ -65,24 +62,22 @@ public class RESTTransport implements TransportDAO {
 
     @Override
     public List<Metric> getList(final MetricType metricType, final Date from, final Date to) {
-        String str = "";
         List<Metric> list = DEFAULT_LIST;
+        String str = "";
 
         try {
             synchronized (this) {
-                str = service.path(metricType.name() + "/" + from.getTime() + "_" + to.getTime())
-                        .request().accept(MediaType.APPLICATION_JSON).get(String.class);
+                str = resource.path(metricType.name() + "/" + from.getTime() + "_" + to.getTime())
+                        .accept(MediaType.APPLICATION_JSON).get(String.class);
             }
+            status = OK;
             try {
                 list = JSONParser.parseArrayJSON(str);
             } catch (JSONException e) {
-                e.printStackTrace();
+                status = SERVICE_UNAVAILABLE;
             }
-            status = HTTP_200;
-        } catch (ProcessingException | ServiceUnavailableException e) {
-            status = HTTP_503;
-        } catch (NotFoundException e) {
-            status = HTTP_404;
+        } catch (UniformInterfaceException | ClientHandlerException e) {
+            status = NOT_FOUND;
         }
 
         return list;
@@ -91,26 +86,22 @@ public class RESTTransport implements TransportDAO {
     @Override
     public void setParameters(final ParametersElement parameters) {
         synchronized (this) {
-            service = client.target(TransportEditor.getBaseUri(parameters.getAddress()));
+            resource = client.resource(TransportEditor.getBaseUri(parameters.getAddress()));
         }
-
-        try {
-            service.path("").request().get(Object.class);
-        } catch (NotAllowedException e) {
-            status = HTTP_200;
-        } catch (ProcessingException | NotFoundException e) {
-            status = HTTP_404;
+        status = OK;
+        ClientResponse response = resource.head();
+        if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+            status = NOT_FOUND;
         }
     }
 
     @Override
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return status;
     }
 
     @Override
     public void close() {
-        client.close();
     }
 
 }

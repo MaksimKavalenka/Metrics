@@ -1,7 +1,7 @@
 package by.training.transport.jmx;
 
+import static by.training.constants.ResponseStatus.*;
 import static by.training.constants.StubConstants.*;
-import static by.training.exception.HTTPException.*;
 
 import java.io.IOException;
 import java.util.Date;
@@ -20,8 +20,8 @@ import javax.management.remote.JMXServiceURL;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 import by.training.parser.CompositeDataParser;
 
@@ -29,7 +29,7 @@ public class JMXTransport implements TransportDAO {
 
     private static ObjectName     name;
 
-    private HTTPException         status = HTTP_404;
+    private ResponseStatus        status = NOT_FOUND;
 
     private JMXConnector          jmxConnector;
     private MBeanServerConnection mbeanServerConnection;
@@ -59,9 +59,9 @@ public class JMXTransport implements TransportDAO {
             }
 
             metric = CompositeDataParser.parseSingleData(compositeData);
-            status = HTTP_200;
+            status = OK;
         } catch (InstanceNotFoundException | MBeanException | ReflectionException | IOException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return metric;
@@ -82,9 +82,9 @@ public class JMXTransport implements TransportDAO {
             }
 
             list = CompositeDataParser.parseArrayData(compositeDatas);
-            status = HTTP_200;
+            status = OK;
         } catch (InstanceNotFoundException | MBeanException | ReflectionException | IOException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return list;
@@ -101,14 +101,14 @@ public class JMXTransport implements TransportDAO {
                 mbeanServerConnection = jmxConnector.getMBeanServerConnection();
             }
 
-            status = HTTP_200;
+            status = OK;
         } catch (Exception e) {
-            status = HTTP_404;
+            status = NOT_FOUND;
         }
     }
 
     @Override
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return status;
     }
 

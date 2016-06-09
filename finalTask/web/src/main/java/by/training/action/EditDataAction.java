@@ -1,9 +1,13 @@
 package by.training.action;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import by.training.bean.Widget;
@@ -23,7 +27,8 @@ import by.training.options.RefreshInterval;
 
 public abstract class EditDataAction {
 
-    public static void edit(final HttpServletRequest request) throws IllegalDataException {
+    public static void edit(final HttpServletRequest request, final ServletResponse response)
+            throws IllegalDataException {
         DataAction.checkError(request);
         ActionConstants action = (ActionConstants) request.getAttribute(PropertyConstants.ACTION);
 
@@ -46,8 +51,32 @@ public abstract class EditDataAction {
             case DELETE_WIDGET:
                 WidgetEditData.deleteWidget(request);
                 break;
+            case CHART:
+                refreshChart(request, response);
+                break;
             default:
                 break;
+        }
+    }
+
+    private static void refreshChart(final ServletRequest request, final ServletResponse response) {
+        try (IWidgetDAO widgetDAO = WidgetFactory.getEditor()) {
+            int id = Integer.valueOf(request.getParameter(WidgetColumns.ID.toString()));
+            Widget widget = widgetDAO.getWidget(id);
+            try (PrintWriter out = response.getWriter()) {
+                if (widget.getPeriod() != Period.CUSTOM) {
+                    out.print("http://localhost:8080/metrics/rest/metric/"
+                            + widget.getMetricType().name() + "/"
+                            + widget.getPeriod().getDate().getTime() + "_0");
+                } else {
+                    out.print("http://localhost:8080/metrics/rest/metric/"
+                            + widget.getMetricType().name() + "/" + widget.getFromDate().getTime()
+                            + "_" + widget.getToDate().getTime());
+                }
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 package by.training.storage;
 
-import static by.training.exception.HTTPException.*;
+import static by.training.constants.ResponseStatus.*;
 
 import java.util.Date;
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import by.training.bean.concurrent.ConcurrentBoundedSkipListSet;
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 import by.training.options.RefreshInterval;
 import by.training.options.Transport;
@@ -84,7 +84,7 @@ public class Storage implements Runnable {
     }
 
     private void checkAndLoad(final Date from) {
-        if (dao.getStatus() != HTTP_404) {
+        if (dao.getStatus() != NOT_FOUND) {
             if (storage.isEmpty()) {
                 getLast();
             } else if (storage.first().getDate().compareTo(from) > 0) {
@@ -96,7 +96,7 @@ public class Storage implements Runnable {
     }
 
     private void checkAndLoad(final Date from, final Date to) {
-        if (dao.getStatus() != HTTP_404) {
+        if (dao.getStatus() != NOT_FOUND) {
             if (storage.isEmpty()) {
                 storage.addAll(loadBetween(from, to));
             } else if (storage.first().getDate().compareTo(from) > 0) {
@@ -135,7 +135,7 @@ public class Storage implements Runnable {
         }
     }
 
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return dao.getStatus();
     }
 

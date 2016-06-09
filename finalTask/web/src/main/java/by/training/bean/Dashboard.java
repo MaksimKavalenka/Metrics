@@ -22,7 +22,7 @@ public class Dashboard extends Model {
     @NotNull
     private String            name;
 
-    @Column(name = "Description", length = 30)
+    @Column(name = "Description", length = 100)
     private String            description;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,

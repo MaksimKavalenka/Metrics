@@ -4,6 +4,7 @@
 <html>
 	<head>
 		<title>Add dashboard</title>
+		<link rel="SHORTCUT ICON" href="/web/image/icon.png" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
 		<script type="text/javascript">
 			function setVisibility(number) {

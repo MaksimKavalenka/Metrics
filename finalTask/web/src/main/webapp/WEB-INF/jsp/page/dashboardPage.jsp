@@ -3,6 +3,7 @@
 <html>
 	<head>
 		<title>Dashboards</title>
+		<link rel="SHORTCUT ICON" href="/web/image/icon.png" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="/web/css/style.css"/>
 	</head>
 

@@ -1,8 +1,8 @@
 package by.training.transport.jms;
 
+import static by.training.constants.ResponseStatus.*;
 import static by.training.constants.JMSKeyConstants.*;
 import static by.training.constants.StubConstants.*;
-import static by.training.exception.HTTPException.*;
 
 import java.util.Date;
 import java.util.List;
@@ -20,14 +20,14 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
 import by.training.editor.TransportEditor;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 
 public class JMSTransport implements TransportDAO {
 
-    private HTTPException         status = HTTP_404;
+    private ResponseStatus        status = NOT_FOUND;
 
     private Connection            connection;
     private Session               session;
@@ -55,7 +55,7 @@ public class JMSTransport implements TransportDAO {
                 metric = listener.getList().get(0);
             }
         } catch (JMSException | IllegalStateException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return metric;
@@ -78,7 +78,7 @@ public class JMSTransport implements TransportDAO {
                 list = listener.getList();
             }
         } catch (JMSException | IllegalStateException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         }
 
         return list;
@@ -103,14 +103,14 @@ public class JMSTransport implements TransportDAO {
                 connection.start();
             }
 
-            status = HTTP_200;
+            status = OK;
         } catch (JMSException | IllegalArgumentException e) {
-            status = HTTP_404;
+            status = NOT_FOUND;
         }
     }
 
     @Override
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return status;
     }
 

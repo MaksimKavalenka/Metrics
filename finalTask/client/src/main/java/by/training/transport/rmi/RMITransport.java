@@ -1,7 +1,7 @@
 package by.training.transport.rmi;
 
+import static by.training.constants.ResponseStatus.*;
 import static by.training.constants.StubConstants.*;
-import static by.training.exception.HTTPException.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -12,13 +12,13 @@ import java.util.List;
 
 import by.training.bean.element.ParametersElement;
 import by.training.bean.metric.Metric;
+import by.training.constants.ResponseStatus;
 import by.training.dao.TransportDAO;
-import by.training.exception.HTTPException;
 import by.training.options.MetricType;
 
 public class RMITransport implements TransportDAO {
 
-    private HTTPException          status = HTTP_404;
+    private ResponseStatus         status = NOT_FOUND;
 
     private RMIWebServiceInterface service;
 
@@ -34,11 +34,11 @@ public class RMITransport implements TransportDAO {
             synchronized (this) {
                 metric = service.getLast(metricType.name());
             }
-            status = HTTP_200;
+            status = OK;
         } catch (RemoteException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         } catch (NullPointerException e) {
-            status = HTTP_404;
+            status = NOT_FOUND;
         }
 
         return metric;
@@ -52,11 +52,11 @@ public class RMITransport implements TransportDAO {
             synchronized (this) {
                 list = service.getList(metricType.name(), from, to);
             }
-            status = HTTP_200;
+            status = OK;
         } catch (RemoteException e) {
-            status = HTTP_503;
+            status = SERVICE_UNAVAILABLE;
         } catch (NullPointerException e) {
-            status = HTTP_404;
+            status = NOT_FOUND;
         }
 
         return list;
@@ -70,14 +70,14 @@ public class RMITransport implements TransportDAO {
             synchronized (this) {
                 service = (RMIWebServiceInterface) registry.lookup("metrics/rmi");
             }
-            status = HTTP_200;
+            status = OK;
         } catch (RemoteException | NotBoundException | IllegalArgumentException e) {
-            status = HTTP_404;
+            status = NOT_FOUND;
         }
     }
 
     @Override
-    public HTTPException getStatus() {
+    public ResponseStatus getStatus() {
         return status;
     }
 

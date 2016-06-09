@@ -27,7 +27,7 @@ public class EditServlet extends AbstractServlet {
     protected void performTask(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            EditDataAction.edit(request);
+            EditDataAction.edit(request, response);
             response.sendRedirect(DataAction.getLocation(request));
         } catch (IllegalDataException e) {
             LoadDataAction.loadAfterError(request);
