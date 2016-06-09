@@ -157,20 +157,23 @@ public class JWidgetPanel extends JPanel {
         }
 
         public Date getLastDate() {
-            return lastDate;
+            synchronized (this) {
+                return lastDate;
+            }
         }
 
-        public synchronized void refresh(final Set<Metric> set) {
+        public void refresh(final Set<Metric> set) {
             Metric metric = null;
-
             Iterator<Metric> iterator = set.iterator();
-            while (iterator.hasNext()) {
-                metric = iterator.next();
-                series.addOrUpdate(new Second(metric.getDate()), metric.getValue());
-            }
 
-            if (metric != null) {
-                lastDate = metric.getDate();
+            synchronized (this) {
+                while (iterator.hasNext()) {
+                    metric = iterator.next();
+                    series.addOrUpdate(new Second(metric.getDate()), metric.getValue());
+                }
+                if (metric != null) {
+                    lastDate = metric.getDate();
+                }
             }
         }
 

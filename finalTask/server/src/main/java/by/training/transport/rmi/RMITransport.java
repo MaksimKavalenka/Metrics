@@ -18,18 +18,18 @@ import by.training.storage.StorageMXBean;
 public class RMITransport implements RMIWebServiceInterface {
 
     private static Registry registry;
-    private static Remote   stub;
+    private static Remote   service;
 
     public static void publish() throws RemoteException, AlreadyBoundException {
-        final RMIWebServiceInterface service = new RMITransport();
+        service = new RMITransport();
         registry = LocateRegistry.createRegistry(8082);
-        stub = UnicastRemoteObject.exportObject(service, 8082);
-        registry.bind("metrics/rmi", stub);
+        UnicastRemoteObject.exportObject(service, 8082);
+        registry.bind("metrics/rmi", service);
     }
 
     public static void shutdown() throws AccessException, RemoteException, NotBoundException {
         registry.unbind("metrics/rmi");
-        UnicastRemoteObject.unexportObject(stub, false);
+        UnicastRemoteObject.unexportObject(service, false);
     }
 
     @Override

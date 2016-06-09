@@ -66,7 +66,9 @@ public class Metric implements Comparable<Metric>, Serializable {
 
     @Override
     public int compareTo(final Metric o) {
-        return date.compareTo(o.getDate());
+        long thisSeconds = date.getTime() / 1000;
+        long anotherSeconds = o.getDate().getTime() / 1000;
+        return (thisSeconds < anotherSeconds ? -1 : (thisSeconds == anotherSeconds ? 0 : 1));
     }
 
 }

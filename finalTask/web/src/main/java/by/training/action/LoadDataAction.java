@@ -69,6 +69,7 @@ public abstract class LoadDataAction {
                 getDefaultParameters(request);
                 break;
             case CHART:
+                getDashboard(request);
                 getDashboardWidgets(request);
                 getWidgets(request, response);
                 break;

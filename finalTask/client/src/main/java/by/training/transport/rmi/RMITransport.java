@@ -37,6 +37,7 @@ public class RMITransport implements TransportDAO {
             status = OK;
         } catch (RemoteException e) {
             status = SERVICE_UNAVAILABLE;
+            e.printStackTrace();
         } catch (NullPointerException e) {
             status = NOT_FOUND;
         }
@@ -55,6 +56,7 @@ public class RMITransport implements TransportDAO {
             status = OK;
         } catch (RemoteException e) {
             status = SERVICE_UNAVAILABLE;
+            e.printStackTrace();
         } catch (NullPointerException e) {
             status = NOT_FOUND;
         }
@@ -73,6 +75,7 @@ public class RMITransport implements TransportDAO {
             status = OK;
         } catch (RemoteException | NotBoundException | IllegalArgumentException e) {
             status = NOT_FOUND;
+            e.printStackTrace();
         }
     }
 

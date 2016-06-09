@@ -16,13 +16,13 @@
 				switch (count) {
 					case 1:
 						width = ($(window).width() * 0.95) + "px";
-						height = ($(window).height() * 0.75) + "px";
+						height = ($(window).height() * 0.7) + "px";
 						break;
 					case 2:
 					case 3:
 					case 4:
 						width = ($(window).width() / 2  * 0.95) + "px";
-						height = ($(window).height() / 2 * 0.75) + "px";
+						height = ($(window).height() / 2 * 0.7) + "px";
 						break;
 				}
 				for (i = 1; i <= count; i++) {
@@ -59,6 +59,8 @@
 
 	<body>
 		<table class="body">
+			<tr><td style="font-size: 20px;">${Name}
+			<tr><td style="font-size: 12px;">${Description}<tr>
 			<c:forEach var="widget" items="${Widget}" varStatus="counter">
 				<td class="chart">
 					<div class="head">${widget.name}</div>

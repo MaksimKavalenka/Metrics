@@ -18,8 +18,6 @@ public interface OptionListener {
 
     void periodChanged();
 
-    void customPeriodChanged();
-
     void refreshIntervalChanged();
 
 }

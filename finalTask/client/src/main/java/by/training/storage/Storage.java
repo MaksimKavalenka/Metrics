@@ -87,7 +87,7 @@ public class Storage implements Runnable {
         if (dao.getStatus() != NOT_FOUND) {
             if (storage.isEmpty()) {
                 getLast();
-            } else if (storage.first().getDate().compareTo(from) > 0) {
+            } else if (storage.first().getDate().after(from)) {
                 storage.addAll(loadBefore(from));
             } else {
                 storage.addAll(loadAfter());
@@ -99,14 +99,14 @@ public class Storage implements Runnable {
         if (dao.getStatus() != NOT_FOUND) {
             if (storage.isEmpty()) {
                 storage.addAll(loadBetween(from, to));
-            } else if (storage.first().getDate().compareTo(from) > 0) {
+            } else if (storage.first().getDate().after(from)) {
                 if (storage.first().getDate().compareTo(to) <= 0) {
                     storage.addAll(loadBefore(from));
                 } else {
                     storage.clear();
                     storage.addAll(loadBetween(from, to));
                 }
-            } else if (storage.last().getDate().compareTo(to) < 0) {
+            } else if (storage.last().getDate().before(to)) {
                 if (storage.last().getDate().compareTo(from) >= 0) {
                     storage.addAll(loadAfter());
                 } else {

@@ -25,23 +25,21 @@ import by.training.window.ReminderWindow;
 
 public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
-    private static final long   serialVersionUID = 1104619866571656272L;
+    private static final long  serialVersionUID = 1104619866571656272L;
 
-    private static final String NO_VALUE         = "no value";
+    private static int         count            = 0;
 
-    private static int          count            = 0;
+    private int                index;
 
-    private int                 index;
+    private OptionsElement     options;
+    private Storage            storage;
+    private JWidgetPanel.Chart chart;
 
-    private OptionsElement      options;
-    private Storage             storage;
-    private JWidgetPanel.Chart  chart;
+    private JLabel             labelIconTitle;
+    private JLabel             labelIconCurrentValue;
 
-    private JLabel              labelIconTitle;
-    private JLabel              labelIconCurrentValue;
-
-    private boolean             active;
-    private boolean             setCustom;
+    private boolean            active;
+    private boolean            setCustom;
 
     public JIconPanel(final OptionsElement options) {
         create();
@@ -127,7 +125,6 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
                 if (chart != null) {
                     chart.setText(message);
-
                     if (chart.getLastDate() != null) {
                         chart.refresh(storage.getList(chart.getLastDate()));
                     } else {
@@ -137,12 +134,19 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
                 break;
 
             case CUSTOM:
-                if (!setCustom) {
-                    setCustom = true;
-                    labelIconCurrentValue.setText(NO_VALUE);
+                String adding = " (last value)";
+                labelIconCurrentValue.setText(message + adding);
 
-                    if (chart != null) {
-                        chart.setText(NO_VALUE);
+                if ((chart != null) && (!setCustom)) {
+                    chart.setText(message + adding);
+                    if (chart.getLastDate() != null) {
+                        if (periodElement.getTo().after(chart.getLastDate())) {
+                            chart.refresh(
+                                    storage.getList(chart.getLastDate(), periodElement.getTo()));
+                        } else {
+                            setCustom = true;
+                        }
+                    } else {
                         chart.refresh(
                                 storage.getList(periodElement.getFrom(), periodElement.getTo()));
                     }
@@ -198,15 +202,12 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
     @Override
     public void metricTypeChanged() {
         MetricType metricType = options.getMetricTypeElement().getMetricType();
-
-        setCustom = false;
         storage.setMetricType(metricType);
 
         if (chart != null) {
             chart.clear();
             chart.setUnit(metricType.getUnit());
         }
-
         synchronized (this) {
             notify();
         }
@@ -235,19 +236,7 @@ public class JIconPanel extends JPanel implements OptionListener, Runnable {
 
     @Override
     public void periodChanged() {
-        if (chart != null) {
-            chart.clear();
-            chart.setPeriod(options.getPeriodElement().getPeriod().getTime());
-        }
-        synchronized (this) {
-            notify();
-        }
-    }
-
-    @Override
-    public void customPeriodChanged() {
         setCustom = false;
-
         if (chart != null) {
             chart.clear();
             chart.setPeriod(options.getPeriodElement().getPeriod().getTime());

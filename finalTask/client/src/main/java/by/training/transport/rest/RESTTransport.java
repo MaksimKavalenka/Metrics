@@ -12,7 +12,6 @@ import org.codehaus.jettison.json.JSONException;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -85,12 +84,15 @@ public class RESTTransport implements TransportDAO {
 
     @Override
     public void setParameters(final ParametersElement parameters) {
-        synchronized (this) {
-            resource = client.resource(TransportEditor.getBaseUri(parameters.getAddress()));
-        }
-        status = OK;
-        ClientResponse response = resource.head();
-        if (response.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+        try {
+            synchronized (this) {
+                resource = client.resource(TransportEditor.getBaseUri(parameters.getAddress()));
+            }
+            status = OK;
+            if (resource.head().getStatus() == Status.NOT_FOUND.getStatusCode()) {
+                status = NOT_FOUND;
+            }
+        } catch (ClientHandlerException e) {
             status = NOT_FOUND;
         }
     }

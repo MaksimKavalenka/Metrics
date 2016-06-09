@@ -556,7 +556,7 @@ public class OptionsWindow extends JDialog {
             if ((periodElement.getFrom() != from) || (periodElement.getTo() != to)) {
                 listener.getOptions().getPeriodElement().setFrom(DatesWindow.getFrom());
                 listener.getOptions().getPeriodElement().setTo(DatesWindow.getTo());
-                listener.customPeriodChanged();
+                listener.periodChanged();
             }
         }
     }
